@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QRISK and Statins Lesson</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday learning: a revision lesson that plays like a video, then lets you touch the numbers
+   IDEA the Core Cardiology guide come to life: same ink, red and step colours, scenes that build as they are narrated
+   PICTURE the player stage itself: each scene animates in, with live sliders, gauges and a quiz inside it
+   COLOUR ink #16212a ground in the controls, white stage, red #b3263a accent, step colours blue, teal, amber, purple
+   TYPE Bricolage Grotesque headings (the guide's own face) + Atkinson Hyperlegible text
+   LAYOUT laptop: chapter rail on top, stage, caption bar, controls; phone: same order stacked, controls wrap */
+:root{color-scheme:light dark;--bg:light-dark(#eef1f1,#0f1519);--stage:light-dark(#ffffff,#172128);--ink:light-dark(#16212a,#e8eef0);--mut:light-dark(#576470,#9aabb4);--line:light-dark(#dfe3e6,#2a3a44);--soft:light-dark(#f4f6f6,#1c2a33);--red:light-dark(#b3263a,#ff7385);--blue:light-dark(#2f66d0,#79a2f2);--teal:light-dark(#0b8577,#3cc7b3);--amber:light-dark(#b86e00,#f1aa45);--purple:light-dark(#7b46c7,#b08cf0);--bar:#16212a;--okbg:light-dark(#e3f4f0,#123630);--stopbg:light-dark(#fbe6e9,#3d1820)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif;overflow-x:clip}
+b{font-weight:700}
+.wrap{max-width:1180px;margin:0 auto;padding:18px max(16px,3vw) 40px}
+h1{font:800 clamp(26px,3.4vw,38px)/1.08 "Bricolage Grotesque",system-ui,sans-serif;margin:0 0 4px;letter-spacing:-.02em}
+.sub{color:var(--mut);margin:0 0 14px}
+.rail{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.rail button{font:700 14px "Atkinson Hyperlegible",sans-serif;border:0;border-radius:30px;padding:8px 14px;min-height:38px;background:var(--line);color:var(--mut);cursor:pointer}
+.rail button.on{color:#fff;background:var(--c)}
+.rail button:focus-visible,.ctl button:focus-visible,.ctl select:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.player{background:var(--stage);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px -18px rgba(0,0,0,.35)}
+.stage{position:relative;min-height:540px;padding:26px clamp(16px,3vw,36px) 22px}
+.tag{display:inline-block;font:600 12px "IBM Plex Mono",monospace;letter-spacing:.12em;color:#fff;background:var(--c);border-radius:5px;padding:4px 10px}
+.stage h2{font:800 clamp(24px,3vw,36px)/1.1 "Bricolage Grotesque",sans-serif;margin:10px 0 18px;letter-spacing:-.01em}
+.r:not(.in){display:none}
+.r.in{animation:rin .5s ease both}
+@keyframes rin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.r.now{box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 55%,transparent)}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
+.card{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.card h3{font:700 19px/1.2 "Bricolage Grotesque",sans-serif;margin:0 0 10px}
+.card.red h3{color:var(--red)}.card.amber h3{color:var(--amber)}
+ul.b{list-style:none;margin:0;padding:0}
+ul.b li{position:relative;padding:5px 8px 5px 26px;border-radius:8px;margin-bottom:2px}
+ul.b li:before{content:"";position:absolute;left:9px;top:14px;width:8px;height:8px;border-radius:50%;background:var(--c)}
+ol.dec{list-style:none;margin:0;padding:0;counter-reset:n;display:grid;gap:10px}
+ol.dec li{counter-increment:n;display:flex;gap:16px;align-items:center;font-size:clamp(17px,2vw,22px);background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+ol.dec li:before{content:counter(n);font:800 22px "Bricolage Grotesque",sans-serif;color:#fff;background:var(--red);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
+ol.dec li span{display:block}
+.title{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;margin-bottom:22px}
+.big{font:800 clamp(70px,11vw,130px)/.9 "Bricolage Grotesque",sans-serif;color:var(--red)}
+.title p{margin:6px 0 0;color:var(--mut)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;text-align:left;border:1px solid var(--line);background:var(--stage);color:var(--ink);border-radius:12px;padding:10px 14px;min-height:44px;cursor:pointer;transition:background .3s,border-color .3s}
+.chip small{display:block;font-weight:700;margin-top:4px}
+.chip.q{background:var(--okbg);border-color:var(--teal)}.chip.q small{color:var(--teal)}
+.chip.t{background:var(--stopbg);border-color:var(--red)}.chip.t small{color:var(--red)}
+.chip.sel{border:2px solid var(--c);background:color-mix(in srgb,var(--c) 10%,var(--stage))}
+.try{margin-top:16px;border:2px dashed color-mix(in srgb,var(--c) 60%,transparent);border-radius:14px;padding:14px 16px}
+.try h3{font:700 18px "Bricolage Grotesque",sans-serif;margin:0 0 10px;color:var(--c)}
+.meter{margin:6px 0 12px}
+.meter .top{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.meter .val{font:800 26px "Bricolage Grotesque",sans-serif;white-space:nowrap}
+.track{position:relative;height:16px;border-radius:8px;display:flex;overflow:hidden;margin:8px 0 2px}
+.track i{display:block;height:100%}
+.pin{position:absolute;top:-6px;width:4px;height:28px;background:var(--ink);border-radius:2px;transition:left .6s ease}
+.tw{position:relative}
+input[type=range]{width:100%;accent-color:var(--c);height:32px}
+.verdict{border-radius:10px;padding:10px 14px;font-weight:700;margin-top:4px;transition:background .3s}
+.verdict.ok{background:var(--okbg);color:var(--teal)}.verdict.mid{background:color-mix(in srgb,var(--amber) 16%,var(--stage));color:var(--amber)}.verdict.stop{background:var(--stopbg);color:var(--red)}
+.dosebox{text-align:center;padding:22px 18px;min-height:250px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px}
+.pill{font:800 clamp(30px,4.4vw,48px) "Bricolage Grotesque",sans-serif;padding:10px 26px;border-radius:60px;background:color-mix(in srgb,var(--amber) 18%,var(--stage));color:var(--amber);transition:transform .35s,background .3s,color .3s}
+.pill.hi{background:var(--red);color:#fff}
+.pill.pop{transform:scale(1.08)}
+.plist{display:grid;gap:8px}
+.tl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;position:relative;margin-bottom:16px}
+.st{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px;transition:border-color .4s,background .4s}
+.st b{display:block;font:800 20px "Bricolage Grotesque",sans-serif;color:var(--c)}
+.st.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 10%,var(--stage))}
+.calc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.res{font:800 clamp(34px,5vw,54px) "Bricolage Grotesque",sans-serif;line-height:1}
+.fallbar{position:relative;height:22px;background:var(--line);border-radius:11px;margin:12px 0 26px}
+.fallbar span{position:absolute;left:0;top:0;bottom:0;border-radius:11px;background:var(--red);transition:width .6s ease,background .3s}
+.fallbar em{position:absolute;left:40%;top:-6px;bottom:-6px;border-left:3px dashed var(--teal)}
+.fallbar em:after{content:"40% aim";position:absolute;top:30px;left:-26px;font:700 13px "Atkinson Hyperlegible",sans-serif;color:var(--teal);white-space:nowrap;font-style:normal}
+.ladder{display:grid;gap:8px}
+.rung{background:var(--soft);border:1px solid var(--line);border-left:6px solid var(--c);border-radius:10px;padding:10px 14px}
+.rung b{display:block;font:700 17px "Bricolage Grotesque",sans-serif}
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.num{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:16px}
+.num b{display:block;font:800 clamp(34px,4vw,48px)/1 "Bricolage Grotesque",sans-serif;color:var(--red);margin-bottom:8px}
+.qz .stem{font-size:clamp(17px,2vw,20px);margin:0 0 14px}
+.opts{display:grid;gap:8px}
+.opt{font:inherit;text-align:left;display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:12px;padding:10px 14px;min-height:48px;cursor:pointer}
+.opt i{font:800 16px "Bricolage Grotesque",sans-serif;font-style:normal;width:32px;height:32px;border-radius:50%;background:var(--line);display:flex;align-items:center;justify-content:center;flex:none}
+.opt.right{background:var(--okbg);border-color:var(--teal)}.opt.right i{background:var(--teal);color:#fff}
+.opt.wrong{background:var(--stopbg);border-color:var(--red)}.opt.wrong i{background:var(--red);color:#fff}
+.opt:disabled{cursor:default}
+.fb{margin-top:12px;border-left:5px solid var(--teal);background:var(--okbg);border-radius:8px;padding:10px 14px}
+.fb.no{border-color:var(--red);background:var(--stopbg)}
+.qnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.qdots{display:flex;gap:5px;flex-wrap:wrap}
+.qdots span{width:12px;height:12px;border-radius:50%;background:var(--line)}
+.qdots span.ok{background:var(--teal)}.qdots span.no{background:var(--red)}.qdots span.cur{outline:2px solid var(--ink);outline-offset:1px}
+.btn{font:700 15px "Atkinson Hyperlegible",sans-serif;border:0;border-radius:10px;padding:10px 16px;min-height:44px;background:var(--ink);color:var(--stage);cursor:pointer}
+.btn.ghost{background:var(--line);color:var(--ink)}
+.cap{background:var(--bar);color:#fff;min-height:74px;display:flex;align-items:center;gap:14px;padding:12px clamp(16px,3vw,36px);font-size:clamp(16px,1.7vw,19px);line-height:1.35}
+.cap:before{content:"";width:5px;align-self:stretch;min-height:36px;border-radius:3px;background:var(--c);flex:none}
+.ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px clamp(16px,3vw,36px);border-top:1px solid var(--line)}
+.ctl button{font:700 15px "Atkinson Hyperlegible",sans-serif;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:10px;min-height:44px;min-width:44px;padding:0 14px;cursor:pointer}
+.ctl button.play{background:var(--red);border-color:var(--red);color:#fff;min-width:110px}
+.ctl .grow{flex:1}
+.ctl label{font-size:14px;color:var(--mut);display:flex;align-items:center;gap:6px}
+.ctl select{font:16px "Atkinson Hyperlegible",sans-serif;border:1px solid var(--line);background:var(--stage);color:var(--ink);border-radius:8px;min-height:40px;padding:0 6px;max-width:230px}
+.prog{height:5px;background:var(--line)}
+.prog span{display:block;height:100%;background:var(--c);transition:width .4s}
+.hint{font-size:14px;color:var(--mut);margin-top:12px}
+.pulse{animation:pu 1.4s ease-in-out infinite}
+@keyframes pu{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--red) 30%,transparent)}}
+@media(prefers-reduced-motion:reduce){.r.in{animation:none}.pulse{animation:none}.pin,.fallbar span{transition:none}}
+@media(max-width:760px){.g2,.g3,.calc{grid-template-columns:minmax(0,1fr)}.tl{grid-template-columns:repeat(2,minmax(0,1fr))}.stage{min-height:0}.title{grid-template-columns:minmax(0,1fr);gap:8px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a href="../index.html" style="display:inline-block;margin-bottom:8px;font-weight:700;color:var(--mut);text-decoration:none">← All Core GP Notes</a>
+<h1>QRISK, lipids and statins</h1>
+<p class="sub">Topic 2 of Core Cardiology for the GP AKT, as a narrated lesson. Press play, or tap any chapter. Pause and play with the numbers whenever you like.</p>
+<nav class="rail" id="rail" aria-label="Chapters"></nav>
+<section class="player" id="player" aria-label="Lesson player">
+<div class="prog"><span id="prog"></span></div>
+<div class="stage" id="stage" aria-live="polite"></div>
+<div class="cap" id="cap">Press play to start. The narration uses a voice on your device.</div>
+<div class="ctl">
+<button id="prev" aria-label="Previous scene">◀</button>
+<button class="play" id="play">▶ Play</button>
+<button id="next" aria-label="Next scene">▶▶</button>
+<span class="grow"></span>
+<label for="speed">Speed <select id="speed"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select></label>
+<label for="voice">Voice <select id="voice"><option value="">Captions only</option></select></label>
+</div>
+</section>
+<p class="hint" id="vhint">For the most natural voice, choose one marked Natural, Enhanced, Premium or Siri, if your device has one. Microsoft Edge offers natural online voices; on iPhone and Mac you can download Enhanced voices in your Accessibility settings.</p>
+</div>
+<script>
+{
+const C={0:"var(--ink)",1:"var(--blue)",2:"var(--teal)",3:"var(--amber)",4:"var(--purple)",5:"var(--red)",6:"var(--ink)"};
+const CH=["Intro","1 Recognise","2 Diagnose","3 Manage","4 Prescribe","5 Quiz","Recap"];
+const $=id=>document.getElementById(id);
+const stage=$("stage"),cap=$("cap"),playB=$("play"),voiceS=$("voice"),speedS=$("speed");
+
+/* ---------- widgets ---------- */
+const W={
+ tg(v){const z=v>20?["stop","Urgent specialist referral: risk of acute pancreatitis"]:v>=10?["mid","Repeat a fasting sample in 5–14 days; refer if still over 10"]:v>=4.5?["mid","QRISK3 may underestimate risk; refer if non-HDL over 7.5"]:["ok","No triglyceride action on its own"];return z},
+ tc(v){return v>9?["stop","Refer to a lipid specialist, even without a family history"]:v>7.5?["mid","Assess for familial hypercholesterolaemia (Simon Broome or DLCN)"]:["ok","Not a familial clue on its own"]},
+ alt(v){return v>=3?["stop","3× or more: stop the statin (or don't start)"]:["ok","Under 3×: start or continue the statin, and recheck"]},
+ ck(v){return v>5?["stop","Over 5×: stop the statin and recheck CK"]:["ok","Under 5×: continue or reduce; look for other causes"]}
+};
+function meter(id,label,unit,min,max,step,val,zones,fn){
+ const tr=zones.map(z=>`<i style="width:${(z[1]-z[0])/(max-min)*100}%;background:${z[2]}"></i>`).join("");
+ return `<div class="meter" data-w="${fn}" data-min="${min}" data-max="${max}"><div class="top"><span>${label}</span><span class="val" id="${id}v"></span></div>
+ <div class="tw"><div class="track">${tr}</div><span class="pin" id="${id}p"></span></div>
+ <input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}" aria-label="${label}">
+ <div class="verdict" id="${id}d"></div><span hidden>${unit}</span></div>`;
+}
+function setMeter(id,v){const el=$(id);if(!el)return;el.value=v;upMeter(el)}
+function upMeter(el){const m=el.closest(".meter"),v=+el.value,min=+m.dataset.min,max=+m.dataset.max,u=m.querySelector("[hidden]").textContent;
+ $(el.id+"v").textContent=v+u;$(el.id+"p").style.left=`calc(${(v-min)/(max-min)*100}% - 2px)`;
+ const [k,t]=W[m.dataset.w](v),d=$(el.id+"d");d.className="verdict "+k;d.textContent=t}
+const Z={tg:[[0,4.5,"var(--teal)"],[4.5,10,"color-mix(in srgb,var(--amber) 55%,transparent)"],[10,20,"var(--amber)"],[20,30,"var(--red)"]],
+ tc:[[3,7.5,"var(--teal)"],[7.5,9,"var(--amber)"],[9,13,"var(--red)"]],
+ alt:[[0,3,"var(--teal)"],[3,6,"var(--red)"]],ck:[[0,5,"var(--teal)"],[5,12,"var(--red)"]]};
+
+const PAT=[
+ ["58, hypertension, smoker","q","Use QRISK3"],["Previous MI","t","Treat: secondary prevention, 80 mg"],
+ ["Type 1 diabetes for 15 years","t","Treat on the diagnosis: 20 mg"],["CKD, eGFR 48","t","Treat on the diagnosis: 20 mg"],
+ ["Cholesterol 9.4, father had an MI at 45","t","Don't use QRISK3: likely FH, refer"],["Age 87","t","Age alone makes risk high: consider 20 mg"],
+ ["48, BMI 31, no conditions","q","Use QRISK3"]];
+const DOSE=[
+ ["QRISK3 14%, no CVD","Atorvastatin 20 mg","Primary prevention: offer after discussing lifestyle",0],
+ ["QRISK3 7%, wants a statin","20 mg if they prefer","Don't rule a statin out on the score alone",0],
+ ["CKD, eGFR 45","Atorvastatin 20 mg","Offer regardless of QRISK3; renal team for higher doses if eGFR under 30",0],
+ ["Type 1 diabetes, age 44","Atorvastatin 20 mg","Over 40, diabetes over 10 years, nephropathy or other risk factors",0],
+ ["Age 86","Consider 20 mg","Reduces non-fatal MI",0],
+ ["Stroke last year","Atorvastatin 80 mg","Secondary prevention: start as soon as possible",1]];
+const QS=[
+ ["A 58-year-old man has a QRISK3 score of 14%. He has no established cardiovascular disease and normal renal function. After discussing lifestyle, he would like treatment. What is the most appropriate option?",["Atorvastatin 10 mg","Atorvastatin 20 mg","Atorvastatin 80 mg","Ezetimibe 10 mg","Simvastatin 40 mg"],1,"Primary prevention with QRISK3 of 10% or more: atorvastatin 20 mg. 80 mg is the secondary-prevention dose; simvastatin and ezetimibe aren't first line."],
+ ["A 64-year-old man had an MI 6 months ago and takes atorvastatin 80 mg. He is fully adherent with no side effects. His LDL cholesterol is 2.4 mmol/L. What is the most appropriate next step?",["Add ezetimibe","Add fenofibrate","Add omega-3 supplements","Continue and recheck in 12 months","Start inclisiran"],0,"The secondary-prevention target is LDL 2.0 or less. He's adherent on maximum-dose atorvastatin, so add ezetimibe. Inclisiran is for LDL persistently 2.6 or more despite maximum tolerated therapy."],
+ ["A 44-year-old woman has had type 1 diabetes for 22 years. She has no other medical problems. Her QRISK3 is 4%. What is the most appropriate advice about a statin?",["Not indicated as QRISK3 is below 10%","Offer atorvastatin 20 mg","Offer atorvastatin 80 mg","Recalculate QRISK3 in 5 years","Refer to a lipid clinic"],1,"QRISK3 isn't used in type 1 diabetes. More than 10 years of diabetes is an indication on its own. Option A is the classic trap."],
+ ["A 39-year-old man has a total cholesterol of 9.6 mmol/L. There is no family history and no xanthomata. TSH, HbA1c and LFTs are normal. What is the most appropriate next step?",["Calculate QRISK3","Lifestyle advice and repeat in 3 months","Refer to a lipid specialist","Start atorvastatin 20 mg","Start atorvastatin 80 mg"],2,"Total cholesterol over 9.0 needs specialist assessment even without a family history: likely FH. QRISK3 isn't valid in suspected FH."],
+ ["A 51-year-old woman has a non-fasting triglyceride level of 23 mmol/L. She drinks 4 units of alcohol a week and has no diabetes. What is the most appropriate action?",["Repeat fasting sample in 2 weeks","Start atorvastatin 20 mg","Start fenofibrate","Start omega-3 supplements","Urgent specialist referral"],4,"Triglycerides over 20 not explained by alcohol or diabetes carry a risk of acute pancreatitis. A repeat fasting sample is the step for 10–20."],
+ ["A 60-year-old woman started atorvastatin 20 mg 3 months ago. She feels well. Her ALT has risen from 30 to 72 IU/L (upper limit 40). What is the most appropriate action?",["Continue atorvastatin and recheck","Reduce to atorvastatin 10 mg","Stop atorvastatin permanently","Switch to ezetimibe","Refer to hepatology"],0,"ALT is 1.8× the upper limit. Statins are only stopped at 3× the upper limit or more."],
+ ["A 67-year-old man on atorvastatin develops generalised muscle aches. His CK is 8 times the upper limit of normal. What is the most appropriate action?",["Continue and add coenzyme Q10","Continue and recheck CK in 3 months","Reduce the dose by half","Stop atorvastatin and recheck CK","Switch to simvastatin"],3,"Muscle symptoms with CK over 5× the upper limit: stop the statin and recheck. Coenzyme Q10 isn't recommended, and simvastatin is no safer."],
+ ["A 72-year-old woman takes simvastatin 40 mg. She has pneumonia and is penicillin-allergic, so is prescribed clarithromycin. What should you advise about her statin?",["Continue simvastatin unchanged","Halve the simvastatin dose","Stop simvastatin permanently","Switch to rosuvastatin permanently","Withhold simvastatin until the course is finished"],4,"Clarithromycin raises simvastatin levels and myopathy risk. A short pause during the course is safe and simple."],
+ ["A 55-year-old man started atorvastatin 20 mg for primary prevention 3 months ago and takes it daily. His non-HDL has fallen from 5.2 to 4.0 mmol/L. What is the most appropriate next step?",["Add ezetimibe","Continue and review in 12 months","Increase the atorvastatin dose","Switch to simvastatin 40 mg","Refer to a lipid clinic"],2,"A 23% fall is short of the 40% aim. Adherence is confirmed, so increase the statin before adding ezetimibe."],
+ ["A 67-year-old woman has CKD with an eGFR of 42 and a normal urine ACR. Her QRISK3 is 8%. She has no cardiovascular disease. What is the most appropriate advice?",["Not indicated as QRISK3 is below 10%","Offer atorvastatin 20 mg","Offer atorvastatin 80 mg","Offer ezetimibe","Refer to nephrology before any statin"],1,"eGFR under 60 is an indication on its own; QRISK3 underestimates risk in CKD. Renal input is needed only for higher doses when eGFR is under 30."]];
+
+/* ---------- scenes ---------- */
+const li=(t,i)=>`<li class="r" data-i="${i}">${t}</li>`;
+const S=[
+{ch:0,tag:"TOPIC 02",h:"Five decisions that keep coming up",html:()=>`
+<div class="title r in" data-i="0"><div class="big">02</div><div><b style="font-size:20px">QRISK, lipids and statins</b><p>NICE NG238 · NICE CKS Lipid modification · NICE technology appraisals for ezetimibe and inclisiran</p></div></div>
+<ol class="dec">${["Should I use <b>QRISK3</b> at all, or treat on the diagnosis?","Which <b>statin dose</b>: 20 mg or 80 mg?","Is the <b>response</b> good enough?","Is this <b>familial</b>, or a <b>triglyceride emergency</b>?","What to do with a raised <b>ALT</b>, a raised <b>CK</b>, or an <b>interacting drug</b>"].map((t,k)=>li("<span>"+t+"</span>",k+1)).join("")}</ol>`,
+ b:[[0,"Topic two: QRISK, lipids and statins. Questions here test five decisions."],[1,"First: does QRISK3 even apply, or do you treat on the diagnosis?"],[2,"Second: the dose. 20 mg for primary prevention, 80 mg for secondary."],[3,"Third: has the cholesterol fallen enough on treatment?"],[4,"Fourth: spotting the patient who isn't ordinary."],[5,"And fifth: safety. Let's take them in order."]]},
+{ch:1,tag:"STEP 1 · RECOGNISE",h:"Who gets QRISK3, and who doesn't",stop:1,html:()=>`
+<div class="g2"><div class="card r" data-i="1"><h3>QRISK3</h3><ul class="b"><li>Estimates <b>10-year CVD risk</b> in people aged <b>25–84</b> without established CVD</li><li>Usually through the <b>NHS Health Check</b> (40–74), or opportunistically</li><li>Review risk at least every <b>5 years</b></li></ul></div>
+<div class="card red r" data-i="2"><h3>Don't use QRISK3: treat on the diagnosis</h3><ul class="b"><li><b>Established CVD</b>: secondary prevention</li><li><b>Type 1 diabetes</b>: its own criteria</li><li><b>CKD</b> (eGFR under 60 and/or albuminuria): offer a statin regardless</li><li><b>Familial hypercholesterolaemia</b>: specialist care</li><li><b>Age 85 and over</b>: age alone makes risk high</li></ul></div></div>
+<div class="try r" data-i="3"><h3>Your turn: QRISK3, or treat on the diagnosis? Tap each patient.</h3><div class="chips">${PAT.map((p,k)=>`<button class="chip" data-p="${k}">${p[0]}</button>`).join("")}</div></div>`,
+ init(){stage.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{const p=PAT[b.dataset.p];b.classList.add(p[1]);if(!b.querySelector("small"))b.insertAdjacentHTML("beforeend",`<small>${p[2]}</small>`)})},
+ b:[[1,"QRISK3 estimates ten-year cardiovascular risk in people aged 25 to 84 without heart disease. Review it at least every five years."],[2,"But some groups skip QRISK3 entirely: established cardiovascular disease, type 1 diabetes, CKD, familial hypercholesterolaemia, and anyone 85 or over."],[3,"Your turn. Tap each patient to check whether QRISK3 applies. Press next when you're ready."]]},
+{ch:1,tag:"STEP 1 · RECOGNISE",h:"When it isn't ordinary hyperlipidaemia",html:()=>`
+<div class="g3"><div class="card r" data-i="1"><h3>QRISK3 underestimates risk in</h3><ul class="b"><li>HIV, serious mental illness</li><li>Autoimmune or inflammatory disease</li><li>Antipsychotics, steroids, immunosuppressants</li><li>People already on BP or lipid drugs; recent ex-smokers</li></ul></div>
+<div class="card amber r" data-i="2"><h3>Think familial (FH)</h3><ul class="b"><li>Total cholesterol <b>over 7.5</b>, and/or</li><li>Premature CHD in a <b>first-degree relative under 60</b></li><li><b>Tendon xanthomata</b>; corneal arcus under 45</li><li>Autosomal dominant: <b>cascade-test</b> relatives</li></ul></div>
+<div class="card r" data-i="3"><h3>Exclude secondary causes</h3><ul class="b"><li><b>Hypothyroidism</b>: check TSH</li><li>Poorly controlled diabetes; excess alcohol</li><li>Liver disease, nephrotic syndrome, CKD</li><li>Thiazides, steroids, antipsychotics, retinoids</li></ul></div></div>`,
+ b:[[1,"QRISK3 underestimates risk in some groups, such as HIV, serious mental illness and inflammatory disease. Use judgement there."],[2,"Think familial hypercholesterolaemia with cholesterol over 7.5, early heart disease in a close relative, or tendon xanthomata."],[3,"And before treating, rule out secondary causes. Hypothyroidism is the classic one."]]},
+{ch:2,tag:"STEP 2 · DIAGNOSE",h:"Thresholds that trigger action",stop:1,html:()=>`
+<div class="g2"><div class="card r" data-i="1"><h3>The tests</h3><ul class="b"><li><b>Non-fasting</b> lipid profile is fine for most people</li><li><b>Non-HDL</b> = total cholesterol minus HDL</li><li>Baseline before a statin: lipids, HbA1c, U&amp;E, <b>ALT</b>, TSH if dyslipidaemia</li><li><b>Not CK routinely</b>: only with unexplained muscle pain</li></ul></div>
+<div class="r" data-i="2">${meter("tc","Total cholesterol"," mmol/L",3,13,0.1,6,Z.tc,"tc")}${meter("tg","Triglycerides"," mmol/L",0,30,0.5,3,Z.tg,"tg")}</div></div>`,
+ init(){stage.querySelectorAll(".meter input").forEach(i=>{i.oninput=()=>upMeter(i);upMeter(i)})},
+ b:[[1,"A non-fasting lipid profile is fine. Non-HDL is total cholesterol minus HDL. C K is not a routine baseline test."],[2,"Total cholesterol over 7.5: assess for familial hypercholesterolaemia.",()=>setMeter("tc",8.2)],[2,"Over 9: refer to a lipid specialist, even with no family history.",()=>setMeter("tc",9.6)],[2,"Triglycerides over 20: urgent referral, because of the risk of acute pancreatitis.",()=>setMeter("tg",23)],[2,"Between 10 and 20: repeat a fasting sample within two weeks.",()=>setMeter("tg",14)],[2,"Now drag the sliders yourself, then press next."]]},
+{ch:3,tag:"STEP 3 · MANAGE",h:"Who gets a statin, and at what dose",stop:1,html:()=>`
+<div class="g2"><div class="plist r" data-i="1">${DOSE.map((d,k)=>`<button class="chip" data-d="${k}">${d[0]}</button>`).join("")}</div>
+<div class="card dosebox r" data-i="1"><span id="dwho" style="color:var(--mut)">Tap a patient</span><span class="pill" id="dpill">?</span><span id="dnote"></span></div></div>`,
+ init(){stage.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>pickDose(+b.dataset.d))},
+ b:[[1,"Primary prevention with QRISK3 of 10% or more: atorvastatin 20 mg, after discussing lifestyle.",()=>pickDose(0)],[1,"Under 10%, it's still an option if the person wants it.",()=>pickDose(1)],[1,"CKD: 20 mg, whatever the QRISK3.",()=>pickDose(2)],[1,"Type 1 diabetes: 20 mg if over 40, diabetes for more than ten years, nephropathy, or other risk factors.",()=>pickDose(3)],[1,"Over 85: consider 20 mg.",()=>pickDose(4)],[1,"And secondary prevention: atorvastatin 80 mg, started as soon as possible.",()=>pickDose(5)],[1,"Tap any patient to check the dose, then press next."]]},
+{ch:3,tag:"STEP 3 · MANAGE",h:"Lifestyle, and what not to offer",html:()=>`
+<div class="g3"><div class="card r" data-i="1"><h3>Lifestyle for everyone</h3><ul class="b"><li>Total fat 30% or less of energy; saturated 7% or less</li><li>150 minutes of moderate activity a week</li><li>Weight, alcohol within limits, <b>stop smoking</b></li></ul></div>
+<div class="card red r" data-i="2"><h3>Don't offer for CVD prevention</h3><ul class="b"><li>Fibrates, nicotinic acid, bile acid sequestrants</li><li><b>Omega-3</b> supplements; plant stanols or sterols</li><li><b>Coenzyme Q10</b> or vitamin D for statin muscle symptoms</li></ul></div>
+<div class="card amber r" data-i="3"><h3>Pregnancy</h3><ul class="b"><li>Statins are <b>contraindicated</b> in pregnancy and breastfeeding</li><li>Stop <b>3 months before</b> trying to conceive</li><li>Pregnant on a statin: <b>stop straight away</b></li></ul></div></div>`,
+ b:[[1,"Lifestyle advice for everyone: diet, activity, weight, alcohol, and stopping smoking."],[2,"NICE says don't offer fibrates, omega-3 capsules, stanols, or coenzyme Q10."],[3,"And statins are contraindicated in pregnancy. Stop them three months before trying to conceive."]]},
+{ch:4,tag:"STEP 4 · PRESCRIBE / REFER",h:"Monitoring, and is the response good enough?",stop:1,html:()=>`
+<div class="tl r" data-i="1">${[["Baseline","Lipids, HbA1c, U&amp;E, ALT, TSH"],["2–3 months","Lipids: response? ALT at 3 months"],["12 months","ALT again"],["Annually","Adherence, lifestyle, side effects, lipids"]].map((s,k)=>`<div class="st" id="st${k}"><b>${s[0]}</b>${s[1]}</div>`).join("")}</div>
+<div class="card r" data-i="2"><h3>Primary prevention aim: non-HDL falls by more than 40%</h3>
+<div class="calc"><div><label for="nb">Non-HDL before: <b id="nbv"></b> mmol/L</label><input type="range" id="nb" min="2" max="9" step="0.1" value="5.2"></div>
+<div><label for="na">Non-HDL after: <b id="nav"></b> mmol/L</label><input type="range" id="na" min="1" max="9" step="0.1" value="5.2"></div></div>
+<div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-top:8px"><span class="res" id="pct"></span><span id="pverd" style="font-weight:700"></span></div>
+<div class="fallbar"><span id="pbar"></span><em></em></div>
+<p style="margin:0;color:var(--mut)">Secondary prevention aim: LDL <b>2.0 or less</b> (or non-HDL 2.6 or less). Not met? Adherence first, then a higher statin dose, then ezetimibe.</p></div>`,
+ init(){["nb","na"].forEach(i=>$(i).oninput=upCalc);upCalc()},
+ b:[[1,"Check bloods at baseline.",()=>tlOn(0)],[1,"At two to three months, check lipids to judge the response, and A L T.",()=>tlOn(1)],[1,"A L T again at twelve months, then a yearly review.",()=>tlOn(3)],[2,"In primary prevention, aim for a fall in non-HDL of more than 40%. Here it fell from 5.2 to 4.0: only 23%. If adherent, increase the dose.",()=>setCalc(5.2,4.0)],[2,"From 5.2 to 2.9 is a 44% fall: target met.",()=>setCalc(5.2,2.9)],[2,"In secondary prevention, aim for L D L of 2.0 or less. Try the sliders, then press next."]]},
+{ch:4,tag:"STEP 4 · PRESCRIBE / REFER",h:"Add-ons and safety",stop:1,html:()=>`
+<div class="g2"><div class="ladder r" data-i="1">
+<div class="rung"><b>Ezetimibe 10 mg</b>Statin not tolerated, or added when the target isn't met</div>
+<div class="rung"><b>Inclisiran</b>Secondary prevention, LDL persistently 2.6 or more despite maximum tolerated therapy</div>
+<div class="rung"><b>Bempedoic acid + ezetimibe</b>Statins not tolerated and ezetimibe alone not enough</div>
+<div class="rung"><b>PCSK9 inhibitors</b>Specialist-initiated</div></div>
+<div class="r" data-i="2">${meter("alt","ALT, times the upper limit","×",0,6,0.1,1,Z.alt,"alt")}${meter("ck","CK with muscle symptoms, times the upper limit","×",0,12,0.5,1,Z.ck,"ck")}</div></div>`,
+ init(){stage.querySelectorAll(".meter input").forEach(i=>{i.oninput=()=>upMeter(i);upMeter(i)})},
+ b:[[1,"If the target isn't met on a statin, ezetimibe comes first. Inclisiran is for secondary prevention with L D L still 2.6 or more despite maximum therapy."],[2,"Liver enzymes: under three times the upper limit, carry on and recheck.",()=>setMeter("alt",1.8)],[2,"Three times or more: stop the statin.",()=>setMeter("alt",3.4)],[2,"Muscle symptoms: check C K. Over five times the upper limit, stop the statin and recheck.",()=>setMeter("ck",8)],[2,"Drag the sliders to test yourself, then press next."]]},
+{ch:4,tag:"STEP 4 · PRESCRIBE / REFER",h:"Interactions and referral",html:()=>`
+<div class="g2"><div class="card r" data-i="1"><h3>Interactions</h3><ul class="b"><li>Simvastatin + <b>clarithromycin or erythromycin</b>: withhold simvastatin during the course</li><li>Simvastatin + <b>amlodipine or diltiazem</b>: simvastatin max 20 mg</li><li><b>Grapefruit juice</b>: avoid large amounts with simvastatin and atorvastatin</li></ul></div>
+<div class="card red r" data-i="2"><h3>Refer</h3><ul class="b"><li><b>Urgent</b>: triglycerides over 20</li><li><b>Lipid clinic</b>: clinical FH; total cholesterol over 9.0 or non-HDL over 7.5; triglycerides persistently over 10; statin intolerance with high risk</li><li><b>Renal team</b>: higher doses if eGFR under 30</li></ul></div></div>`,
+ b:[[1,"Simvastatin interacts with macrolides and some calcium channel blockers. Atorvastatin avoids most of these problems."],[2,"Refer urgently for triglycerides over 20, and to the lipid clinic for familial hypercholesterolaemia or cholesterol over 9."]]},
+{ch:5,tag:"QUIZ",h:"Ten questions",stop:1,html:()=>`<div class="qz r in" data-i="0" id="qz"></div>`,init(){quiz()},
+ b:[[0,"Ten questions. Pick the single best answer for each, and you'll get your score at the end."]]},
+{ch:6,tag:"RECAP",h:"The numbers to take into the exam",html:()=>`
+<div class="nums">${[["10%","QRISK3 threshold to offer a statin"],["20 / 80","mg atorvastatin: primary / secondary"],["40%","non-HDL fall: primary prevention aim"],["3× · 5×","ALT stop · CK stop"],["&gt;20","triglycerides: urgent referral"]].map((n,k)=>`<div class="num r" data-i="${k+1}"><b>${n[0]}</b>${n[1]}</div>`).join("")}</div>`,
+ b:[[1,"Ten percent: the QRISK3 threshold."],[2,"20 mg for primary prevention, 80 mg for secondary."],[3,"A fall in non-HDL of more than 40%."],[4,"Three times the upper limit for A L T, five times for C K."],[5,"And triglycerides over 20: urgent referral. That's topic two."]]}
+];
+
+/* ---------- helpers used by scenes ---------- */
+function pickDose(k){const d=DOSE[k];stage.querySelectorAll("[data-d]").forEach(b=>b.classList.toggle("sel",+b.dataset.d===k));
+ const p=$("dpill");if(!p)return;$("dwho").textContent=d[0];p.textContent=d[1];p.classList.toggle("hi",!!d[3]);$("dnote").textContent=d[2];
+ p.classList.add("pop");setTimeout(()=>p.classList.remove("pop"),350)}
+function tlOn(k){for(let i=0;i<4;i++){const e=$("st"+i);if(e)e.classList.toggle("on",i<=k)}}
+function upCalc(){const b=+$("nb").value,a=Math.min(+$("na").value,b);$("na").value=a;$("nbv").textContent=b.toFixed(1);$("nav").textContent=a.toFixed(1);
+ const f=Math.round((b-a)/b*100),ok=f>40;$("pct").textContent=f+"% fall";$("pct").style.color=ok?"var(--teal)":"var(--red)";
+ $("pverd").textContent=ok?"Aim met: continue":"Short of 40%: check adherence, then increase the dose";$("pbar").style.width=Math.min(f,100)+"%";$("pbar").style.background=ok?"var(--teal)":"var(--red)"}
+function setCalc(b,a){if(!$("nb"))return;$("nb").value=b;$("na").value=a;upCalc()}
+let qi=0,qa=[];
+function quiz(){const q=QS[qi],L="ABCDE",box=$("qz");if(!box)return;const done=qa[qi]!==undefined;
+ box.innerHTML=`<p class="stem"><b>Q${qi+1}.</b> ${q[0]}</p><div class="opts">${q[1].map((o,k)=>`<button class="opt${done?(k===q[2]?" right":k===qa[qi]?" wrong":""):""}" data-o="${k}" ${done?"disabled":""}><i>${L[k]}</i>${o}</button>`).join("")}</div>
+ ${done?`<div class="fb${qa[qi]===q[2]?"":" no"}"><b>${qa[qi]===q[2]?"Correct.":"Not quite: the answer is "+L[q[2]]+"."}</b> ${q[3]}</div>`:""}
+ <div class="qnav"><div class="qdots">${QS.map((_,k)=>`<span class="${qa[k]===undefined?"":qa[k]===QS[k][2]?"ok":"no"}${k===qi?" cur":""}"></span>`).join("")}</div>
+ <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" id="qread">Read aloud</button>${qi>0?`<button class="btn ghost" id="qprev">Back</button>`:""}${qi<QS.length-1?`<button class="btn" id="qnext">Next question</button>`:`<button class="btn" id="qscore">See my score</button>`}</div></div>`;
+ box.querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>{qa[qi]=+b.dataset.o;quiz();const ok=qa[qi]===q[2];say((ok?"Correct. ":"Not quite. The answer is "+L[q[2]]+". ")+q[3])});
+ $("qread").onclick=()=>say(`Question ${qi+1}. ${q[0]} `+q[1].map((o,k)=>L[k]+": "+o+".").join(" "));
+ if($("qprev"))$("qprev").onclick=()=>{qi--;quiz()};if($("qnext"))$("qnext").onclick=()=>{qi++;quiz()};if($("qscore"))$("qscore").onclick=score}
+function score(){const n=qa.filter((a,k)=>a===QS[k][2]).length,box=$("qz");
+ const band=n>=9?["var(--teal)","Exam-ready","Move on, and re-test once in 2 weeks."]:n>=7?["var(--blue)","Nearly there","Revisit the chapters behind the questions you missed, then re-test within a week."]:n>=5?["var(--amber)","Shaky","Replay Steps 3 and 4, then repeat the questions in 48 hours."]:["var(--red)","Not yet","Replay the whole lesson before re-attempting."];
+ box.innerHTML=`<div class="card" style="border-top:6px solid ${band[0]}"><div class="res" style="color:${band[0]}">${n} / 10</div><h3 style="color:${band[0]};margin-top:10px">${band[1]}</h3><p style="margin:0 0 12px">${band[2]}</p><button class="btn" id="qagain">Try again</button></div>`;
+ $("qagain").onclick=()=>{qi=0;qa=[];quiz()};say(`You scored ${n} out of 10. ${band[1]}. ${band[2]}`)}
+
+/* ---------- speech ---------- */
+const REP=[[/QRISK3/g,"Q-risk three"],[/non-HDL/g,"non H D L"],[/\bLDL\b/g,"L D L"],[/\bHDL\b/g,"H D L"],[/\bHbA1c\b/g,"H B A 1 C"],[/\beGFR\b/g,"e G F R"],[/\bALT\b/g,"A L T"],[/\bCK\b/g,"C K"],[/\bTSH\b/g,"T S H"],[/\bCKD\b/g,"C K D"],[/\bCVD\b/g,"cardiovascular disease"],[/\bCHD\b/g,"coronary heart disease"],[/\bFH\b/g,"F H"],[/\bMI\b/g,"M I"],[/\bACR\b/g,"A C R"],[/(\d)\s*mg\b/g,"$1 milligrams"],[/mmol\/L/g,"millimoles per litre"],[/(\d)\s*%/g,"$1 percent"],[/(\d)\s*×/g,"$1 times"],[/(\d)\s*[–-]\s*(\d)/g,"$1 to $2"],[/IU\/L/g,"units per litre"]];
+const clean=t=>REP.reduce((s,[a,b])=>s.replace(a,b),t);
+const synth=window.speechSynthesis;let voices=[];
+function loadVoices(){if(!synth)return;voices=synth.getVoices().filter(v=>/^en/i.test(v.lang));if(!voices.length)return;
+ const rank=v=>(/natural|neural|premium|enhanced|siri/i.test(v.name)?4:0)+(/en[-_]GB/i.test(v.lang)?2:0)+(/google uk|sonia|libby|ryan|serena|daniel|kate/i.test(v.name)?1:0);
+ voices.sort((a,b)=>rank(b)-rank(a));let keep=voiceS.value;
+ voiceS.innerHTML=`<option value="">Captions only</option>`+voices.map((v,k)=>`<option value="${k}">${v.name.replace(/[<>&"]/g,"")} (${v.lang})</option>`).join("");
+ voiceS.value=keep===""&&!voiceS.dataset.touched?"0":keep}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices}else{$("vhint").textContent="This browser can't speak the narration, so captions only."}
+voiceS.onchange=()=>{voiceS.dataset.touched=1};
+function say(text,onend){cap.textContent=text;const v=voices[+voiceS.value];
+ if(synth)synth.cancel();
+ if(!synth||voiceS.value===""||!v){if(onend)timer=setTimeout(onend,(1200+text.split(/\s+/).length*330)/+speedS.value);return}
+ const u=new SpeechSynthesisUtterance(clean(text));u.voice=v;u.lang=v.lang;u.rate=+speedS.value;
+ let fired=false;const fin=()=>{if(fired)return;fired=true;clearTimeout(guard);if(onend)timer=setTimeout(onend,350)};
+ u.onend=fin;u.onerror=fin;const guard=setTimeout(fin,(4000+text.split(/\s+/).length*700)/+speedS.value);synth.speak(u)}
+
+/* ---------- player ---------- */
+let si=0,bi=-1,playing=false,timer=null;
+$("rail").innerHTML=CH.map((c,k)=>`<button data-ch="${k}" style="--c:${C[k]}">${c}</button>`).join("");
+$("rail").querySelectorAll("button").forEach(b=>b.onclick=()=>{const k=S.findIndex(s=>s.ch===+b.dataset.ch);go(k,true)});
+function render(){const s=S[si];document.documentElement.style.setProperty("--c",C[s.ch]);$("player").style.setProperty("--c",C[s.ch]);
+ stage.innerHTML=`<span class="tag">${s.tag}</span><h2>${s.h}</h2>`+s.html();if(s.init)s.init();
+ $("rail").querySelectorAll("button").forEach(b=>b.classList.toggle("on",+b.dataset.ch===s.ch));
+ $("prog").style.width=((si+1)/S.length*100)+"%";$("next").classList.remove("pulse")}
+function reveal(i){stage.querySelectorAll(".r").forEach(e=>{const d=+e.dataset.i;e.classList.toggle("in",d<=i);e.classList.toggle("now",d===i&&d>0)})}
+function beat(){const s=S[si];bi++;
+ if(bi>=s.b.length){if(s.stop||si===S.length-1){stop();if(si<S.length-1){$("next").classList.add("pulse");cap.textContent="Your turn. Press ▶▶ for the next scene when you're ready."}return}
+  timer=setTimeout(()=>{si++;bi=-1;render();beat()},700);return}
+ const [i,t,f]=s.b[bi];reveal(i);if(f)f();say(t,()=>{if(playing)beat()})}
+function start(){playing=true;playB.textContent="❚❚ Pause";if(bi>=S[si].b.length-1&&S[si].b.length){bi=-1;render()}beat()}
+function stop(){playing=false;playB.textContent="▶ Play";clearTimeout(timer);if(synth)synth.cancel()}
+function go(k,autoplay){stop();si=Math.max(0,Math.min(S.length-1,k));bi=-1;render();
+ if(autoplay){start()}else{reveal(99);cap.textContent=S[si].b[0][1]}}
+playB.onclick=()=>playing?stop():(bi>=0&&bi<S[si].b.length?(bi--,start()):start());
+$("next").onclick=()=>go(si+1,true);$("prev").onclick=()=>go(si-1,true);
+speedS.onchange=()=>{};
+document.addEventListener("keydown",e=>{if(/INPUT|SELECT|BUTTON/.test(e.target.tagName))return;if(e.code==="Space"){e.preventDefault();playB.click()}if(e.key==="ArrowRight")$("next").click();if(e.key==="ArrowLeft")$("prev").click()});
+render();reveal(99);
+}
+</script>
+</body>
+</html>

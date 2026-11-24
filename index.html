@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Core GP Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday learning: a calm revision library, the front door to every interactive lesson
+   IDEA the shelf of guides: each category is a coloured spine, each lesson a numbered chapter
+   PICTURE the category shelf itself, big coloured blocks with live lesson counts, then the chapter lists
+   COLOUR ink #16212a band, white pages, red #b3263a accent, one colour per category
+   TYPE Bricolage Grotesque headings (the guides' face) + Atkinson Hyperlegible text
+   LAYOUT laptop: ink header band with search, category shelf in 4 columns, lesson lists below; phone: stacked */
+:root{color-scheme:light dark;--bg:light-dark(#eef1f1,#0f1519);--card:light-dark(#ffffff,#172128);--ink:light-dark(#16212a,#e8eef0);--mut:light-dark(#576470,#9aabb4);--line:light-dark(#dfe3e6,#2a3a44);--red:light-dark(#b3263a,#ff7385);--band:#16212a}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif;overflow-x:clip}
+a{color:inherit}
+.band{background:var(--band);color:#fff;padding:clamp(26px,4vw,52px) max(5vw,16px) clamp(24px,3vw,40px)}
+.in{max-width:1180px;margin:0 auto}
+.who{color:#c9d1d7;margin:0 0 6px;font-weight:700}
+h1{font:800 clamp(32px,5vw,52px)/1.05 "Bricolage Grotesque",system-ui,sans-serif;margin:0 0 10px;letter-spacing:-.02em}
+.lead{color:#c9d1d7;max-width:62ch;margin:0 0 20px}
+.search{display:flex;gap:10px;flex-wrap:wrap}
+.search input{flex:1 1 260px;font:16px "Atkinson Hyperlegible",sans-serif;padding:12px 16px;border-radius:12px;border:2px solid #3a4a55;background:#0f171d;color:#fff;min-height:48px}
+.search input:focus{outline:none;border-color:#ff7385}
+.stats{display:flex;gap:22px;flex-wrap:wrap;margin-top:18px;color:#c9d1d7}
+.stats b{color:#fff;font:800 22px "Bricolage Grotesque",sans-serif;margin-right:6px}
+main{padding:24px max(5vw,16px) 50px}
+.shelf{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:26px}
+.spine{border:0;text-align:left;font:inherit;color:#fff;background:var(--c);border-radius:16px;padding:18px 18px 16px;min-height:150px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.spine:after{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.12)}
+.spine h2{font:800 clamp(20px,2.2vw,26px)/1.1 "Bricolage Grotesque",sans-serif;margin:0}
+.spine span{font-size:14px;opacity:.92}
+.spine.on{outline:4px solid var(--ink);outline-offset:3px}
+.spine:focus-visible{outline:4px solid var(--red);outline-offset:3px}
+.cat{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:18px;overflow:hidden}
+.cat header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 20px;border-bottom:4px solid var(--c)}
+.cat h3{font:800 24px "Bricolage Grotesque",sans-serif;margin:0;color:var(--c)}
+.cat header p{margin:0;color:var(--mut);font-size:14px}
+.list{list-style:none;margin:0;padding:0}
+.list li{border-top:1px solid var(--line)}
+.list li:first-child{border-top:0}
+.row{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 20px;text-decoration:none}
+a.row:hover{background:color-mix(in srgb,var(--c) 8%,var(--card))}
+a.row:focus-visible{outline:3px solid var(--c);outline-offset:-3px}
+.n{font:800 20px "Bricolage Grotesque",sans-serif;color:var(--c)}
+.t b{display:block;font-weight:700}
+.t small{color:var(--mut);font-size:14px}
+.st{font-size:13px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap}
+.st.live{background:var(--c);color:#fff}
+.st.soon{background:var(--line);color:var(--mut)}
+.empty{padding:30px;text-align:center;color:var(--mut)}
+.note{color:var(--mut);font-size:14px;max-width:70ch}
+@media(max-width:820px){.shelf{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.row{grid-template-columns:36px minmax(0,1fr)}.row .st{grid-column:2;justify-self:start}.spine{min-height:120px}}
+</style>
+</head>
+<body>
+<header class="band"><div class="in">
+<p class="who">Peres Pinaware · GP Specialty Registrar</p>
+<h1>Core GP Notes</h1>
+<p class="lead">Interactive, narrated notes for the MRCGP AKT and SCA, built from my Core guides. Press play to watch, then tap, drag and quiz your way through each topic.</p>
+<div class="search"><input id="q" type="search" placeholder="Search lessons, e.g. statins, eczema, sensitivity" aria-label="Search lessons"></div>
+<div class="stats" id="stats"></div>
+</div></header>
+<main><div class="in">
+<div class="shelf" id="shelf"></div>
+<div id="cats"></div>
+<p class="note">For exam revision only, based on NICE and other UK guidance at the time of writing. Not clinical advice. Preview: only lessons marked Live are built so far.</p>
+</div></main>
+<script>
+{
+const CATS=[
+ {id:"cardiology",name:"Cardiology",c:"#b3263a",src:"Core Cardiology for the GP AKT",lessons:[
+  ["Hypertension, including secondary hypertension","NICE NG136"],["QRISK, lipids and statins","NICE NG238","qrisk-lipids-statins.html"],["Familial hypercholesterolaemia and statin conversations","NICE CG71 · NG238"],["Abdominal aortic aneurysm","NICE NG156"],["Fitness to drive and work","DVLA · GMC"],["ECG interpretation","NICE CG95 · CG109"],["Atrial fibrillation","NICE NG196"],["Bradycardia and heart block","RCUK 2025 · NICE CG109"],["Tachyarrhythmias","RCUK 2025 · NICE CKS"],["Acute coronary syndrome and MI","NICE NG185 · CG95"],["Cardiac arrest and CPR","RCUK 2025 · ReSPECT"],["Heart failure","NICE NG106 (2025)"],["Heart valve disease","NICE NG208"]]},
+ {id:"dermatology",name:"Dermatology",c:"#0b8577",src:"Core Dermatology for the GP AKT",lessons:[
+  ["Rosacea","NICE CKS"],["Psoriasis","NICE CG153"],["Lichen simplex, planus and sclerosus","NICE CKS"],["Scabies","NICE CKS"],["Acne vulgaris","NICE NG198"],["Atopic eczema","NICE CKS · CG57"],["Contact dermatitis","NICE CKS"]]},
+ {id:"statistics",name:"Statistics",c:"#2f66d0",src:"Core Statistics for the GP AKT",lessons:[
+  ["Sensitivity and specificity","The 2×2 table"]]},
+ {id:"sca",name:"SCA cases",c:"#7b46c7",src:"SCA consultation practice",lessons:[
+  ["Uncontrolled hypertension on three medicines","Long-term conditions"]]}];
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+let sel="all";
+const shelf=document.getElementById("shelf"),cats=document.getElementById("cats"),q=document.getElementById("q");
+const total=CATS.reduce((a,c)=>a+c.lessons.length,0),live=CATS.reduce((a,c)=>a+c.lessons.filter(l=>l[2]).length,0);
+document.getElementById("stats").innerHTML=`<span><b>${CATS.length}</b>categories</span><span><b>${total}</b>topics</span><span><b>${live}</b>live lessons</span>`;
+function draw(){
+ const term=q.value.trim().toLowerCase();
+ shelf.innerHTML=CATS.map(c=>`<button class="spine${sel===c.id?" on":""}" style="--c:${c.c}" data-id="${c.id}" aria-pressed="${sel===c.id}"><h2>${esc(c.name)}</h2><span>${c.lessons.length} topic${c.lessons.length>1?"s":""} · ${c.lessons.filter(l=>l[2]).length} live</span></button>`).join("");
+ shelf.querySelectorAll(".spine").forEach(b=>b.onclick=()=>{sel=sel===b.dataset.id?"all":b.dataset.id;draw()});
+ let html="";
+ for(const c of CATS){
+  if(sel!=="all"&&sel!==c.id)continue;
+  const ls=c.lessons.map((l,i)=>[l,i]).filter(([l])=>!term||(l[0]+" "+l[1]+" "+c.name).toLowerCase().includes(term));
+  if(!ls.length)continue;
+  html+=`<section class="cat" style="--c:${c.c}" id="${c.id}"><header><h3>${esc(c.name)}</h3><p>From ${esc(c.src)}</p></header><ul class="list">${ls.map(([l,i])=>{
+   const inner=`<span class="n">${String(i+1).padStart(2,"0")}</span><span class="t"><b>${esc(l[0])}</b><small>${esc(l[1])}</small></span><span class="st ${l[2]?"live":"soon"}">${l[2]?"Live · interactive":"Coming soon"}</span>`;
+   return `<li>${l[2]?`<a class="row" href="${c.id}/${esc(l[2])}">${inner}</a>`:`<div class="row">${inner}</div>`}</li>`}).join("")}</ul></section>`;
+ }
+ cats.innerHTML=html||`<div class="empty">No lessons match “${esc(q.value)}”.</div>`;
+}
+q.oninput=draw;draw();
+}
+</script>
+</body>
+</html>
