@@ -7,4 +7,6 @@ const CATS=[
  {id:"statistics",name:"Statistics",c:"#2f66d0",src:"Core Statistics for the GP AKT",lessons:[
   ["Sensitivity and specificity","The 2×2 table"]]},
  {id:"sca",name:"SCA cases",c:"#7b46c7",src:"SCA consultation practice",lessons:[
-  ["Uncontrolled hypertension on three medicines","Long-term conditions"]]}];
+  ["Uncontrolled hypertension on three medicines","Long-term conditions"]]},
+ {id:"admin",name:"Admin and Management",c:"#b86e00",src:"Core Admin and Management for the GP AKT",lessons:[
+  ["The GP contract and QOF","NHS England contract 2026/27 · QOF","gp-contract-qof.html"]]}];
