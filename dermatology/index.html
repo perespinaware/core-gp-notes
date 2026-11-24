@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dermatology · Core GP Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body data-cat="dermatology">
+<header class="band cat" id="band"><div class="in">
+<a class="back" href="../">← All categories</a>
+<h1 id="h">Dermatology</h1>
+<p class="lead" id="lead"></p>
+</div></header>
+<main><div class="in">
+<ul class="list" id="list"></ul>
+<p class="note">For exam revision only, based on NICE and other UK guidance at the time of writing. Not clinical advice.</p>
+</div></main>
+<script src="../lessons.js"></script>
+<script>
+{
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const c=CATS.find(x=>x.id===document.body.dataset.cat);
+document.body.style.setProperty("--c",c.c);
+const live=c.lessons.filter(l=>l[2]).length;
+document.getElementById("lead").textContent=`From ${c.src} · ${c.lessons.length} topic${c.lessons.length>1?"s":""}, ${live} live`;
+document.getElementById("list").innerHTML=c.lessons.map((l,i)=>{
+ const inner=`<span class="n">${String(i+1).padStart(2,"0")}</span><span class="t"><b>${esc(l[0])}</b><small>${esc(l[1])}</small></span><span class="st ${l[2]?"live":"soon"}">${l[2]?"Live · interactive":"Coming soon"}</span>`;
+ return `<li>${l[2]?`<a class="row" href="${esc(l[2])}">${inner}</a>`:`<div class="row">${inner}</div>`}</li>`}).join("");
+}
+</script>
+</body>
+</html>
