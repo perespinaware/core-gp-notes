@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Syncope and collapse Lesson</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday learning: a revision lesson that plays like a video, then lets you touch the numbers
+   IDEA the Core Cardiology guide come to life: same ink, red and step colours, scenes that build as they are narrated
+   PICTURE the player stage itself: each scene animates in, with live sliders, gauges and a quiz inside it
+   COLOUR ink #16212a ground in the controls, white stage, red #b3263a accent, step colours blue, teal, amber, purple
+   TYPE Bricolage Grotesque headings (the guide's own face) + Atkinson Hyperlegible text
+   LAYOUT laptop: chapter rail on top, stage, caption bar, controls; phone: same order stacked, controls wrap */
+:root{color-scheme:light dark;--bg:light-dark(#eef1f1,#0f1519);--stage:light-dark(#ffffff,#172128);--ink:light-dark(#16212a,#e8eef0);--mut:light-dark(#576470,#9aabb4);--line:light-dark(#dfe3e6,#2a3a44);--soft:light-dark(#f4f6f6,#1c2a33);--red:light-dark(#b3263a,#ff7385);--blue:light-dark(#2f66d0,#79a2f2);--teal:light-dark(#0b8577,#3cc7b3);--amber:light-dark(#b86e00,#f1aa45);--purple:light-dark(#7b46c7,#b08cf0);--bar:#16212a;--okbg:light-dark(#e3f4f0,#123630);--stopbg:light-dark(#fbe6e9,#3d1820)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif;overflow-x:clip}
+b{font-weight:700}
+.wrap{max-width:1180px;margin:0 auto;padding:18px max(16px,3vw) 40px}
+h1{font:800 clamp(26px,3.4vw,38px)/1.08 "Bricolage Grotesque",system-ui,sans-serif;margin:0 0 4px;letter-spacing:-.02em}
+.sub{color:var(--mut);margin:0 0 14px}
+.rail{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.rail button{font:700 14px "Atkinson Hyperlegible",sans-serif;border:0;border-radius:30px;padding:8px 14px;min-height:38px;background:var(--line);color:var(--mut);cursor:pointer}
+.rail button.on{color:#fff;background:var(--c)}
+.rail button:focus-visible,.ctl button:focus-visible,.ctl select:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.player{background:var(--stage);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px -18px rgba(0,0,0,.35)}
+.stage{position:relative;min-height:540px;padding:26px clamp(16px,3vw,36px) 22px}
+.tag{display:inline-block;font:600 12px "IBM Plex Mono",monospace;letter-spacing:.12em;color:#fff;background:var(--c);border-radius:5px;padding:4px 10px}
+.stage h2{font:800 clamp(24px,3vw,36px)/1.1 "Bricolage Grotesque",sans-serif;margin:10px 0 18px;letter-spacing:-.01em}
+.r:not(.in){display:none}
+.r.in{animation:rin .5s ease both}
+@keyframes rin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.r.now{box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 55%,transparent)}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
+.card{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.card h3{font:700 19px/1.2 "Bricolage Grotesque",sans-serif;margin:0 0 10px}
+.card.red h3{color:var(--red)}.card.amber h3{color:var(--amber)}
+ul.b{list-style:none;margin:0;padding:0}
+ul.b li{position:relative;padding:5px 8px 5px 26px;border-radius:8px;margin-bottom:2px}
+ul.b li:before{content:"";position:absolute;left:9px;top:14px;width:8px;height:8px;border-radius:50%;background:var(--c)}
+ol.dec{list-style:none;margin:0;padding:0;counter-reset:n;display:grid;gap:10px}
+ol.dec li{counter-increment:n;display:flex;gap:16px;align-items:center;font-size:clamp(17px,2vw,22px);background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+ol.dec li:before{content:counter(n);font:800 22px "Bricolage Grotesque",sans-serif;color:#fff;background:var(--red);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
+ol.dec li span{display:block}
+.title{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;margin-bottom:22px}
+.big{font:800 clamp(70px,11vw,130px)/.9 "Bricolage Grotesque",sans-serif;color:var(--red)}
+.title p{margin:6px 0 0;color:var(--mut)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;text-align:left;border:1px solid var(--line);background:var(--stage);color:var(--ink);border-radius:12px;padding:10px 14px;min-height:44px;cursor:pointer;transition:background .3s,border-color .3s}
+.chip small{display:block;font-weight:700;margin-top:4px}
+.chip.q{background:var(--okbg);border-color:var(--teal)}.chip.q small{color:var(--teal)}
+.chip.t{background:var(--stopbg);border-color:var(--red)}.chip.t small{color:var(--red)}
+.chip.sel{border:2px solid var(--c);background:color-mix(in srgb,var(--c) 10%,var(--stage))}
+.try{margin-top:16px;border:2px dashed color-mix(in srgb,var(--c) 60%,transparent);border-radius:14px;padding:14px 16px}
+.try h3{font:700 18px "Bricolage Grotesque",sans-serif;margin:0 0 10px;color:var(--c)}
+.meter{margin:6px 0 12px}
+.meter .top{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.meter .val{font:800 26px "Bricolage Grotesque",sans-serif;white-space:nowrap}
+.track{position:relative;height:16px;border-radius:8px;display:flex;overflow:hidden;margin:8px 0 2px}
+.track i{display:block;height:100%}
+.pin{position:absolute;top:-6px;width:4px;height:28px;background:var(--ink);border-radius:2px;transition:left .6s ease}
+.tw{position:relative}
+input[type=range]{width:100%;accent-color:var(--c);height:32px}
+.verdict{border-radius:10px;padding:10px 14px;font-weight:700;margin-top:4px;transition:background .3s}
+.verdict.ok{background:var(--okbg);color:var(--teal)}.verdict.mid{background:color-mix(in srgb,var(--amber) 16%,var(--stage));color:var(--amber)}.verdict.stop{background:var(--stopbg);color:var(--red)}
+.dosebox{text-align:center;padding:22px 18px;min-height:250px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px}
+.pill{font:800 clamp(30px,4.4vw,48px) "Bricolage Grotesque",sans-serif;padding:10px 26px;border-radius:60px;background:color-mix(in srgb,var(--amber) 18%,var(--stage));color:var(--amber);transition:transform .35s,background .3s,color .3s}
+.pill.hi{background:var(--red);color:#fff}
+.pill.pop{transform:scale(1.08)}
+.plist{display:grid;gap:8px}
+.tl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;position:relative;margin-bottom:16px}
+.st{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px;transition:border-color .4s,background .4s}
+.st b{display:block;font:800 20px "Bricolage Grotesque",sans-serif;color:var(--c)}
+.st.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 10%,var(--stage))}
+.calc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.res{font:800 clamp(34px,5vw,54px) "Bricolage Grotesque",sans-serif;line-height:1}
+.fallbar{position:relative;height:22px;background:var(--line);border-radius:11px;margin:12px 0 26px}
+.fallbar span{position:absolute;left:0;top:0;bottom:0;border-radius:11px;background:var(--red);transition:width .6s ease,background .3s}
+.fallbar em{position:absolute;left:40%;top:-6px;bottom:-6px;border-left:3px dashed var(--teal)}
+.fallbar em:after{content:"40% aim";position:absolute;top:30px;left:-26px;font:700 13px "Atkinson Hyperlegible",sans-serif;color:var(--teal);white-space:nowrap;font-style:normal}
+.ladder{display:grid;gap:8px}
+.rung{background:var(--soft);border:1px solid var(--line);border-left:6px solid var(--c);border-radius:10px;padding:10px 14px}
+.rung b{display:block;font:700 17px "Bricolage Grotesque",sans-serif}
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.num{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:16px}
+.num b{display:block;font:800 clamp(34px,4vw,48px)/1 "Bricolage Grotesque",sans-serif;color:var(--red);margin-bottom:8px}
+.qz .stem{font-size:clamp(17px,2vw,20px);margin:0 0 14px}
+.opts{display:grid;gap:8px}
+.opt{font:inherit;text-align:left;display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:12px;padding:10px 14px;min-height:48px;cursor:pointer}
+.opt i{font:800 16px "Bricolage Grotesque",sans-serif;font-style:normal;width:32px;height:32px;border-radius:50%;background:var(--line);display:flex;align-items:center;justify-content:center;flex:none}
+.opt.right{background:var(--okbg);border-color:var(--teal)}.opt.right i{background:var(--teal);color:#fff}
+.opt.wrong{background:var(--stopbg);border-color:var(--red)}.opt.wrong i{background:var(--red);color:#fff}
+.opt:disabled{cursor:default}
+.fb{margin-top:12px;border-left:5px solid var(--teal);background:var(--okbg);border-radius:8px;padding:10px 14px}
+.fb.no{border-color:var(--red);background:var(--stopbg)}
+.qnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.qdots{display:flex;gap:5px;flex-wrap:wrap}
+.qdots span{width:12px;height:12px;border-radius:50%;background:var(--line)}
+.qdots span.ok{background:var(--teal)}.qdots span.no{background:var(--red)}.qdots span.cur{outline:2px solid var(--ink);outline-offset:1px}
+.btn{font:700 15px "Atkinson Hyperlegible",sans-serif;border:0;border-radius:10px;padding:10px 16px;min-height:44px;background:var(--ink);color:var(--stage);cursor:pointer}
+.btn.ghost{background:var(--line);color:var(--ink)}
+.cap{background:var(--bar);color:#fff;min-height:74px;display:flex;align-items:center;gap:14px;padding:12px clamp(16px,3vw,36px);font-size:clamp(16px,1.7vw,19px);line-height:1.35}
+.cap:before{content:"";width:5px;align-self:stretch;min-height:36px;border-radius:3px;background:var(--c);flex:none}
+.ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px clamp(16px,3vw,36px);border-top:1px solid var(--line)}
+.ctl button{font:700 15px "Atkinson Hyperlegible",sans-serif;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:10px;min-height:44px;min-width:44px;padding:0 14px;cursor:pointer}
+.ctl button.play{background:var(--red);border-color:var(--red);color:#fff;min-width:110px}
+.ctl .grow{flex:1}
+.ctl label{font-size:14px;color:var(--mut);display:flex;align-items:center;gap:6px}
+.ctl select{font:16px "Atkinson Hyperlegible",sans-serif;border:1px solid var(--line);background:var(--stage);color:var(--ink);border-radius:8px;min-height:40px;padding:0 6px;max-width:230px}
+.prog{height:5px;background:var(--line)}
+.prog span{display:block;height:100%;background:var(--c);transition:width .4s}
+.hint{font-size:14px;color:var(--mut);margin-top:12px}
+.pulse{animation:pu 1.4s ease-in-out infinite}
+@keyframes pu{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--red) 30%,transparent)}}
+@media(prefers-reduced-motion:reduce){.r.in{animation:none}.pulse{animation:none}.pin,.fallbar span{transition:none}}
+@media(max-width:760px){.g2,.g3,.calc{grid-template-columns:minmax(0,1fr)}.tl{grid-template-columns:repeat(2,minmax(0,1fr))}.stage{min-height:0}.title{grid-template-columns:minmax(0,1fr);gap:8px}}
+.types{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
+.ty{background:var(--soft);border:1px solid var(--line);border-top:5px solid var(--c);border-radius:12px;padding:12px 14px;font-size:15px}
+.ty b{display:block;font:700 17px "Bricolage Grotesque",sans-serif;margin-bottom:4px}
+.strips{display:grid;gap:8px;margin-bottom:14px}
+.strip svg{display:block;width:100%;height:64px;border-radius:8px}
+.cap2{font-size:15px;margin-bottom:3px}.cap2 span{color:var(--mut)}
+.strip.in .ln{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 3s linear forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.togs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.tog{font:inherit;text-align:left;display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:12px;padding:10px 14px;min-height:48px;cursor:pointer}
+.tog b{font:800 16px "Bricolage Grotesque",sans-serif;color:var(--mut)}
+.tog.on{background:color-mix(in srgb,var(--c) 14%,var(--stage));border-color:var(--c)}.tog.on b{color:var(--c)}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.seg button{font:inherit;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:10px;padding:8px 14px;min-height:44px;cursor:pointer}
+.seg button.on{background:var(--c);border-color:var(--c);color:#fff}
+.scorebox{text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;padding:22px}
+.scorebox .res{font-size:clamp(56px,8vw,88px)}
+.pearl{margin-top:14px;border:2px dashed color-mix(in srgb,var(--red) 50%,transparent);border-radius:12px;padding:12px 16px}
+.sl{margin-bottom:8px}
+.drow{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.drow b{font:800 20px "Bricolage Grotesque",sans-serif;color:var(--c)}
+@media(max-width:760px){.types{grid-template-columns:repeat(2,minmax(0,1fr))}.togs{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){.strip.in .ln{animation:none;stroke-dashoffset:0}}
+.scn{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.sc1{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.sc1 p{margin:0 0 8px;font-weight:700}
+.sbtn{display:flex;gap:6px;flex-wrap:wrap}
+.sbtn button{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--stage);color:var(--ink);border-radius:10px;padding:8px 12px;min-height:44px;cursor:pointer}
+.sbtn button.right{background:var(--okbg);border-color:var(--teal);color:var(--teal);font-weight:700}
+.sbtn button.wrong{background:var(--stopbg);border-color:var(--red);color:var(--red)}
+.sfb{font-size:15px;margin-top:6px}.sfb.ok{color:var(--teal)}.sfb.no{color:var(--red)}
+@media(max-width:820px){.scn{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a href="./" style="display:inline-block;margin-bottom:8px;font-weight:700;color:var(--mut);text-decoration:none">← Cardiology</a>
+<h1>Syncope and collapse</h1>
+<p class="sub">Topic 15 of Core Cardiology for the GP AKT, as a narrated lesson. Press play, or tap any chapter. Pause and play with the numbers whenever you like.</p>
+<nav class="rail" id="rail" aria-label="Chapters"></nav>
+<section class="player" id="player" aria-label="Lesson player">
+<div class="prog"><span id="prog"></span></div>
+<div class="stage" id="stage" aria-live="polite"></div>
+<div class="cap" id="cap">Press play to start. The narration uses a voice on your device.</div>
+<div class="ctl">
+<button id="prev" aria-label="Previous scene">◀</button>
+<button class="play" id="play">▶ Play</button>
+<button id="next" aria-label="Next scene">▶▶</button>
+<span class="grow"></span>
+<label for="speed">Speed <select id="speed"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select></label>
+<label for="voice">Voice <select id="voice"><option value="">Captions only</option></select></label>
+</div>
+</section>
+<p class="hint" id="vhint">For the most natural voice, choose one marked Natural, Enhanced, Premium or Siri, if your device has one. Microsoft Edge offers natural online voices; on iPhone and Mac you can download Enhanced voices in your Accessibility settings.</p>
+</div>
+<script>
+{
+const C={0:"var(--ink)",1:"var(--blue)",2:"var(--teal)",3:"var(--amber)",4:"var(--purple)",5:"var(--red)",6:"var(--ink)"};
+const CH=["Intro","1 Recognise","2 Diagnose","3 Manage","4 Prescribe","5 Quiz","Recap"];
+const $=id=>document.getElementById(id);
+const stage=$("stage"),cap=$("cap"),playB=$("play"),voiceS=$("voice"),speedS=$("speed");
+
+/* ---------- Syncope data ---------- */
+const QS=[["A 22-year-old woman fainted while standing in a hot queue. She felt warm and sweaty first and went pale. Her friend saw a few jerks of her arms lasting a few seconds. She recovered fully within a minute. Examination and ECG are normal. What is the most likely diagnosis?", ["Epileptic seizure", "Uncomplicated faint (vasovagal syncope)", "Cardiac arrhythmia", "Postural orthostatic tachycardia syndrome", "Psychogenic non-epileptic attack"], 1, "Uncomplicated faint (vasovagal syncope). Posture (standing), provocation (heat) and prodrome (warm, sweaty), with pallor and quick full recovery. A few jerks are common in syncope and don't suggest epilepsy."], ["A 58-year-old man lost consciousness while jogging and recovered within a minute. He has no past history. His ECG is normal. What is the most appropriate management?", ["Reassure: it was probably a faint", "Refer to an epilepsy specialist within 2 weeks", "Specialist cardiovascular assessment within 24 hours", "Arrange a 24-hour ECG and review in 2 weeks", "Check lying and standing BP and review in a month"], 2, "Specialist cardiovascular assessment within 24 hours. TLoC during exertion is a red flag for a cardiac cause, even with a normal ECG. NICE also advises urgent exercise testing and no exercise meanwhile."], ["A 19-year-old man collapsed at home. His mother found him jerking all four limbs for about 2 minutes, with his head turned to the left. He was confused for 20 minutes afterwards and bit the side of his tongue. What is the most appropriate referral?", ["Cardiology within 24 hours", "Neurology outpatient routine referral", "Implantable loop recorder", "Specialist epilepsy assessment within 2 weeks", "No referral: reassure"], 3, "Specialist epilepsy assessment within 2 weeks. A lateral tongue bite, head turning, prolonged jerking and post-event confusion strongly suggest an epileptic seizure. He must not drive."], ["A 78-year-old man on amlodipine, ramipril, indapamide and tamsulosin feels dizzy when he gets up and fainted at night after getting up to pass urine. Lying BP is 148/82 and standing BP at 3 minutes 122/74. What is the most appropriate first step?", ["Start fludrocortisone", "Refer for a tilt-table test", "Review and reduce the medicines that lower BP", "Add a beta-blocker", "Advise more exercise"], 2, "Review and reduce the medicines that lower BP. A 26 mmHg systolic drop on standing is orthostatic hypotension. Tamsulosin, indapamide and other antihypertensives are likely culprits; medication review comes first."], ["A 66-year-old woman has a blackout with no warning. Her ECG shows sinus rhythm at 62 with a QTc of 486 ms. What is the most appropriate management?", ["Reassure, as the QTc is only slightly prolonged", "Specialist cardiovascular assessment within 24 hours", "Repeat ECG in 3 months", "Refer to falls clinic", "Start bisoprolol"], 1, "Specialist cardiovascular assessment within 24 hours. A long QT (QTc over 450 ms) is an ECG red flag. TLoC without a prodrome also points to a cardiac cause."], ["A 45-year-old man has had three unexplained blackouts over 6 months. His 12-lead ECG, examination and lying and standing BP are normal. Which ambulatory ECG is most appropriate?", ["24-hour Holter", "48-hour Holter", "External event recorder", "Implantable event recorder", "No ambulatory monitoring is needed"], 3, "Implantable event recorder. Episodes less often than once every 2 weeks are best captured by an implantable (loop) recorder. Holter monitoring is for several episodes a week."], ["A 25-year-old woman has dizziness and palpitations on standing. Her heart rate rises from 70 lying to 112 within 10 minutes of standing, with no fall in BP. What is the most likely diagnosis?", ["Orthostatic hypotension", "Postural orthostatic tachycardia syndrome", "Supraventricular tachycardia", "Carotid sinus hypersensitivity", "Anxiety disorder"], 1, "Postural orthostatic tachycardia syndrome. A heart rate rise of 30 or more within 10 minutes of standing, without hypotension, in a young woman is PoTS."], ["A 34-year-old car driver had a single unexplained loss of consciousness while sitting at his desk. He had no warning and no seizure markers, and cardiology found no cause. What does DVLA guidance say?", ["He may drive after recovery", "He must stop driving for 1 month", "He must stop driving for 3 months", "He must stop driving for 6 months and notify DVLA", "He must stop driving for 5 years"], 3, "He must stop driving for 6 months and notify DVLA. A single unexplained TLoC without seizure markers bars group 1 driving for 6 months (12 for group 2)."], ["A 30-year-old woman fainted after giving blood, with a clear warm, sweaty prodrome. She holds a car licence and fainted at the blood donor centre. What should you advise about driving?", ["She must stop driving for 6 months", "She must notify DVLA and stop driving for 4 weeks", "She must stop driving for 3 months", "She must not drive until she has had a tilt-table test", "She may drive and need not notify DVLA"], 4, "She may drive and need not notify DVLA. Reflex syncope with an avoidable trigger and a reliable prodrome, not while driving, needs no restriction for a group 1 licence."], ["A 72-year-old man collapsed with sudden severe back pain, was pale and sweaty, and is now hypotensive with a pulsatile abdominal mass. What is the most appropriate management?", ["Arrange an urgent ultrasound within 2 weeks", "Give analgesia and review in 2 hours", "Lying and standing BP and ECG", "Refer to cardiology within 24 hours", "Call 999 for emergency transfer to a vascular unit"], 4, "Call 999 for emergency transfer to a vascular unit. Collapse with back pain, shock and a pulsatile mass is a ruptured AAA until proven otherwise."]];
+const FEAT=[["Felt hot and sweaty, then fainted in a hot queue","Faint","The 3 Ps: posture, provocation, prodrome"],["A few jerks of the arms for a few seconds, pale, quick full recovery","Faint","Brief jerks are common in syncope"],["Bitten the side of the tongue, confused for 20 minutes","Fit","Lateral tongue bite and post-event confusion"],["Déjà vu just before losing consciousness","Fit","A typical aura of a focal seizure"],["Collapsed while running uphill","Heart","Exertional syncope: aortic stenosis, HCM, arrhythmia"],["Blackout with no warning while lying in bed","Heart","Syncope lying down suggests an arrhythmia"],["Head turned to one side, jerking for 2 minutes","Fit","Head turning and prolonged jerking"],["Palpitations just before collapsing","Heart","Suggests an arrhythmia"]];
+const TRI=[["Blacked out during a game of squash; ECG normal","24 hours","Exertional TLoC is a red flag"],["Fainted at the dentist with a clear prodrome; normal ECG","Reassure","Uncomplicated faint: explain and reassure"],["Blackout; ECG shows Mobitz II block","24 hours","Any heart block on the ECG is a red flag"],["Bitten tongue and confusion after a witnessed event","2 weeks","Epilepsy specialist within 2 weeks"],["Collapse with melaena, pulse 124, BP 86/50","999","Ongoing condition needing immediate action: GI bleed"],["Blackout; new ejection systolic murmur","24 hours","A heart murmur is a red flag"],["Fainted while passing urine at night; normal ECG","Reassure","Situational syncope"],["Brother died suddenly aged 32; patient blacked out","24 hours","Family history of sudden cardiac death under 40"]];
+const AMB={week:["Several times a week","Holter monitor","Up to 48 hours. If no event is recorded, use an external event recorder"],fort:["Every 1–2 weeks","External event recorder","If an event happens outside the recording period, use an implantable recorder"],rare:["Less than once every 2 weeks","Implantable event recorder","A loop recorder under the skin, lasting up to about 3 years"]};
+const DV={reflex:{g1:["ok","Reliable prodrome or avoidable trigger, not while driving: drive after recovery; no need to notify"],g2:["mid","Single episode with an avoidable trigger, not while driving: notify DVLA; drive after recovery"]},unexp:{g1:["stop","Single episode: notify DVLA; no driving for 6 months (12 months if recurrent)"],g2:["stop","Notify DVLA: licence revoked for 12 months (5 years if recurrent)"]},cough:{g1:["stop","Notify DVLA: no driving for 6 months (12 months if recurrent)"],g2:["stop","Notify DVLA: no driving for 12 months (5 years if recurrent)"]},seiz:{g1:["stop","Notify DVLA: no driving for 6 months, or 12 months if higher recurrence risk"],g2:["stop","Notify DVLA: no driving for 5 years"]}};
+let dvg="g1",dvc="reflex";
+
+/* ---------- scenes ---------- */
+const li=(t,i)=>`<li class="r" data-i="${i}">${t}</li>`;
+const S=[
+{ch:0,tag:"TOPIC 15",h:"Four things examiners test",html:()=>`
+<div class="title r in" data-i="0"><div class="big">15</div><div><b style="font-size:20px">Syncope and collapse</b><p>NICE CG109 Transient loss of consciousness (updated 2023) · NICE QS71 · DVLA Appendix D</p></div></div>
+<ol class="dec">${["<b>Faint, fit or heart?</b>","The <b>red flags</b> that need assessment within 24 hours","<b>Orthostatic hypotension</b> and the right <b>ambulatory ECG</b>","The <b>DVLA</b> rules after a blackout"].map((t,k)=>li("<span>"+t+"</span>",k+1)).join("")}</ol>`,
+ b:[[0,"Topic fifteen: syncope and collapse. Questions test four things."],[1,"Telling a faint from a fit from a cardiac cause."],[2,"The red flags that need specialist assessment within 24 hours."],[3,"Orthostatic hypotension, and choosing the right ambulatory ECG."],[4,"And the DVLA rules after a blackout."]]},
+{ch:1,tag:"STEP 1 · RECOGNISE",h:"Faint, fit, or heart?",html:()=>`
+<div class="g3"><div class="card r" data-i="1" style="border-top:5px solid var(--teal)"><h3>Faint (reflex)</h3><ul class="b"><li>The <b>3 Ps</b>: <b>posture</b> (prolonged standing), <b>provocation</b> (pain, procedure), <b>prodrome</b> (sweaty, warm)</li><li>Pale; a few jerks are common</li><li>Rapid, full recovery</li></ul></div>
+<div class="card r" data-i="2" style="border-top:5px solid var(--purple)"><h3>Fit (epilepsy)</h3><ul class="b"><li>Aura: déjà vu or jamais vu</li><li><b>Prolonged jerking</b>, head turning, unusual posturing</li><li><b>Bitten tongue</b> (side); <b>confused</b> afterwards</li></ul></div>
+<div class="card red r" data-i="3"><h3>Heart (cardiac)</h3><ul class="b"><li>During <b>exertion</b>, or lying down</li><li><b>No warning</b>, or palpitations or chest pain</li><li>Murmur, abnormal ECG, family history of sudden death</li></ul></div></div>`,
+ b:[[1,"A faint has the three Ps: posture, provocation, and a prodrome of feeling hot and sweaty. A few jerks are common and don't make it a seizure."],[2,"A fit: an aura, prolonged jerking, a bitten tongue, and confusion afterwards."],[3,"A cardiac cause: syncope on exertion or lying down, often with no warning at all."]]},
+{ch:1,tag:"STEP 1 · RECOGNISE",h:"Sort the features",stop:1,html:()=>`
+<div class="scn r" data-i="1">${FEAT.map((s,k)=>`<div class="sc1" data-a="${k}"><p>${s[0]}</p><div class="sbtn">${["Faint","Fit","Heart"].map(o=>`<button data-o="${o}">${o}</button>`).join("")}</div><div class="sfb"></div></div>`).join("")}</div>`,
+ init(){bindSorter(FEAT)},
+ b:[[1,"For each feature, decide: faint, fit or heart. Then press next."]]},
+{ch:2,tag:"STEP 2 · DIAGNOSE",h:"Lying and standing BP",stop:1,html:()=>`
+<div class="g2"><div class="r" data-i="1">
+<div class="sl"><label for="ls">Lying systolic: <b id="lsv"></b> mmHg</label><input type="range" id="ls" min="90" max="190" value="148"></div>
+<div class="sl"><label for="ss">Standing systolic at 3 min: <b id="ssv"></b> mmHg</label><input type="range" id="ss" min="70" max="190" value="140"></div>
+<div class="sl"><label for="ld">Lying diastolic: <b id="ldv"></b> mmHg</label><input type="range" id="ld" min="50" max="110" value="82"></div>
+<div class="sl"><label for="sd">Standing diastolic at 3 min: <b id="sdv"></b> mmHg</label><input type="range" id="sd" min="40" max="110" value="80"></div>
+<div class="sl"><label for="hr">Heart rate rise on standing: <b id="hrv"></b> bpm</label><input type="range" id="hr" min="0" max="60" value="8"></div></div>
+<div class="card scorebox r" data-i="1"><span style="color:var(--mut)">Systolic drop</span><span class="res" id="sdrop">0</span><div class="verdict" id="ohv"></div></div></div>`,
+ init(){["ls","ss","ld","sd","hr"].forEach(i=>$(i).oninput=upOH);upOH()},
+ b:[[1,"Measure lying BP after five minutes, then standing at one and three minutes.",()=>setOH(148,140,82,80,8)],[1,"A systolic fall of twenty or more, or a diastolic fall of ten or more, within three minutes is orthostatic hypotension. Here a drop of twenty-six.",()=>setOH(148,122,82,74,10)],[1,"In a young woman, a heart rate rise of thirty or more without a fall in BP suggests PoTS.",()=>setOH(112,110,72,74,42)],[1,"Move the sliders yourself, then press next."]]},
+{ch:2,tag:"STEP 2 · DIAGNOSE",h:"Which ambulatory ECG?",stop:1,html:()=>`
+<div class="g2"><div class="r" data-i="1"><p style="margin-top:0">How often do the blackouts happen?</p><div class="seg" role="group" aria-label="Frequency">${Object.entries(AMB).map(([k,v])=>`<button data-amb="${k}">${v[0]}</button>`).join("")}</div>
+<div class="card"><h3>ECG red flags: refer within 24 hours</h3><ul class="b"><li>Heart block, bundle branch block, persistent bradycardia</li><li>Long QT (QTc &gt;450 ms) or short QT (&lt;350 ms)</li><li>Brugada, WPW, LVH or RVH, abnormal T inversion, Q waves</li><li>Ventricular ectopics, sustained atrial arrhythmia, paced rhythm</li></ul></div></div>
+<div class="card dosebox r" data-i="1"><span id="ambq" style="color:var(--mut)">Choose a frequency</span><span class="pill" id="ambp">?</span><span id="ambn"></span></div></div>`,
+ init(){stage.querySelectorAll("[data-amb]").forEach(b=>b.onclick=()=>setAmb(b.dataset.amb))},
+ b:[[1,"Several times a week: a Holter monitor.",()=>setAmb("week")],[1,"Every one to two weeks: an external event recorder.",()=>setAmb("fort")],[1,"Less than once every two weeks: an implantable event recorder.",()=>setAmb("rare")],[1,"And any of these ECG findings is a red flag for assessment within twenty-four hours. Press next when ready."]]},
+{ch:3,tag:"STEP 3 · MANAGE",h:"Treat the cause",html:()=>`
+<div class="g2"><div class="card r" data-i="1"><h3>Uncomplicated faint</h3><ul class="b"><li>Explain and reassure; <b>no further tests</b> if the ECG is normal</li><li>Lie down or sit with legs up at the first warning</li><li>Counter-pressure manoeuvres: leg crossing, hand gripping</li></ul></div>
+<div class="card r" data-i="2"><h3>Orthostatic hypotension</h3><ul class="b"><li><b>Review culprit medicines first</b>: antihypertensives, alpha-blockers, diuretics, nitrates, levodopa</li><li>Fluids, rise slowly, compression, head-up bed tilt</li><li>Specialist: midodrine or fludrocortisone</li></ul></div>
+<div class="card red r" data-i="3"><h3>Collapse: dangerous causes</h3><ul class="b"><li>Hypoglycaemia, PE, GI bleed</li><li><b>Ruptured AAA</b>: older man, back pain, shock</li><li>MI or arrhythmia</li></ul></div>
+<div class="card r" data-i="4"><h3>Exertional syncope</h3><ul class="b"><li>Urgent exercise testing within 7 days unless contraindicated</li><li><b>No exercise</b> until told it's safe</li></ul></div></div>`,
+ b:[[1,"An uncomplicated faint needs explanation, not investigation, if the ECG is normal."],[2,"For orthostatic hypotension, review the medicines first. Alpha-blockers, diuretics and other antihypertensives are the usual culprits."],[3,"In collapse, think of the dangerous causes: hypoglycaemia, PE, a GI bleed, a ruptured aneurysm."],[4,"And after exertional syncope, advise no exercise until cardiology says it's safe."]]},
+{ch:4,tag:"STEP 4 · PRESCRIBE / REFER",h:"Triage: how fast?",stop:1,html:()=>`
+<div class="scn r" data-i="1">${TRI.map((s,k)=>`<div class="sc1" data-a="${k}"><p>${s[0]}</p><div class="sbtn">${["999","24 hours","2 weeks","Reassure"].map(o=>`<button data-o="${o}">${o}</button>`).join("")}</div><div class="sfb"></div></div>`).join("")}</div>`,
+ init(){bindSorter(TRI)},
+ b:[[1,"Red flags mean specialist cardiovascular assessment within twenty-four hours: an abnormal ECG, heart failure, exertional syncope, a family history of young sudden death, new breathlessness, or a murmur. Seizure features mean an epilepsy specialist within two weeks. Decide each one, then press next."]]},
+{ch:4,tag:"STEP 4 · PRESCRIBE / REFER",h:"DVLA checker",stop:1,html:()=>`
+<div class="g2"><div class="r" data-i="1"><div class="seg" role="group" aria-label="Licence"><button data-dg="g1">Group 1 (car)</button><button data-dg="g2">Group 2 (bus, lorry)</button></div>
+<div class="seg" role="group" aria-label="Event"><button data-dc="reflex">Reflex faint</button><button data-dc="unexp">Unexplained</button><button data-dc="cough">Cough syncope</button><button data-dc="seiz">Seizure markers</button></div></div>
+<div class="card scorebox r" data-i="1"><span style="color:var(--mut)" id="dvh"></span><div class="verdict" id="dvv"></div></div></div>`,
+ init(){stage.querySelectorAll("[data-dg]").forEach(b=>b.onclick=()=>setDv(b.dataset.dg,dvc));stage.querySelectorAll("[data-dc]").forEach(b=>b.onclick=()=>setDv(dvg,b.dataset.dc));setDv("g1","reflex")},
+ b:[[1,"A faint with a reliable prodrome or an avoidable trigger, not while driving: car drivers can drive once recovered.",()=>setDv("g1","reflex")],[1,"A single unexplained blackout: no car driving for six months.",()=>setDv("g1","unexp")],[1,"Cough syncope: also six months.",()=>setDv("g1","cough")],[1,"Group two rules are stricter. Try the combinations, then press next.",()=>setDv("g2","unexp")]]},
+{ch:5,tag:"QUIZ",h:"Ten questions",stop:1,html:()=>`<div class="qz r in" data-i="0" id="qz"></div>`,init(){quiz()},
+ b:[[0,"Ten questions. Pick the single best answer for each, and you'll get your score at the end."]]},
+{ch:6,tag:"RECAP",h:"The facts to take into the exam",html:()=>`
+<div class="nums">${[["3 Ps","posture · provocation · prodrome"],["24 h","exertion · ECG · murmur · family history"],["2 weeks","bitten tongue, confusion: epilepsy"],["≥20 / ≥10","postural drop within 3 minutes"],["6 months","unexplained TLoC: no car driving"]].map((n,k)=>`<div class="num r" data-i="${k+1}"><b>${n[0]}</b>${n[1]}</div>`).join("")}</div>`,
+ b:[[1,"The three Ps of a faint: posture, provocation, prodrome."],[2,"Red flags mean assessment within twenty-four hours."],[3,"Seizure features mean an epilepsy specialist within two weeks."],[4,"Orthostatic hypotension: a drop of twenty systolic or ten diastolic within three minutes."],[5,"And a single unexplained blackout means six months off car driving. That's topic fifteen."]]}
+];
+
+/* ---------- helpers ---------- */
+function setOH(a,b,c,d,e){if(!$("ls"))return;[["ls",a],["ss",b],["ld",c],["sd",d],["hr",e]].forEach(([i,v])=>$(i).value=v);upOH()}
+function upOH(){const ls=+$("ls").value,ss=+$("ss").value,ld=+$("ld").value,sd=+$("sd").value,hr=+$("hr").value;
+ $("lsv").textContent=ls;$("ssv").textContent=ss;$("ldv").textContent=ld;$("sdv").textContent=sd;$("hrv").textContent=hr;
+ const s=ls-ss,d=ld-sd,v=$("ohv");$("sdrop").textContent=s;
+ let k,t;if(s>=20||d>=10){k="stop";t=`Orthostatic hypotension (systolic fall ${s}, diastolic fall ${d}): review medicines first`}
+ else if(hr>=30){k="mid";t="No BP fall, but heart rate up ≥30 bpm: consider PoTS"}
+ else{k="ok";t="No postural drop. If symptoms suggest it, refer for specialist assessment"}
+ v.className="verdict "+k;v.textContent=t;$("sdrop").style.color=k==="stop"?"var(--red)":"var(--teal)"}
+function setAmb(k){const a=AMB[k];if(!$("ambp"))return;stage.querySelectorAll("[data-amb]").forEach(b=>b.classList.toggle("on",b.dataset.amb===k));
+ $("ambq").textContent=a[0];$("ambp").textContent=a[1];$("ambn").textContent=a[2];const p=$("ambp");p.classList.add("pop");setTimeout(()=>p.classList.remove("pop"),350)}
+
+function bindSorter(data){stage.querySelectorAll(".sc1").forEach(d=>d.querySelectorAll("button").forEach(b=>b.onclick=()=>{const s=data[d.dataset.a],ok=b.dataset.o===s[1];d.querySelectorAll("button").forEach(x=>x.classList.toggle("right",x.dataset.o===s[1]));if(!ok)b.classList.add("wrong");const f=d.querySelector(".sfb");f.className="sfb "+(ok?"ok":"no");f.textContent=(ok?"Correct: ":"Answer: "+s[1]+". ")+s[2]}))}
+function setDv(g,c){dvg=g;dvc=c;if(!$("dvv"))return;stage.querySelectorAll("[data-dg]").forEach(b=>b.classList.toggle("on",b.dataset.dg===g));stage.querySelectorAll("[data-dc]").forEach(b=>b.classList.toggle("on",b.dataset.dc===c));const [k,t]=DV[c][g];$("dvh").textContent=(g==="g1"?"Group 1":"Group 2")+" · "+stage.querySelector(`[data-dc="${c}"]`).textContent;const v=$("dvv");v.className="verdict "+k;v.textContent=t}
+let qi=0,qa=[];
+function quiz(){const q=QS[qi],L="ABCDE",box=$("qz");if(!box)return;const done=qa[qi]!==undefined;
+ box.innerHTML=`<p class="stem"><b>Q${qi+1}.</b> ${q[0]}</p><div class="opts">${q[1].map((o,k)=>`<button class="opt${done?(k===q[2]?" right":k===qa[qi]?" wrong":""):""}" data-o="${k}" ${done?"disabled":""}><i>${L[k]}</i>${o}</button>`).join("")}</div>
+ ${done?`<div class="fb${qa[qi]===q[2]?"":" no"}"><b>${qa[qi]===q[2]?"Correct.":"Not quite: the answer is "+L[q[2]]+"."}</b> ${q[3]}</div>`:""}
+ <div class="qnav"><div class="qdots">${QS.map((_,k)=>`<span class="${qa[k]===undefined?"":qa[k]===QS[k][2]?"ok":"no"}${k===qi?" cur":""}"></span>`).join("")}</div>
+ <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" id="qread">Read aloud</button>${qi>0?`<button class="btn ghost" id="qprev">Back</button>`:""}${qi<QS.length-1?`<button class="btn" id="qnext">Next question</button>`:`<button class="btn" id="qscore">See my score</button>`}</div></div>`;
+ box.querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>{qa[qi]=+b.dataset.o;quiz();const ok=qa[qi]===q[2];say((ok?"Correct. ":"Not quite. The answer is "+L[q[2]]+". ")+q[3])});
+ $("qread").onclick=()=>say(`Question ${qi+1}. ${q[0]} `+q[1].map((o,k)=>L[k]+": "+o+".").join(" "));
+ if($("qprev"))$("qprev").onclick=()=>{qi--;quiz()};if($("qnext"))$("qnext").onclick=()=>{qi++;quiz()};if($("qscore"))$("qscore").onclick=score}
+function score(){const n=qa.filter((a,k)=>a===QS[k][2]).length,box=$("qz");
+ const band=n>=9?["var(--teal)","Exam-ready","Move on, and re-test once in 2 weeks."]:n>=7?["var(--blue)","Nearly there","Revisit the chapters behind the questions you missed, then re-test within a week."]:n>=5?["var(--amber)","Shaky","Replay Steps 3 and 4, then repeat the questions in 48 hours."]:["var(--red)","Not yet","Replay the whole lesson before re-attempting."];
+ box.innerHTML=`<div class="card" style="border-top:6px solid ${band[0]}"><div class="res" style="color:${band[0]}">${n} / 10</div><h3 style="color:${band[0]};margin-top:10px">${band[1]}</h3><p style="margin:0 0 12px">${band[2]}</p><button class="btn" id="qagain">Try again</button></div>`;
+ $("qagain").onclick=()=>{qi=0;qa=[];quiz()};say(`You scored ${n} out of 10. ${band[1]}. ${band[2]}`)}
+
+/* ---------- speech ---------- */
+const REP=[[/CHA₂DS₂-VASc|CHA2DS2-VASc/g,"chads vasc"],[/\bDOACs?\b/g,"D O A C"],[/\bTIA\b/g,"T I A"],[/\bPAD\b/g,"P A D"],[/\bWPW\b/g,"W P W"],[/\bCrCl\b/g,"creatinine clearance"],[/\bINR\b/g,"I N R"],[/\bTOE\b/g,"T O E"],[/QRISK3/g,"Q-risk three"],[/non-HDL/g,"non H D L"],[/\bLDL\b/g,"L D L"],[/\bHDL\b/g,"H D L"],[/\bHbA1c\b/g,"H B A 1 C"],[/\beGFR\b/g,"e G F R"],[/\bALT\b/g,"A L T"],[/\bCK\b/g,"C K"],[/\bTSH\b/g,"T S H"],[/\bCKD\b/g,"C K D"],[/\bCVD\b/g,"cardiovascular disease"],[/\bCHD\b/g,"coronary heart disease"],[/\bFH\b/g,"F H"],[/\bMI\b/g,"M I"],[/\bACR\b/g,"A C R"],[/(\d)\s*mg\b/g,"$1 milligrams"],[/mmol\/L/g,"millimoles per litre"],[/(\d)\s*%/g,"$1 percent"],[/(\d)\s*×/g,"$1 times"],[/(\d)\s*[–-]\s*(\d)/g,"$1 to $2"],[/IU\/L/g,"units per litre"]];
+const clean=t=>REP.reduce((s,[a,b])=>s.replace(a,b),t);
+const synth=window.speechSynthesis;let voices=[];
+function loadVoices(){if(!synth)return;voices=synth.getVoices().filter(v=>/^en/i.test(v.lang));if(!voices.length)return;
+ const rank=v=>(/natural|neural|premium|enhanced|siri/i.test(v.name)?4:0)+(/en[-_]GB/i.test(v.lang)?2:0)+(/google uk|sonia|libby|ryan|serena|daniel|kate/i.test(v.name)?1:0);
+ voices.sort((a,b)=>rank(b)-rank(a));let keep=voiceS.value;
+ voiceS.innerHTML=`<option value="">Captions only</option>`+voices.map((v,k)=>`<option value="${k}">${v.name.replace(/[<>&"]/g,"")} (${v.lang})</option>`).join("");
+ voiceS.value=keep===""&&!voiceS.dataset.touched?"0":keep}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices}else{$("vhint").textContent="This browser can't speak the narration, so captions only."}
+voiceS.onchange=()=>{voiceS.dataset.touched=1};
+function say(text,onend){cap.textContent=text;const v=voices[+voiceS.value];
+ if(synth)synth.cancel();
+ if(!synth||voiceS.value===""||!v){if(onend)timer=setTimeout(onend,(1200+text.split(/\s+/).length*330)/+speedS.value);return}
+ const u=new SpeechSynthesisUtterance(clean(text));u.voice=v;u.lang=v.lang;u.rate=+speedS.value;
+ let fired=false;const fin=()=>{if(fired)return;fired=true;clearTimeout(guard);if(onend)timer=setTimeout(onend,350)};
+ u.onend=fin;u.onerror=fin;const guard=setTimeout(fin,(4000+text.split(/\s+/).length*700)/+speedS.value);synth.speak(u)}
+
+/* ---------- player ---------- */
+let si=0,bi=-1,playing=false,timer=null;
+$("rail").innerHTML=CH.map((c,k)=>`<button data-ch="${k}" style="--c:${C[k]}">${c}</button>`).join("");
+$("rail").querySelectorAll("button").forEach(b=>b.onclick=()=>{const k=S.findIndex(s=>s.ch===+b.dataset.ch);go(k,true)});
+function render(){const s=S[si];document.documentElement.style.setProperty("--c",C[s.ch]);$("player").style.setProperty("--c",C[s.ch]);
+ stage.innerHTML=`<span class="tag">${s.tag}</span><h2>${s.h}</h2>`+s.html();if(s.init)s.init();
+ $("rail").querySelectorAll("button").forEach(b=>b.classList.toggle("on",+b.dataset.ch===s.ch));
+ $("prog").style.width=((si+1)/S.length*100)+"%";$("next").classList.remove("pulse")}
+function reveal(i){stage.querySelectorAll(".r").forEach(e=>{const d=+e.dataset.i;e.classList.toggle("in",d<=i);e.classList.toggle("now",d===i&&d>0)})}
+function beat(){const s=S[si];bi++;
+ if(bi>=s.b.length){if(s.stop||si===S.length-1){stop();if(si<S.length-1){$("next").classList.add("pulse");cap.textContent="Your turn. Press ▶▶ for the next scene when you're ready."}return}
+  timer=setTimeout(()=>{si++;bi=-1;render();beat()},700);return}
+ const [i,t,f]=s.b[bi];reveal(i);if(f)f();say(t,()=>{if(playing)beat()})}
+function start(){playing=true;playB.textContent="❚❚ Pause";if(bi>=S[si].b.length-1&&S[si].b.length){bi=-1;render()}beat()}
+function stop(){playing=false;playB.textContent="▶ Play";clearTimeout(timer);if(synth)synth.cancel()}
+function go(k,autoplay){stop();si=Math.max(0,Math.min(S.length-1,k));bi=-1;render();
+ if(autoplay){start()}else{reveal(99);cap.textContent=S[si].b[0][1]}}
+playB.onclick=()=>playing?stop():(bi>=0&&bi<S[si].b.length?(bi--,start()):start());
+$("next").onclick=()=>go(si+1,true);$("prev").onclick=()=>go(si-1,true);
+speedS.onchange=()=>{};
+document.addEventListener("keydown",e=>{if(/INPUT|SELECT|BUTTON/.test(e.target.tagName))return;if(e.code==="Space"){e.preventDefault();playB.click()}if(e.key==="ArrowRight")$("next").click();if(e.key==="ArrowLeft")$("prev").click()});
+render();reveal(99);
+}
+</script>
+</body>
+</html>
