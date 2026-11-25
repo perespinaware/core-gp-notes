@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PPV and NPV Lesson</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday learning: a revision lesson that plays like a video, then lets you touch the numbers
+   IDEA the Core Cardiology guide come to life: same ink, red and step colours, scenes that build as they are narrated
+   PICTURE the player stage itself: each scene animates in, with live sliders, gauges and a quiz inside it
+   COLOUR ink #16212a ground in the controls, white stage, red #b3263a accent, step colours blue, teal, amber, purple
+   TYPE Bricolage Grotesque headings (the guide's own face) + Atkinson Hyperlegible text
+   LAYOUT laptop: chapter rail on top, stage, caption bar, controls; phone: same order stacked, controls wrap */
+:root{color-scheme:light dark;--bg:light-dark(#eef1f1,#0f1519);--stage:light-dark(#ffffff,#172128);--ink:light-dark(#16212a,#e8eef0);--mut:light-dark(#576470,#9aabb4);--line:light-dark(#dfe3e6,#2a3a44);--soft:light-dark(#f4f6f6,#1c2a33);--red:light-dark(#b3263a,#ff7385);--blue:light-dark(#2f66d0,#79a2f2);--teal:light-dark(#0b8577,#3cc7b3);--amber:light-dark(#b86e00,#f1aa45);--purple:light-dark(#7b46c7,#b08cf0);--bar:#16212a;--okbg:light-dark(#e3f4f0,#123630);--stopbg:light-dark(#fbe6e9,#3d1820)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif;overflow-x:clip}
+b{font-weight:700}
+.wrap{max-width:1180px;margin:0 auto;padding:18px max(16px,3vw) 40px}
+h1{font:800 clamp(26px,3.4vw,38px)/1.08 "Bricolage Grotesque",system-ui,sans-serif;margin:0 0 4px;letter-spacing:-.02em}
+.sub{color:var(--mut);margin:0 0 14px}
+.rail{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.rail button{font:700 14px "Atkinson Hyperlegible",sans-serif;border:0;border-radius:30px;padding:8px 14px;min-height:38px;background:var(--line);color:var(--mut);cursor:pointer}
+.rail button.on{color:#fff;background:var(--c)}
+.rail button:focus-visible,.ctl button:focus-visible,.ctl select:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.player{background:var(--stage);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px -18px rgba(0,0,0,.35)}
+.stage{position:relative;min-height:540px;padding:26px clamp(16px,3vw,36px) 22px}
+.tag{display:inline-block;font:600 12px "IBM Plex Mono",monospace;letter-spacing:.12em;color:#fff;background:var(--c);border-radius:5px;padding:4px 10px}
+.stage h2{font:800 clamp(24px,3vw,36px)/1.1 "Bricolage Grotesque",sans-serif;margin:10px 0 18px;letter-spacing:-.01em}
+.r:not(.in){display:none}
+.r.in{animation:rin .5s ease both}
+@keyframes rin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.r.now{box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 55%,transparent)}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
+.card{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.card h3{font:700 19px/1.2 "Bricolage Grotesque",sans-serif;margin:0 0 10px}
+.card.red h3{color:var(--red)}.card.amber h3{color:var(--amber)}
+ul.b{list-style:none;margin:0;padding:0}
+ul.b li{position:relative;padding:5px 8px 5px 26px;border-radius:8px;margin-bottom:2px}
+ul.b li:before{content:"";position:absolute;left:9px;top:14px;width:8px;height:8px;border-radius:50%;background:var(--c)}
+ol.dec{list-style:none;margin:0;padding:0;counter-reset:n;display:grid;gap:10px}
+ol.dec li{counter-increment:n;display:flex;gap:16px;align-items:center;font-size:clamp(17px,2vw,22px);background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+ol.dec li:before{content:counter(n);font:800 22px "Bricolage Grotesque",sans-serif;color:#fff;background:var(--red);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
+ol.dec li span{display:block}
+.title{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;margin-bottom:22px}
+.big{font:800 clamp(70px,11vw,130px)/.9 "Bricolage Grotesque",sans-serif;color:var(--red)}
+.title p{margin:6px 0 0;color:var(--mut)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;text-align:left;border:1px solid var(--line);background:var(--stage);color:var(--ink);border-radius:12px;padding:10px 14px;min-height:44px;cursor:pointer;transition:background .3s,border-color .3s}
+.chip small{display:block;font-weight:700;margin-top:4px}
+.chip.q{background:var(--okbg);border-color:var(--teal)}.chip.q small{color:var(--teal)}
+.chip.t{background:var(--stopbg);border-color:var(--red)}.chip.t small{color:var(--red)}
+.chip.sel{border:2px solid var(--c);background:color-mix(in srgb,var(--c) 10%,var(--stage))}
+.try{margin-top:16px;border:2px dashed color-mix(in srgb,var(--c) 60%,transparent);border-radius:14px;padding:14px 16px}
+.try h3{font:700 18px "Bricolage Grotesque",sans-serif;margin:0 0 10px;color:var(--c)}
+.meter{margin:6px 0 12px}
+.meter .top{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.meter .val{font:800 26px "Bricolage Grotesque",sans-serif;white-space:nowrap}
+.track{position:relative;height:16px;border-radius:8px;display:flex;overflow:hidden;margin:8px 0 2px}
+.track i{display:block;height:100%}
+.pin{position:absolute;top:-6px;width:4px;height:28px;background:var(--ink);border-radius:2px;transition:left .6s ease}
+.tw{position:relative}
+input[type=range]{width:100%;accent-color:var(--c);height:32px}
+.verdict{border-radius:10px;padding:10px 14px;font-weight:700;margin-top:4px;transition:background .3s}
+.verdict.ok{background:var(--okbg);color:var(--teal)}.verdict.mid{background:color-mix(in srgb,var(--amber) 16%,var(--stage));color:var(--amber)}.verdict.stop{background:var(--stopbg);color:var(--red)}
+.dosebox{text-align:center;padding:22px 18px;min-height:250px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px}
+.pill{font:800 clamp(30px,4.4vw,48px) "Bricolage Grotesque",sans-serif;padding:10px 26px;border-radius:60px;background:color-mix(in srgb,var(--amber) 18%,var(--stage));color:var(--amber);transition:transform .35s,background .3s,color .3s}
+.pill.hi{background:var(--red);color:#fff}
+.pill.pop{transform:scale(1.08)}
+.plist{display:grid;gap:8px}
+.tl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;position:relative;margin-bottom:16px}
+.st{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px;transition:border-color .4s,background .4s}
+.st b{display:block;font:800 20px "Bricolage Grotesque",sans-serif;color:var(--c)}
+.st.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 10%,var(--stage))}
+.calc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.res{font:800 clamp(34px,5vw,54px) "Bricolage Grotesque",sans-serif;line-height:1}
+.fallbar{position:relative;height:22px;background:var(--line);border-radius:11px;margin:12px 0 26px}
+.fallbar span{position:absolute;left:0;top:0;bottom:0;border-radius:11px;background:var(--red);transition:width .6s ease,background .3s}
+.fallbar em{position:absolute;left:40%;top:-6px;bottom:-6px;border-left:3px dashed var(--teal)}
+.fallbar em:after{content:"40% aim";position:absolute;top:30px;left:-26px;font:700 13px "Atkinson Hyperlegible",sans-serif;color:var(--teal);white-space:nowrap;font-style:normal}
+.ladder{display:grid;gap:8px}
+.rung{background:var(--soft);border:1px solid var(--line);border-left:6px solid var(--c);border-radius:10px;padding:10px 14px}
+.rung b{display:block;font:700 17px "Bricolage Grotesque",sans-serif}
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.num{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:16px}
+.num b{display:block;font:800 clamp(34px,4vw,48px)/1 "Bricolage Grotesque",sans-serif;color:var(--red);margin-bottom:8px}
+.qz .stem{font-size:clamp(17px,2vw,20px);margin:0 0 14px}
+.opts{display:grid;gap:8px}
+.opt{font:inherit;text-align:left;display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:12px;padding:10px 14px;min-height:48px;cursor:pointer}
+.opt i{font:800 16px "Bricolage Grotesque",sans-serif;font-style:normal;width:32px;height:32px;border-radius:50%;background:var(--line);display:flex;align-items:center;justify-content:center;flex:none}
+.opt.right{background:var(--okbg);border-color:var(--teal)}.opt.right i{background:var(--teal);color:#fff}
+.opt.wrong{background:var(--stopbg);border-color:var(--red)}.opt.wrong i{background:var(--red);color:#fff}
+.opt:disabled{cursor:default}
+.fb{margin-top:12px;border-left:5px solid var(--teal);background:var(--okbg);border-radius:8px;padding:10px 14px}
+.fb.no{border-color:var(--red);background:var(--stopbg)}
+.qnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.qdots{display:flex;gap:5px;flex-wrap:wrap}
+.qdots span{width:12px;height:12px;border-radius:50%;background:var(--line)}
+.qdots span.ok{background:var(--teal)}.qdots span.no{background:var(--red)}.qdots span.cur{outline:2px solid var(--ink);outline-offset:1px}
+.btn{font:700 15px "Atkinson Hyperlegible",sans-serif;border:0;border-radius:10px;padding:10px 16px;min-height:44px;background:var(--ink);color:var(--stage);cursor:pointer}
+.btn.ghost{background:var(--line);color:var(--ink)}
+.cap{background:var(--bar);color:#fff;min-height:74px;display:flex;align-items:center;gap:14px;padding:12px clamp(16px,3vw,36px);font-size:clamp(16px,1.7vw,19px);line-height:1.35}
+.cap:before{content:"";width:5px;align-self:stretch;min-height:36px;border-radius:3px;background:var(--c);flex:none}
+.ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px clamp(16px,3vw,36px);border-top:1px solid var(--line)}
+.ctl button{font:700 15px "Atkinson Hyperlegible",sans-serif;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:10px;min-height:44px;min-width:44px;padding:0 14px;cursor:pointer}
+.ctl button.play{background:var(--red);border-color:var(--red);color:#fff;min-width:110px}
+.ctl .grow{flex:1}
+.ctl label{font-size:14px;color:var(--mut);display:flex;align-items:center;gap:6px}
+.ctl select{font:16px "Atkinson Hyperlegible",sans-serif;border:1px solid var(--line);background:var(--stage);color:var(--ink);border-radius:8px;min-height:40px;padding:0 6px;max-width:230px}
+.prog{height:5px;background:var(--line)}
+.prog span{display:block;height:100%;background:var(--c);transition:width .4s}
+.hint{font-size:14px;color:var(--mut);margin-top:12px}
+.pulse{animation:pu 1.4s ease-in-out infinite}
+@keyframes pu{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--red) 30%,transparent)}}
+@media(prefers-reduced-motion:reduce){.r.in{animation:none}.pulse{animation:none}.pin,.fallbar span{transition:none}}
+@media(max-width:760px){.g2,.g3,.calc{grid-template-columns:minmax(0,1fr)}.tl{grid-template-columns:repeat(2,minmax(0,1fr))}.stage{min-height:0}.title{grid-template-columns:minmax(0,1fr);gap:8px}}
+.types{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
+.ty{background:var(--soft);border:1px solid var(--line);border-top:5px solid var(--c);border-radius:12px;padding:12px 14px;font-size:15px}
+.ty b{display:block;font:700 17px "Bricolage Grotesque",sans-serif;margin-bottom:4px}
+.strips{display:grid;gap:8px;margin-bottom:14px}
+.strip svg{display:block;width:100%;height:64px;border-radius:8px}
+.cap2{font-size:15px;margin-bottom:3px}.cap2 span{color:var(--mut)}
+.strip.in .ln{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 3s linear forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.togs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.tog{font:inherit;text-align:left;display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:12px;padding:10px 14px;min-height:48px;cursor:pointer}
+.tog b{font:800 16px "Bricolage Grotesque",sans-serif;color:var(--mut)}
+.tog.on{background:color-mix(in srgb,var(--c) 14%,var(--stage));border-color:var(--c)}.tog.on b{color:var(--c)}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.seg button{font:inherit;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:10px;padding:8px 14px;min-height:44px;cursor:pointer}
+.seg button.on{background:var(--c);border-color:var(--c);color:#fff}
+.scorebox{text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;padding:22px}
+.scorebox .res{font-size:clamp(56px,8vw,88px)}
+.pearl{margin-top:14px;border:2px dashed color-mix(in srgb,var(--red) 50%,transparent);border-radius:12px;padding:12px 16px}
+.sl{margin-bottom:8px}
+.drow{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.drow b{font:800 20px "Bricolage Grotesque",sans-serif;color:var(--c)}
+@media(max-width:760px){.types{grid-template-columns:repeat(2,minmax(0,1fr))}.togs{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){.strip.in .ln{animation:none;stroke-dashoffset:0}}
+.flips{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.flip{font:inherit;text-align:left;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:14px;padding:16px;min-height:120px;cursor:pointer;display:flex;flex-direction:column;gap:8px}
+.flip b{font:700 18px "Bricolage Grotesque",sans-serif}
+.flip .ans{display:none;font:800 20px "Bricolage Grotesque",sans-serif;color:var(--c)}
+.flip em{color:var(--mut);font-size:14px}
+.flip.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 10%,var(--stage))}
+.flip.on .ans{display:block;animation:rin .4s ease}.flip.on em{display:none}
+.scn{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.sc1{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.sc1 p{margin:0 0 8px;font-weight:700}
+.sbtn{display:flex;gap:6px;flex-wrap:wrap}
+.sbtn button{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--stage);color:var(--ink);border-radius:10px;padding:8px 12px;min-height:44px;cursor:pointer}
+.sbtn button.right{background:var(--okbg);border-color:var(--teal);color:var(--teal);font-weight:700}
+.sbtn button.wrong{background:var(--stopbg);border-color:var(--red);color:var(--red)}
+.sfb{font-size:15px;margin-top:6px}.sfb.ok{color:var(--teal)}.sfb.no{color:var(--red)}
+.qbar{position:relative;width:100%;height:20px;background:var(--line);border-radius:10px;margin:14px 0 6px}
+.qbar span{position:absolute;left:0;top:0;bottom:0;border-radius:10px;background:var(--c);transition:width .4s}
+.qbar i{position:absolute;top:-6px;bottom:-6px;border-left:3px dashed var(--ink)}
+@media(max-width:760px){.scn{grid-template-columns:minmax(0,1fr)}}
+.people{display:grid;grid-template-columns:repeat(40,minmax(0,1fr));gap:2px;margin-bottom:8px}
+.people i{display:block;aspect-ratio:1;border-radius:50%;transition:background .4s}
+.k-tp{--k:#0b8577}.k-fp{--k:#b3263a}.k-fn{--k:#b86e00}.k-tn{--k:#c9d3d8}
+.people i{background:var(--k)}
+.leg{display:flex;gap:12px;flex-wrap:wrap;font-size:14px;margin-bottom:10px}
+.leg span:before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--k);margin-right:6px}
+.pv{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pv div{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.pv span{display:block;color:var(--mut);font-weight:700}
+.pv b{font:800 clamp(30px,4vw,44px) "Bricolage Grotesque",sans-serif;color:var(--c);line-height:1.1}
+.pv small{display:block;color:var(--mut);font-size:14px}
+table.t22{width:100%;border-collapse:collapse;margin-top:8px}
+.t22 th{font-size:14px;color:var(--mut);text-align:left;padding:4px 6px}
+.t22 td{padding:10px;border-radius:8px;background:color-mix(in srgb,var(--k) 16%,var(--stage));border:2px solid var(--stage);font-size:14px;color:var(--mut)}
+.t22 td b{display:block;font:800 24px "Bricolage Grotesque",sans-serif;color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a href="./" style="display:inline-block;margin-bottom:8px;font-weight:700;color:var(--mut);text-decoration:none">← Statistics</a>
+<h1>Positive and negative predictive value</h1>
+<p class="sub">Topic 2 of Core Statistics for the GP AKT, as a narrated lesson. Press play, or tap any chapter. Pause and play with the numbers whenever you like.</p>
+<nav class="rail" id="rail" aria-label="Chapters"></nav>
+<section class="player" id="player" aria-label="Lesson player">
+<div class="prog"><span id="prog"></span></div>
+<div class="stage" id="stage" aria-live="polite"></div>
+<div class="cap" id="cap">Press play to start. The narration uses a voice on your device.</div>
+<div class="ctl">
+<button id="prev" aria-label="Previous scene">◀</button>
+<button class="play" id="play">▶ Play</button>
+<button id="next" aria-label="Next scene">▶▶</button>
+<span class="grow"></span>
+<label for="speed">Speed <select id="speed"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select></label>
+<label for="voice">Voice <select id="voice"><option value="">Captions only</option></select></label>
+</div>
+</section>
+<p class="hint" id="vhint">For the most natural voice, choose one marked Natural, Enhanced, Premium or Siri, if your device has one. Microsoft Edge offers natural online voices; on iPhone and Mac you can download Enhanced voices in your Accessibility settings.</p>
+</div>
+<script>
+{
+const C={0:"var(--ink)",1:"var(--blue)",2:"var(--teal)",3:"var(--amber)",4:"var(--purple)",5:"var(--red)",6:"var(--ink)"};
+const CH=["Intro","1 Understand","2 Calculate","3 Interpret","4 Apply","5 Quiz","Recap"];
+const $=id=>document.getElementById(id);
+const stage=$("stage"),cap=$("cap"),playB=$("play"),voiceS=$("voice"),speedS=$("speed");
+
+/* ---------- PPV/NPV data ---------- */
+const QS=[["A new test is evaluated in 1,000 patients. 80 test positive and have the disease; 20 test positive without the disease; 40 test negative but have the disease; 860 test negative without it. What is the positive predictive value?", ["66.7%", "80%", "95.6%", "97.7%", "86%"], 1, "80%. PPV = a ÷ (a + b) = 80 ÷ (80 + 20) = 80 ÷ 100 = 80%. 66.7% is the sensitivity: 80 ÷ (80 + 40)."], ["Using the same results (a = 80, b = 20, c = 40, d = 860), what is the negative predictive value?", ["66.7%", "80%", "86%", "95.6%", "97.7%"], 3, "95.6%. NPV = d ÷ (c + d) = 860 ÷ (40 + 860) = 860 ÷ 900 = 95.6%. 97.7% is the specificity: 860 ÷ (20 + 860)."], ["A patient asks: “My test was positive. What is the chance that I actually have the condition?” Which measure answers this?", ["Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Likelihood ratio"], 2, "Positive predictive value. The question starts from people who tested positive. Sensitivity would start from people who have the disease."], ["Which of the following change when the same test is used in a population with a different prevalence of disease?", ["Sensitivity only", "Specificity only", "Sensitivity and specificity", "Positive and negative predictive values", "None of these"], 3, "Positive and negative predictive values. Sensitivity and specificity are properties of the test. Predictive values depend on how common the disease is in the people tested."], ["A test developed in a hospital clinic (prevalence 40%) is introduced as a screening test in general practice (prevalence 2%). What happens to its predictive values?", ["PPV rises and NPV falls", "PPV falls and NPV rises", "Both rise", "Both fall", "Neither changes"], 1, "PPV falls and NPV rises. At lower prevalence, false positives make up more of the positive results, and a negative result is even more likely to be truly negative."], ["A test has a sensitivity of 90% and specificity of 90%. It is used in 1,000 people with a disease prevalence of 10%. What is the positive predictive value?", ["10%", "50%", "81%", "90%", "99%"], 1, "50%. Of 1,000: 100 have the disease, so 90 true positives. Of 900 without: 10% false positives = 90. PPV = 90 ÷ 180 = 50%."], ["A worried patient asks how reassured they should be by a negative result. Which measure answers this?", ["Negative predictive value", "Positive predictive value", "Sensitivity", "Specificity", "Prevalence"], 0, "Negative predictive value. NPV is the proportion of people with a negative result who are truly disease-free."], ["A screening test with sensitivity 95% and specificity 95% is used in 10,000 people with a prevalence of 1%. Approximately what is the positive predictive value?", ["5%", "16%", "50%", "95%", "99%"], 1, "16%. 100 have the disease, so 95 true positives. 9,900 don't: 5% false positives = 495. PPV = 95 ÷ 590 ≈ 16%. Most positives are false, which is why screening has confirmatory tests."], ["A national screening test has a low positive predictive value even though it is accurate. What is the most likely explanation?", ["The test has poor sensitivity", "The disease has a low prevalence in the screened population", "The test has poor specificity in all settings", "Too few people were screened", "The NPV is also low"], 1, "The disease has a low prevalence in the screened population. Even a good test produces more false positives than true positives when the disease is rare."], ["A laboratory improves a test's specificity while sensitivity stays the same. The population is unchanged. What is the main effect on the positive predictive value?", ["PPV falls", "PPV stays the same", "PPV rises", "PPV becomes equal to sensitivity", "PPV becomes equal to specificity"], 2, "PPV rises. Higher specificity means fewer false positives, so true positives make up a larger share of the positive results."]];
+const WORD=[["“Of those who tested positive, how many have the disease?”","PPV"],["“Of those with the disease, how many test positive?”","Sensitivity"],["“A negative result: how sure can I be I'm clear?”","NPV"],["“Of those without the disease, how many test negative?”","Specificity"],["“My test was positive. What's the chance I have it?”","PPV"],["“Of those who tested negative, how many are disease-free?”","NPV"]];
+let tt={p:10,se:90,sp:80};
+
+/* ---------- PPV/NPV scenes ---------- */
+const li=(t,i)=>`<li class="r" data-i="${i}">${t}</li>`;
+const builder=()=>`<div class="g2 bld"><div>
+<div class="sl"><label for="tp">Prevalence: <b id="tpv"></b>%</label><input type="range" id="tp" min="1" max="60" value="10"></div>
+<div class="sl"><label for="tse">Sensitivity: <b id="tsev"></b>%</label><input type="range" id="tse" min="50" max="100" value="90"></div>
+<div class="sl"><label for="tsp">Specificity: <b id="tspv"></b>%</label><input type="range" id="tsp" min="50" max="100" value="80"></div>
+<table class="t22"><tr><th></th><th>Disease</th><th>No disease</th></tr><tr><th>Test +</th><td class="k-tp"><b id="ca"></b>a</td><td class="k-fp"><b id="cb"></b>b</td></tr><tr><th>Test −</th><td class="k-fn"><b id="cc"></b>c</td><td class="k-tn"><b id="cd"></b>d</td></tr></table></div>
+<div><div class="people" id="ppl" aria-label="1,000 people">${'<i></i>'.repeat(1000)}</div>
+<div class="leg"><span class="k-tp">True +</span><span class="k-fp">False +</span><span class="k-fn">False −</span><span class="k-tn">True −</span></div>
+<div class="pv"><div><span>PPV</span><b id="ppv"></b><small id="ppvs"></small></div><div><span>NPV</span><b id="npv"></b><small id="npvs"></small></div></div></div></div>`;
+const S=[
+{ch:0,tag:"STATISTICS 02",h:"Four things the AKT asks",html:()=>`
+<div class="title r in" data-i="0"><div class="big">02</div><div><b style="font-size:20px">Positive and negative predictive value</b><p>Applied statistics for the MRCGP AKT · builds on Topic 1, Sensitivity and specificity</p></div></div>
+<ol class="dec">${["What PPV and NPV <b>mean</b>, in words","How to <b>calculate</b> them from a 2×2 table","Why they <b>change with prevalence</b>","How to <b>pick the right measure</b> from the question's wording"].map((t,k)=>li("<span>"+t+"</span>",k+1)).join("")}</ol>`,
+ b:[[0,"Statistics topic two: positive and negative predictive value."],[1,"First, what they mean."],[2,"Second, how to calculate them from a two by two table."],[3,"Third, why they change with prevalence."],[4,"And fourth, how to pick the right measure from the wording of the question."]]},
+{ch:1,tag:"STEP 1 · UNDERSTAND",h:"Predictive values answer the patient's question",html:()=>`
+<div class="g2"><div class="card r" data-i="1"><h3>PPV</h3><ul class="b"><li>Of everyone who <b>tests positive</b>, the proportion who <b>really have</b> the disease</li><li>“My test was positive. What's the chance I have it?”</li></ul></div>
+<div class="card r" data-i="2"><h3>NPV</h3><ul class="b"><li>Of everyone who <b>tests negative</b>, the proportion who <b>really don't</b></li><li>“My test was negative. How sure can I be?”</li></ul></div></div>
+<div class="card r" data-i="3" style="margin-top:12px"><h3>The key difference</h3><ul class="b"><li><b>Sensitivity and specificity</b> start from people with or without the disease: properties of the <b>test</b>. They don't change with prevalence</li><li><b>PPV and NPV</b> start from people with a positive or negative <b>result</b>. They <b>change with prevalence</b></li></ul></div>`,
+ b:[[1,"The positive predictive value is the proportion of people who test positive who really have the disease."],[2,"The negative predictive value is the proportion of people who test negative who really don't."],[3,"Sensitivity and specificity belong to the test. Predictive values depend on how common the disease is in the people you test."]]},
+{ch:1,tag:"STEP 1 · UNDERSTAND",h:"Which measure is it?",stop:1,html:()=>`
+<div class="try r" data-i="1"><h3>Tap each question to reveal the measure. The words before the comma give it away</h3><div class="chips">${WORD.map((w,k)=>`<button class="chip" data-w="${k}">${w[0]}</button>`).join("")}</div></div>`,
+ init(){stage.querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>{if(!b.querySelector("small")){b.classList.add("q");b.insertAdjacentHTML("beforeend",`<small>${WORD[b.dataset.w][1]}</small>`)}})},
+ b:[[1,"Read the denominator. Of those who tested positive is P P V. Of those with the disease is sensitivity. Tap each one, then press next."]]},
+{ch:2,tag:"STEP 2 · CALCULATE",h:"Build the 2×2 table: 1,000 people",stop:1,html:()=>`<div class="r" data-i="1">${builder()}</div>
+<div class="card r" data-i="2" style="margin-top:12px"><h3>Formulas</h3><ul class="b"><li><b>PPV</b> = a ÷ (a + b): true positives over all positives</li><li><b>NPV</b> = d ÷ (c + d): true negatives over all negatives</li><li>Predictive values read <b>across the rows</b>; sensitivity and specificity read down the columns</li></ul></div>`,
+ init(){bindTT();upTT()},
+ b:[[1,"Here are a thousand people. Prevalence ten percent, so a hundred have the disease.",()=>setTT(10,90,80)],[1,"Sensitivity ninety percent: ninety true positives, and ten false negatives.",()=>setTT(10,90,80)],[1,"Specificity eighty percent: of the nine hundred without the disease, seven hundred and twenty test negative, and one hundred and eighty are false positives.",()=>setTT(10,90,80)],[2,"So P P V is ninety divided by two hundred and seventy: thirty-three percent. N P V is seven hundred and twenty divided by seven hundred and thirty: ninety-eight point six percent. Try your own numbers, then press next."]]},
+{ch:3,tag:"STEP 3 · INTERPRET",h:"Same test, different prevalence",stop:1,html:()=>`<div class="r" data-i="1">${builder()}</div>
+<div class="pearl r" data-i="2">A test moved from a hospital clinic into <b>screening</b> in general practice: <b>PPV falls, NPV rises</b>. Sensitivity and specificity haven't changed.</div>`,
+ init(){bindTT();upTT()},
+ b:[[1,"Keep the test the same: sensitivity ninety, specificity eighty.",()=>setTT(10,90,80)],[1,"Now use it for screening, where prevalence is one percent. Most positives are false: P P V falls to about four percent. But a negative is very reassuring.",()=>setTT(1,90,80)],[1,"In a specialist clinic where half the patients have the disease, P P V rises to about eighty-two percent.",()=>setTT(50,90,80)],[1,"Raise the specificity and watch false positives shrink: P P V rises most.",()=>setTT(10,90,97)],[2,"So moving a test into screening makes P P V fall and N P V rise. Explore, then press next."]]},
+{ch:4,tag:"STEP 4 · APPLY",h:"Pick the measure, avoid the traps",html:()=>`
+<div class="g2"><div class="card r" data-i="1"><h3>Traps</h3><ul class="b"><li>Check the table's <b>orientation</b>: tests may be the columns</li><li>PPV divides by <b>all positives</b>, not all diseased</li><li>Round only at the end</li><li>Don't carry a PPV from one setting to another population</li></ul></div>
+<div class="card r" data-i="2"><h3>Links</h3><ul class="b"><li><b>SnNOut</b>: highly sensitive test, negative, rules out</li><li><b>SpPIn</b>: highly specific test, positive, rules in</li><li>Likelihood ratio (+) = sensitivity ÷ (1 − specificity): doesn't depend on prevalence</li><li>Screening accepts a low PPV because a confirmatory test follows</li></ul></div></div>`,
+ b:[[1,"Common traps: a table drawn the other way round, the wrong denominator, and rounding too early."],[2,"And two shortcuts: Snout, a sensitive test when negative rules out; Spin, a specific test when positive rules in."]]},
+{ch:5,tag:"QUIZ",h:"Ten questions",stop:1,html:()=>`<div class="qz r in" data-i="0" id="qz"></div>`,init(){quiz()},
+ b:[[0,"Ten questions. Pick the single best answer for each, and you'll get your score at the end."]]},
+{ch:6,tag:"RECAP",h:"The facts to take into the exam",html:()=>`
+<div class="nums">${[["a ÷ (a+b)","PPV: true positives over all positives"],["d ÷ (c+d)","NPV: true negatives over all negatives"],["Rows","predictive values read across"],["↓ prevalence","PPV falls · NPV rises"],["1,000","build the table with natural frequencies"]].map((n,k)=>`<div class="num r" data-i="${k+1}"><b>${n[0]}</b>${n[1]}</div>`).join("")}</div>`,
+ b:[[1,"P P V is a divided by a plus b."],[2,"N P V is d divided by c plus d."],[3,"Predictive values read across the rows."],[4,"As prevalence falls, P P V falls and N P V rises."],[5,"And build your table from a round thousand. That's statistics topic two."]]}
+];
+
+/* ---------- PPV/NPV helpers ---------- */
+function bindTT(){["tp","tse","tsp"].forEach(i=>$(i).oninput=()=>{tt={p:+$("tp").value,se:+$("tse").value,sp:+$("tsp").value};upTT()})}
+function setTT(p,se,sp){tt={p,se,sp};upTT()}
+function upTT(){if(!$("tp"))return;$("tp").value=tt.p;$("tse").value=tt.se;$("tsp").value=tt.sp;
+ $("tpv").textContent=tt.p;$("tsev").textContent=tt.se;$("tspv").textContent=tt.sp;
+ const dz=Math.round(1000*tt.p/100),h=1000-dz,a=Math.round(dz*tt.se/100),c=dz-a,d=Math.round(h*tt.sp/100),b=h-d;
+ $("ca").textContent=a;$("cb").textContent=b;$("cc").textContent=c;$("cd").textContent=d;
+ const ppv=a+b?a/(a+b)*100:0,npv=c+d?d/(c+d)*100:0;
+ $("ppv").textContent=ppv.toFixed(1)+"%";$("npv").textContent=npv.toFixed(1)+"%";
+ $("ppvs").textContent=`${a} ÷ (${a} + ${b})`;$("npvs").textContent=`${d} ÷ (${c} + ${d})`;
+ const cells=$("ppl").children,cls=[];for(let i=0;i<a;i++)cls.push("k-tp");for(let i=0;i<c;i++)cls.push("k-fn");for(let i=0;i<b;i++)cls.push("k-fp");for(let i=0;i<d;i++)cls.push("k-tn");
+ for(let i=0;i<1000;i++)cells[i].className=cls[i]||"k-tn"}
+
+let qi=0,qa=[];
+function quiz(){const q=QS[qi],L="ABCDE",box=$("qz");if(!box)return;const done=qa[qi]!==undefined;
+ box.innerHTML=`<p class="stem"><b>Q${qi+1}.</b> ${q[0]}</p><div class="opts">${q[1].map((o,k)=>`<button class="opt${done?(k===q[2]?" right":k===qa[qi]?" wrong":""):""}" data-o="${k}" ${done?"disabled":""}><i>${L[k]}</i>${o}</button>`).join("")}</div>
+ ${done?`<div class="fb${qa[qi]===q[2]?"":" no"}"><b>${qa[qi]===q[2]?"Correct.":"Not quite: the answer is "+L[q[2]]+"."}</b> ${q[3]}</div>`:""}
+ <div class="qnav"><div class="qdots">${QS.map((_,k)=>`<span class="${qa[k]===undefined?"":qa[k]===QS[k][2]?"ok":"no"}${k===qi?" cur":""}"></span>`).join("")}</div>
+ <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" id="qread">Read aloud</button>${qi>0?`<button class="btn ghost" id="qprev">Back</button>`:""}${qi<QS.length-1?`<button class="btn" id="qnext">Next question</button>`:`<button class="btn" id="qscore">See my score</button>`}</div></div>`;
+ box.querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>{qa[qi]=+b.dataset.o;quiz();const ok=qa[qi]===q[2];say((ok?"Correct. ":"Not quite. The answer is "+L[q[2]]+". ")+q[3])});
+ $("qread").onclick=()=>say(`Question ${qi+1}. ${q[0]} `+q[1].map((o,k)=>L[k]+": "+o+".").join(" "));
+ if($("qprev"))$("qprev").onclick=()=>{qi--;quiz()};if($("qnext"))$("qnext").onclick=()=>{qi++;quiz()};if($("qscore"))$("qscore").onclick=score}
+function score(){const n=qa.filter((a,k)=>a===QS[k][2]).length,box=$("qz");
+ const band=n>=9?["var(--teal)","Exam-ready","Move on, and re-test once in 2 weeks."]:n>=7?["var(--blue)","Nearly there","Revisit the chapters behind the questions you missed, then re-test within a week."]:n>=5?["var(--amber)","Shaky","Replay Steps 3 and 4, then repeat the questions in 48 hours."]:["var(--red)","Not yet","Replay the whole lesson before re-attempting."];
+ box.innerHTML=`<div class="card" style="border-top:6px solid ${band[0]}"><div class="res" style="color:${band[0]}">${n} / 10</div><h3 style="color:${band[0]};margin-top:10px">${band[1]}</h3><p style="margin:0 0 12px">${band[2]}</p><button class="btn" id="qagain">Try again</button></div>`;
+ $("qagain").onclick=()=>{qi=0;qa=[];quiz()};say(`You scored ${n} out of 10. ${band[1]}. ${band[2]}`)}
+
+/* ---------- speech ---------- */
+const REP=[[/\bPPV\b/g,"P P V"],[/\bNPV\b/g,"N P V"],[/2×2/g,"two by two"],[/\bGMS\b/g,"G M S"],[/\bPMS\b/g,"P M S"],[/\bAPMS\b/g,"A P M S"],[/\bQOF\b/g,"Q O F"],[/\bPCNs?\b/g,"P C N"],[/\bICB\b/g,"I C B"],[/\bCQC\b/g,"C Q C"],[/\bDES\b/g,"D E S"],[/\bARRS\b/g,"A R R S"],[/\bOOH\b/g,"out of hours"],[/2026\/27/g,"2026 to 27"],[/2025\/26/g,"2025 to 26"],[/CHA₂DS₂-VASc|CHA2DS2-VASc/g,"chads vasc"],[/\bDOACs?\b/g,"D O A C"],[/\bTIA\b/g,"T I A"],[/\bPAD\b/g,"P A D"],[/\bWPW\b/g,"W P W"],[/\bCrCl\b/g,"creatinine clearance"],[/\bINR\b/g,"I N R"],[/\bTOE\b/g,"T O E"],[/QRISK3/g,"Q-risk three"],[/non-HDL/g,"non H D L"],[/\bLDL\b/g,"L D L"],[/\bHDL\b/g,"H D L"],[/\bHbA1c\b/g,"H B A 1 C"],[/\beGFR\b/g,"e G F R"],[/\bALT\b/g,"A L T"],[/\bCK\b/g,"C K"],[/\bTSH\b/g,"T S H"],[/\bCKD\b/g,"C K D"],[/\bCVD\b/g,"cardiovascular disease"],[/\bCHD\b/g,"coronary heart disease"],[/\bFH\b/g,"F H"],[/\bMI\b/g,"M I"],[/\bACR\b/g,"A C R"],[/(\d)\s*mg\b/g,"$1 milligrams"],[/mmol\/L/g,"millimoles per litre"],[/(\d)\s*%/g,"$1 percent"],[/(\d)\s*×/g,"$1 times"],[/(\d)\s*[–-]\s*(\d)/g,"$1 to $2"],[/IU\/L/g,"units per litre"]];
+const clean=t=>REP.reduce((s,[a,b])=>s.replace(a,b),t);
+const synth=window.speechSynthesis;let voices=[];
+function loadVoices(){if(!synth)return;voices=synth.getVoices().filter(v=>/^en/i.test(v.lang));if(!voices.length)return;
+ const rank=v=>(/natural|neural|premium|enhanced|siri/i.test(v.name)?4:0)+(/en[-_]GB/i.test(v.lang)?2:0)+(/google uk|sonia|libby|ryan|serena|daniel|kate/i.test(v.name)?1:0);
+ voices.sort((a,b)=>rank(b)-rank(a));let keep=voiceS.value;
+ voiceS.innerHTML=`<option value="">Captions only</option>`+voices.map((v,k)=>`<option value="${k}">${v.name.replace(/[<>&"]/g,"")} (${v.lang})</option>`).join("");
+ voiceS.value=keep===""&&!voiceS.dataset.touched?"0":keep}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices}else{$("vhint").textContent="This browser can't speak the narration, so captions only."}
+voiceS.onchange=()=>{voiceS.dataset.touched=1};
+function say(text,onend){cap.textContent=text;const v=voices[+voiceS.value];
+ if(synth)synth.cancel();
+ if(!synth||voiceS.value===""||!v){if(onend)timer=setTimeout(onend,(1200+text.split(/\s+/).length*330)/+speedS.value);return}
+ const u=new SpeechSynthesisUtterance(clean(text));u.voice=v;u.lang=v.lang;u.rate=+speedS.value;
+ let fired=false;const fin=()=>{if(fired)return;fired=true;clearTimeout(guard);if(onend)timer=setTimeout(onend,350)};
+ u.onend=fin;u.onerror=fin;const guard=setTimeout(fin,(4000+text.split(/\s+/).length*700)/+speedS.value);synth.speak(u)}
+
+/* ---------- player ---------- */
+let si=0,bi=-1,playing=false,timer=null;
+$("rail").innerHTML=CH.map((c,k)=>`<button data-ch="${k}" style="--c:${C[k]}">${c}</button>`).join("");
+$("rail").querySelectorAll("button").forEach(b=>b.onclick=()=>{const k=S.findIndex(s=>s.ch===+b.dataset.ch);go(k,true)});
+function render(){const s=S[si];document.documentElement.style.setProperty("--c",C[s.ch]);$("player").style.setProperty("--c",C[s.ch]);
+ stage.innerHTML=`<span class="tag">${s.tag}</span><h2>${s.h}</h2>`+s.html();if(s.init)s.init();
+ $("rail").querySelectorAll("button").forEach(b=>b.classList.toggle("on",+b.dataset.ch===s.ch));
+ $("prog").style.width=((si+1)/S.length*100)+"%";$("next").classList.remove("pulse")}
+function reveal(i){stage.querySelectorAll(".r").forEach(e=>{const d=+e.dataset.i;e.classList.toggle("in",d<=i);e.classList.toggle("now",d===i&&d>0)})}
+function beat(){const s=S[si];bi++;
+ if(bi>=s.b.length){if(s.stop||si===S.length-1){stop();if(si<S.length-1){$("next").classList.add("pulse");cap.textContent="Your turn. Press ▶▶ for the next scene when you're ready."}return}
+  timer=setTimeout(()=>{si++;bi=-1;render();beat()},700);return}
+ const [i,t,f]=s.b[bi];reveal(i);if(f)f();say(t,()=>{if(playing)beat()})}
+function start(){playing=true;playB.textContent="❚❚ Pause";if(bi>=S[si].b.length-1&&S[si].b.length){bi=-1;render()}beat()}
+function stop(){playing=false;playB.textContent="▶ Play";clearTimeout(timer);if(synth)synth.cancel()}
+function go(k,autoplay){stop();si=Math.max(0,Math.min(S.length-1,k));bi=-1;render();
+ if(autoplay){start()}else{reveal(99);cap.textContent=S[si].b[0][1]}}
+playB.onclick=()=>playing?stop():(bi>=0&&bi<S[si].b.length?(bi--,start()):start());
+$("next").onclick=()=>go(si+1,true);$("prev").onclick=()=>go(si-1,true);
+speedS.onchange=()=>{};
+document.addEventListener("keydown",e=>{if(/INPUT|SELECT|BUTTON/.test(e.target.tagName))return;if(e.code==="Space"){e.preventDefault();playB.click()}if(e.key==="ArrowRight")$("next").click();if(e.key==="ArrowLeft")$("prev").click()});
+render();reveal(99);
+}
+</script>
+</body>
+</html>

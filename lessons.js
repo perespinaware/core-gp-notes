@@ -5,7 +5,8 @@ const CATS=[
  {id:"dermatology",name:"Dermatology",c:"#0b8577",src:"Core Dermatology for the GP AKT",lessons:[
   ["Rosacea","NICE CKS"],["Psoriasis","NICE CG153"],["Lichen simplex, planus and sclerosus","NICE CKS"],["Scabies","NICE CKS"],["Acne vulgaris","NICE NG198"],["Atopic eczema","NICE CKS · CG57"],["Contact dermatitis","NICE CKS"]]},
  {id:"statistics",name:"Statistics",c:"#2f66d0",src:"Core Statistics for the GP AKT",lessons:[
-  ["Sensitivity and specificity","The 2×2 table"]]},
+  ["Sensitivity and specificity","The 2×2 table"],
+  ["Positive and negative predictive value","PPV · NPV · prevalence","predictive-values.html"]]},
  {id:"sca",name:"SCA cases",c:"#7b46c7",src:"SCA consultation practice",lessons:[
   ["Uncontrolled hypertension on three medicines","Long-term conditions"]]},
  {id:"admin",name:"Admin and Management",c:"#b86e00",src:"Core Admin and Management for the GP AKT",lessons:[
