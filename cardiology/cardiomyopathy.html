@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cardiomyopathy Lesson</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday learning: a revision lesson that plays like a video, then lets you touch the numbers
+   IDEA the Core Cardiology guide come to life: same ink, red and step colours, scenes that build as they are narrated
+   PICTURE the player stage itself: each scene animates in, with live sliders, gauges and a quiz inside it
+   COLOUR ink #16212a ground in the controls, white stage, red #b3263a accent, step colours blue, teal, amber, purple
+   TYPE Bricolage Grotesque headings (the guide's own face) + Atkinson Hyperlegible text
+   LAYOUT laptop: chapter rail on top, stage, caption bar, controls; phone: same order stacked, controls wrap */
+:root{color-scheme:light dark;--bg:light-dark(#eef1f1,#0f1519);--stage:light-dark(#ffffff,#172128);--ink:light-dark(#16212a,#e8eef0);--mut:light-dark(#576470,#9aabb4);--line:light-dark(#dfe3e6,#2a3a44);--soft:light-dark(#f4f6f6,#1c2a33);--red:light-dark(#b3263a,#ff7385);--blue:light-dark(#2f66d0,#79a2f2);--teal:light-dark(#0b8577,#3cc7b3);--amber:light-dark(#b86e00,#f1aa45);--purple:light-dark(#7b46c7,#b08cf0);--bar:#16212a;--okbg:light-dark(#e3f4f0,#123630);--stopbg:light-dark(#fbe6e9,#3d1820)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif;overflow-x:clip}
+b{font-weight:700}
+.wrap{max-width:1180px;margin:0 auto;padding:18px max(16px,3vw) 40px}
+h1{font:800 clamp(26px,3.4vw,38px)/1.08 "Bricolage Grotesque",system-ui,sans-serif;margin:0 0 4px;letter-spacing:-.02em}
+.sub{color:var(--mut);margin:0 0 14px}
+.rail{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.rail button{font:700 14px "Atkinson Hyperlegible",sans-serif;border:0;border-radius:30px;padding:8px 14px;min-height:38px;background:var(--line);color:var(--mut);cursor:pointer}
+.rail button.on{color:#fff;background:var(--c)}
+.rail button:focus-visible,.ctl button:focus-visible,.ctl select:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.player{background:var(--stage);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px -18px rgba(0,0,0,.35)}
+.stage{position:relative;min-height:540px;padding:26px clamp(16px,3vw,36px) 22px}
+.tag{display:inline-block;font:600 12px "IBM Plex Mono",monospace;letter-spacing:.12em;color:#fff;background:var(--c);border-radius:5px;padding:4px 10px}
+.stage h2{font:800 clamp(24px,3vw,36px)/1.1 "Bricolage Grotesque",sans-serif;margin:10px 0 18px;letter-spacing:-.01em}
+.r:not(.in){display:none}
+.r.in{animation:rin .5s ease both}
+@keyframes rin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.r.now{box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 55%,transparent)}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
+.card{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.card h3{font:700 19px/1.2 "Bricolage Grotesque",sans-serif;margin:0 0 10px}
+.card.red h3{color:var(--red)}.card.amber h3{color:var(--amber)}
+ul.b{list-style:none;margin:0;padding:0}
+ul.b li{position:relative;padding:5px 8px 5px 26px;border-radius:8px;margin-bottom:2px}
+ul.b li:before{content:"";position:absolute;left:9px;top:14px;width:8px;height:8px;border-radius:50%;background:var(--c)}
+ol.dec{list-style:none;margin:0;padding:0;counter-reset:n;display:grid;gap:10px}
+ol.dec li{counter-increment:n;display:flex;gap:16px;align-items:center;font-size:clamp(17px,2vw,22px);background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+ol.dec li:before{content:counter(n);font:800 22px "Bricolage Grotesque",sans-serif;color:#fff;background:var(--red);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
+ol.dec li span{display:block}
+.title{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;margin-bottom:22px}
+.big{font:800 clamp(70px,11vw,130px)/.9 "Bricolage Grotesque",sans-serif;color:var(--red)}
+.title p{margin:6px 0 0;color:var(--mut)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;text-align:left;border:1px solid var(--line);background:var(--stage);color:var(--ink);border-radius:12px;padding:10px 14px;min-height:44px;cursor:pointer;transition:background .3s,border-color .3s}
+.chip small{display:block;font-weight:700;margin-top:4px}
+.chip.q{background:var(--okbg);border-color:var(--teal)}.chip.q small{color:var(--teal)}
+.chip.t{background:var(--stopbg);border-color:var(--red)}.chip.t small{color:var(--red)}
+.chip.sel{border:2px solid var(--c);background:color-mix(in srgb,var(--c) 10%,var(--stage))}
+.try{margin-top:16px;border:2px dashed color-mix(in srgb,var(--c) 60%,transparent);border-radius:14px;padding:14px 16px}
+.try h3{font:700 18px "Bricolage Grotesque",sans-serif;margin:0 0 10px;color:var(--c)}
+.meter{margin:6px 0 12px}
+.meter .top{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.meter .val{font:800 26px "Bricolage Grotesque",sans-serif;white-space:nowrap}
+.track{position:relative;height:16px;border-radius:8px;display:flex;overflow:hidden;margin:8px 0 2px}
+.track i{display:block;height:100%}
+.pin{position:absolute;top:-6px;width:4px;height:28px;background:var(--ink);border-radius:2px;transition:left .6s ease}
+.tw{position:relative}
+input[type=range]{width:100%;accent-color:var(--c);height:32px}
+.verdict{border-radius:10px;padding:10px 14px;font-weight:700;margin-top:4px;transition:background .3s}
+.verdict.ok{background:var(--okbg);color:var(--teal)}.verdict.mid{background:color-mix(in srgb,var(--amber) 16%,var(--stage));color:var(--amber)}.verdict.stop{background:var(--stopbg);color:var(--red)}
+.dosebox{text-align:center;padding:22px 18px;min-height:250px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px}
+.pill{font:800 clamp(30px,4.4vw,48px) "Bricolage Grotesque",sans-serif;padding:10px 26px;border-radius:60px;background:color-mix(in srgb,var(--amber) 18%,var(--stage));color:var(--amber);transition:transform .35s,background .3s,color .3s}
+.pill.hi{background:var(--red);color:#fff}
+.pill.pop{transform:scale(1.08)}
+.plist{display:grid;gap:8px}
+.tl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;position:relative;margin-bottom:16px}
+.st{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px;transition:border-color .4s,background .4s}
+.st b{display:block;font:800 20px "Bricolage Grotesque",sans-serif;color:var(--c)}
+.st.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 10%,var(--stage))}
+.calc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.res{font:800 clamp(34px,5vw,54px) "Bricolage Grotesque",sans-serif;line-height:1}
+.fallbar{position:relative;height:22px;background:var(--line);border-radius:11px;margin:12px 0 26px}
+.fallbar span{position:absolute;left:0;top:0;bottom:0;border-radius:11px;background:var(--red);transition:width .6s ease,background .3s}
+.fallbar em{position:absolute;left:40%;top:-6px;bottom:-6px;border-left:3px dashed var(--teal)}
+.fallbar em:after{content:"40% aim";position:absolute;top:30px;left:-26px;font:700 13px "Atkinson Hyperlegible",sans-serif;color:var(--teal);white-space:nowrap;font-style:normal}
+.ladder{display:grid;gap:8px}
+.rung{background:var(--soft);border:1px solid var(--line);border-left:6px solid var(--c);border-radius:10px;padding:10px 14px}
+.rung b{display:block;font:700 17px "Bricolage Grotesque",sans-serif}
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.num{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:16px}
+.num b{display:block;font:800 clamp(34px,4vw,48px)/1 "Bricolage Grotesque",sans-serif;color:var(--red);margin-bottom:8px}
+.qz .stem{font-size:clamp(17px,2vw,20px);margin:0 0 14px}
+.opts{display:grid;gap:8px}
+.opt{font:inherit;text-align:left;display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:12px;padding:10px 14px;min-height:48px;cursor:pointer}
+.opt i{font:800 16px "Bricolage Grotesque",sans-serif;font-style:normal;width:32px;height:32px;border-radius:50%;background:var(--line);display:flex;align-items:center;justify-content:center;flex:none}
+.opt.right{background:var(--okbg);border-color:var(--teal)}.opt.right i{background:var(--teal);color:#fff}
+.opt.wrong{background:var(--stopbg);border-color:var(--red)}.opt.wrong i{background:var(--red);color:#fff}
+.opt:disabled{cursor:default}
+.fb{margin-top:12px;border-left:5px solid var(--teal);background:var(--okbg);border-radius:8px;padding:10px 14px}
+.fb.no{border-color:var(--red);background:var(--stopbg)}
+.qnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.qdots{display:flex;gap:5px;flex-wrap:wrap}
+.qdots span{width:12px;height:12px;border-radius:50%;background:var(--line)}
+.qdots span.ok{background:var(--teal)}.qdots span.no{background:var(--red)}.qdots span.cur{outline:2px solid var(--ink);outline-offset:1px}
+.btn{font:700 15px "Atkinson Hyperlegible",sans-serif;border:0;border-radius:10px;padding:10px 16px;min-height:44px;background:var(--ink);color:var(--stage);cursor:pointer}
+.btn.ghost{background:var(--line);color:var(--ink)}
+.cap{background:var(--bar);color:#fff;min-height:74px;display:flex;align-items:center;gap:14px;padding:12px clamp(16px,3vw,36px);font-size:clamp(16px,1.7vw,19px);line-height:1.35}
+.cap:before{content:"";width:5px;align-self:stretch;min-height:36px;border-radius:3px;background:var(--c);flex:none}
+.ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px clamp(16px,3vw,36px);border-top:1px solid var(--line)}
+.ctl button{font:700 15px "Atkinson Hyperlegible",sans-serif;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:10px;min-height:44px;min-width:44px;padding:0 14px;cursor:pointer}
+.ctl button.play{background:var(--red);border-color:var(--red);color:#fff;min-width:110px}
+.ctl .grow{flex:1}
+.ctl label{font-size:14px;color:var(--mut);display:flex;align-items:center;gap:6px}
+.ctl select{font:16px "Atkinson Hyperlegible",sans-serif;border:1px solid var(--line);background:var(--stage);color:var(--ink);border-radius:8px;min-height:40px;padding:0 6px;max-width:230px}
+.prog{height:5px;background:var(--line)}
+.prog span{display:block;height:100%;background:var(--c);transition:width .4s}
+.hint{font-size:14px;color:var(--mut);margin-top:12px}
+.pulse{animation:pu 1.4s ease-in-out infinite}
+@keyframes pu{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--red) 30%,transparent)}}
+@media(prefers-reduced-motion:reduce){.r.in{animation:none}.pulse{animation:none}.pin,.fallbar span{transition:none}}
+@media(max-width:760px){.g2,.g3,.calc{grid-template-columns:minmax(0,1fr)}.tl{grid-template-columns:repeat(2,minmax(0,1fr))}.stage{min-height:0}.title{grid-template-columns:minmax(0,1fr);gap:8px}}
+.types{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
+.ty{background:var(--soft);border:1px solid var(--line);border-top:5px solid var(--c);border-radius:12px;padding:12px 14px;font-size:15px}
+.ty b{display:block;font:700 17px "Bricolage Grotesque",sans-serif;margin-bottom:4px}
+.strips{display:grid;gap:8px;margin-bottom:14px}
+.strip svg{display:block;width:100%;height:64px;border-radius:8px}
+.cap2{font-size:15px;margin-bottom:3px}.cap2 span{color:var(--mut)}
+.strip.in .ln{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 3s linear forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.togs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.tog{font:inherit;text-align:left;display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:12px;padding:10px 14px;min-height:48px;cursor:pointer}
+.tog b{font:800 16px "Bricolage Grotesque",sans-serif;color:var(--mut)}
+.tog.on{background:color-mix(in srgb,var(--c) 14%,var(--stage));border-color:var(--c)}.tog.on b{color:var(--c)}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.seg button{font:inherit;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:10px;padding:8px 14px;min-height:44px;cursor:pointer}
+.seg button.on{background:var(--c);border-color:var(--c);color:#fff}
+.scorebox{text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;padding:22px}
+.scorebox .res{font-size:clamp(56px,8vw,88px)}
+.pearl{margin-top:14px;border:2px dashed color-mix(in srgb,var(--red) 50%,transparent);border-radius:12px;padding:12px 16px}
+.sl{margin-bottom:8px}
+.drow{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.drow b{font:800 20px "Bricolage Grotesque",sans-serif;color:var(--c)}
+@media(max-width:760px){.types{grid-template-columns:repeat(2,minmax(0,1fr))}.togs{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){.strip.in .ln{animation:none;stroke-dashoffset:0}}
+.types5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+@media(max-width:820px){.types5{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.seg button.on{outline:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a href="./" style="display:inline-block;margin-bottom:8px;font-weight:700;color:var(--mut);text-decoration:none">← Cardiology</a>
+<h1>Cardiomyopathy</h1>
+<p class="sub">Topic 14 of Core Cardiology for the GP AKT, as a narrated lesson. Press play, or tap any chapter. Pause and play with the numbers whenever you like.</p>
+<nav class="rail" id="rail" aria-label="Chapters"></nav>
+<section class="player" id="player" aria-label="Lesson player">
+<div class="prog"><span id="prog"></span></div>
+<div class="stage" id="stage" aria-live="polite"></div>
+<div class="cap" id="cap">Press play to start. The narration uses a voice on your device.</div>
+<div class="ctl">
+<button id="prev" aria-label="Previous scene">◀</button>
+<button class="play" id="play">▶ Play</button>
+<button id="next" aria-label="Next scene">▶▶</button>
+<span class="grow"></span>
+<label for="speed">Speed <select id="speed"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select></label>
+<label for="voice">Voice <select id="voice"><option value="">Captions only</option></select></label>
+</div>
+</section>
+<p class="hint" id="vhint">For the most natural voice, choose one marked Natural, Enhanced, Premium or Siri, if your device has one. Microsoft Edge offers natural online voices; on iPhone and Mac you can download Enhanced voices in your Accessibility settings.</p>
+</div>
+<script>
+{
+const C={0:"var(--ink)",1:"var(--blue)",2:"var(--teal)",3:"var(--amber)",4:"var(--purple)",5:"var(--red)",6:"var(--ink)"};
+const CH=["Intro","1 Recognise","2 Diagnose","3 Manage","4 Prescribe","5 Quiz","Recap"];
+const $=id=>document.getElementById(id);
+const stage=$("stage"),cap=$("cap"),playB=$("play"),voiceS=$("voice"),speedS=$("speed");
+
+/* ---------- Cardiomyopathy data ---------- */
+const QS=[["A 19-year-old footballer collapsed during a match and recovered quickly. His brother died suddenly aged 28. He has an ejection systolic murmur at the left sternal edge that gets louder when he stands up from squatting. What is the most likely diagnosis?", ["Aortic stenosis", "Hypertrophic cardiomyopathy", "Mitral valve prolapse", "Innocent flow murmur", "Wolff–Parkinson–White syndrome"], 1, "Hypertrophic cardiomyopathy. Exertional syncope, a family history of young sudden death, and a murmur that gets louder on standing (less filling, more obstruction) point to HCM."], ["What is the most appropriate next step for the young man in Q1, who is now well?", ["Reassure, as the collapse was probably vasovagal", "Routine echocardiogram and review in 3 months", "Urgent cardiology assessment, and advise no sport or strenuous exercise until he is seen", "Arrange a 24-hour ECG and review the result", "Start bisoprolol and allow him to keep playing"], 2, "Urgent cardiology assessment, and advise no sport or strenuous exercise until he is seen. Exertional syncope with a family history of sudden death is a red flag for a cardiomyopathy or inherited arrhythmia. Until assessed, exercise carries a risk of sudden death."], ["A 58-year-old man with obstructive hypertrophic cardiomyopathy describes exertional chest tightness. Which medicine should be avoided?", ["Bisoprolol", "Verapamil", "Diltiazem", "Glyceryl trinitrate spray", "Atorvastatin"], 3, "Glyceryl trinitrate spray. Nitrates and other vasodilators reduce preload and afterload, worsening outflow obstruction and causing syncope. Beta-blockers, verapamil and diltiazem are the treatments of choice."], ["A 76-year-old man of Caribbean heritage has breathlessness and ankle swelling. He had bilateral carpal tunnel surgery 5 years ago. His echo shows thick LV walls with preserved ejection fraction, and his ECG has small QRS complexes. What is the most likely diagnosis?", ["Dilated cardiomyopathy", "Hypertrophic cardiomyopathy", "Hypertensive heart disease", "Constrictive pericarditis", "Transthyretin cardiac amyloidosis"], 4, "Transthyretin cardiac amyloidosis. Heart failure with thick walls but low ECG voltage, plus bilateral carpal tunnel syndrome, suggests ATTR amyloid. The hereditary V122I variant is more common in people of West African or Caribbean ancestry."], ["A 33-year-old woman, 6 weeks after delivering twins, has increasing breathlessness, orthopnoea and ankle swelling. Her BP is 132/84 and oxygen saturation 95%. What is the most appropriate management?", ["Same-day medical assessment for suspected peripartum cardiomyopathy", "Reassure: these are normal after pregnancy", "Start furosemide and review in 2 weeks", "Check her haemoglobin and start iron", "Routine echocardiogram"], 0, "Same-day medical assessment for suspected peripartum cardiomyopathy. New heart failure symptoms in the months after delivery need same-day ECG, NT-proBNP and echo. Twin pregnancy is a risk factor."], ["A 67-year-old woman had crushing chest pain the day after her husband's funeral. Her ECG showed anterior ST elevation. Angiography shows unobstructed coronary arteries and ballooning of the left ventricular apex. What is the most likely diagnosis?", ["Myocarditis", "Pericarditis", "Takotsubo cardiomyopathy", "Arrhythmogenic cardiomyopathy", "Aortic dissection"], 2, "Takotsubo cardiomyopathy. A stressful trigger, an MI-like ECG, unobstructed coronaries and apical ballooning are classic. It usually recovers within weeks."], ["A 45-year-old man has hypertrophic cardiomyopathy with a known disease-causing gene variant. His 16-year-old son is well and asks if he needs checking. What is the most appropriate advice?", ["No checks are needed unless he develops symptoms", "Check an ECG; if it is normal, no further action", "Advise him never to play sport", "Refer to an inherited cardiac conditions clinic for clinical screening and genetic testing", "Arrange an annual echocardiogram in primary care"], 3, "Refer to an inherited cardiac conditions clinic for clinical screening and genetic testing. First-degree relatives are offered ECG and echo, and cascade testing for the family's known variant, with genetic counselling. He has a 50% chance of carrying it."], ["A 52-year-old man who drinks about 70 units of alcohol a week has dilated cardiomyopathy with an ejection fraction of 30%. Alongside heart failure medicines, which intervention is most likely to improve his heart function?", ["Reduce to 14 units a week", "Stop drinking alcohol completely", "Thiamine alone", "Start digoxin", "A daily aspirin"], 1, "Stop drinking alcohol completely. In alcohol-related DCM, complete abstinence can lead to marked recovery of heart function. Cutting down is less effective."], ["A 40-year-old woman has hypertrophic cardiomyopathy. She has had no symptoms, syncope or arrhythmia, and holds a car licence only. What does DVLA guidance say?", ["She need not notify DVLA", "She must notify DVLA and stop driving", "She must stop driving for 1 month", "She must notify DVLA but may keep driving", "She can drive only with an exercise test every 3 years"], 0, "She need not notify DVLA. For a group 1 licence, HCM does not need to be reported unless there is another disqualifying condition such as syncope or arrhythmia. Group 2 drivers must notify."], ["A 49-year-old man with hypertrophic cardiomyopathy develops atrial fibrillation. His CHA₂DS₂-VASc score is 0. What is the most appropriate approach to stroke prevention?", ["No anticoagulation, as the score is 0", "Aspirin 75 mg daily", "Reassess anticoagulation when he turns 65", "Anticoagulate only if the AF becomes persistent", "Offer anticoagulation regardless of the CHA₂DS₂-VASc score"], 4, "Offer anticoagulation regardless of the CHA₂DS₂-VASc score. AF in HCM carries a high stroke risk. The ESC recommends anticoagulation regardless of the score, unless contraindicated."]];
+const TYPES=[["Hypertrophic (HCM)","Thick, stiff LV; may obstruct the outflow tract","var(--red)"],["Dilated (DCM)","Dilated LV, reduced ejection fraction","var(--amber)"],["Arrhythmogenic (ARVC)","Muscle replaced by fat and scar, mainly RV","var(--purple)"],["Restrictive (amyloid)","Stiff walls; heart failure with preserved EF","var(--blue)"],["Takotsubo","Temporary apical ballooning after stress","var(--teal)"]];
+const CASES=[["18-year-old collapses while sprinting; his uncle died suddenly at 30","Hypertrophic (HCM)"],["79-year-old man, breathless, bilateral carpal tunnel, thick walls but small ECG voltages","Amyloid (restrictive)"],["Woman, 3 weeks after delivery, orthopnoea and ankle swelling","Peripartum (dilated)"],["Marathon runner with palpitations on exercise; T inversion V1–V3","Arrhythmogenic (ARVC)"],["70-year-old woman with chest pain the day after a bereavement; ST elevation, clear coronaries","Takotsubo"],["55-year-old man drinking 80 units a week, breathless, EF 30%","Dilated (alcohol)"]];
+const POS={squat:[25,"Squatting","More blood returns to the heart and afterload rises: the LV fills, the outflow tract widens, and the murmur gets quieter."],lie:[45,"Lying down","Baseline: a moderate ejection systolic murmur at the left sternal edge."],stand:[78,"Standing up","Less blood returns to the heart: the LV is smaller, the septum and mitral leaflet narrow the outflow, and the murmur gets louder."],vals:[92,"Valsalva","Straining reduces venous return the most: obstruction is greatest and the murmur is loudest."]};
+const DRUGS=[["Bisoprolol","Use","First-line for HCM symptoms: slows the heart, improves filling",0],["Verapamil or diltiazem","Use","Alternative if a beta-blocker isn't tolerated",0],["Glyceryl trinitrate (GTN)","Avoid","Vasodilator: lowers preload, worsens obstruction, can cause syncope",1],["Amlodipine","Avoid","Dihydropyridine vasodilator: worsens obstruction",1],["High-dose furosemide","Care","Dehydration shrinks the LV and worsens obstruction",1],["Digoxin","Avoid","Increases contractility: worsens outflow obstruction",1],["Mavacamten","Specialist","Cardiac myosin inhibitor for symptomatic obstructive HCM; needs regular echo and contraception",0]];
+const DV={g1:{hcm:["ok","No need to notify DVLA, if there is no other disqualifying condition (syncope, arrhythmia, symptoms)"],dcm:["ok","No need to notify DVLA, if there is no other disqualifying condition"],arvc:["mid","Asymptomatic: no need to notify. Symptoms that could incapacitate: stop driving and notify"],icd:["stop","ICD for a ventricular arrhythmia: no driving for 6 months. Prophylactic ICD: 1 month"]},
+ g2:{hcm:["stop","Must notify DVLA (form VOCH1); licensing depends on specialist assessment"],dcm:["stop","Must notify DVLA; may keep driving if asymptomatic and meeting the standards"],arvc:["stop","Must notify DVLA and stop driving"],icd:["stop","Permanently barred from group 2 driving"]}};
+let dvg="g1",dvc="hcm";
+
+/* ---------- scenes ---------- */
+const li=(t,i)=>`<li class="r" data-i="${i}">${t}</li>`;
+const S=[
+{ch:0,tag:"TOPIC 14",h:"Four things examiners test",html:()=>`
+<div class="title r in" data-i="0"><div class="big">14</div><div><b style="font-size:20px">Cardiomyopathy</b><p>2023 ESC Guidelines for the management of cardiomyopathies · NICE TA913 · TA984 · TA1121 · DVLA</p></div></div>
+<ol class="dec">${["<b>Spot the type</b> from the story","Know the <b>HCM drugs to avoid</b>","<b>Refer at the right speed</b>: exertional syncope, a breathless new mother","<b>Screen the family</b>, and the <b>DVLA</b> rules"].map((t,k)=>li("<span>"+t+"</span>",k+1)).join("")}</ol>`,
+ b:[[0,"Topic fourteen: cardiomyopathy. Questions test four things."],[1,"Spotting the type from the story."],[2,"Knowing which drugs to avoid in hypertrophic cardiomyopathy."],[3,"Referring at the right speed."],[4,"And screening the family, plus the DVLA rules."]]},
+{ch:1,tag:"STEP 1 · RECOGNISE",h:"Five types",html:()=>`
+<div class="types5">${TYPES.map((t,k)=>`<div class="ty r" data-i="${k+1}" style="border-top-color:${t[2]}"><b>${t[0]}</b>${t[1]}</div>`).join("")}</div>
+<div class="g2" style="margin-top:14px"><div class="card red r" data-i="6"><h3>Red flags</h3><ul class="b"><li><b>Syncope during exertion</b></li><li>Family history of <b>sudden death under 40</b></li><li>Breathless in late pregnancy or after delivery</li><li>Abnormal ECG in a young person</li></ul></div>
+<div class="card r" data-i="7"><h3>Why it matters</h3><ul class="b"><li>About <b>1 in 250</b> people; HCM about 1 in 500</li><li>Leading cause of <b>exercise-related sudden death</b> in the young</li><li>Often autosomal dominant: <b>50%</b> risk to each child</li></ul></div></div>`,
+ b:[[1,"Hypertrophic: a thick, stiff left ventricle that can obstruct the outflow tract."],[2,"Dilated: a big, weak ventricle with a low ejection fraction. Alcohol, genes, pregnancy and chemotherapy are causes."],[3,"Arrhythmogenic: muscle replaced by fat and scar, mainly in the right ventricle. Exercise makes it worse."],[4,"Restrictive, usually amyloid: stiff walls and heart failure with a preserved ejection fraction."],[5,"And takotsubo: temporary ballooning of the apex after emotional or physical stress."],[6,"Red flags: syncope on exertion, a family history of young sudden death, or a breathless new mother."],[7,"Cardiomyopathies are the leading cause of exercise-related sudden death in young people, and many are inherited."]]},
+{ch:1,tag:"STEP 1 · RECOGNISE",h:"Spot the type",stop:1,html:()=>`
+<div class="try r" data-i="1"><h3>Read each story, decide, then tap to check</h3><div class="chips">${CASES.map((w,k)=>`<button class="chip" data-w="${k}">${w[0]}</button>`).join("")}</div></div>`,
+ init(){stage.querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>revealCase(b))},
+ b:[[1,"Each story points to one type. The age, the trigger and one key clue usually give it away. Try them, then press next."]]},
+{ch:2,tag:"STEP 2 · DIAGNOSE",h:"The HCM murmur changes with posture",stop:1,html:()=>`
+<div class="g2"><div class="r" data-i="1"><svg id="hcmsvg" viewBox="0 0 300 220" style="width:100%;max-width:380px;display:block;margin:0 auto"></svg></div>
+<div class="r" data-i="1"><div class="seg" role="group" aria-label="Manoeuvre">${Object.entries(POS).map(([k,v])=>`<button data-pos="${k}">${v[1]}</button>`).join("")}</div>
+<div class="meter"><div style="color:var(--mut);font-size:14px">Outflow obstruction and murmur loudness</div><div class="fallbar"><div id="posbar" style="height:100%;border-radius:11px;background:var(--red);width:45%;transition:width .6s"></div></div></div>
+<div class="card"><b id="posh"></b><p id="post" style="margin:6px 0 0"></p></div></div></div>
+<div class="pearl r" data-i="2">Louder on <b>standing or Valsalva</b>, quieter on <b>squatting</b>: hypertrophic cardiomyopathy. The aortic stenosis murmur does the opposite.</div>`,
+ init(){stage.querySelectorAll("[data-pos]").forEach(b=>b.onclick=()=>setPos(b.dataset.pos));setPos("lie")},
+ b:[[1,"Lying down, the murmur of obstructive HCM is an ejection systolic murmur at the left sternal edge.",()=>setPos("lie")],[1,"Stand up: less blood returns, the ventricle gets smaller, the obstruction worsens, and the murmur gets louder.",()=>setPos("stand")],[1,"Valsalva has the biggest effect: the loudest murmur.",()=>setPos("vals")],[1,"Squatting does the reverse: more filling, less obstruction, a quieter murmur.",()=>setPos("squat")],[2,"Most other murmurs, including aortic stenosis, get quieter on standing and Valsalva. Try each manoeuvre, then press next."]]},
+{ch:2,tag:"STEP 2 · DIAGNOSE",h:"ECG clues, and screening the family",html:()=>`
+<div class="g3"><div class="card r" data-i="1"><h3>HCM</h3><ul class="b"><li>LVH voltages</li><li><b>Deep T wave inversion</b></li><li>Pathological Q waves</li></ul></div>
+<div class="card r" data-i="2"><h3>ARVC</h3><ul class="b"><li><b>T inversion V1–V3</b></li><li>Epsilon wave</li><li>Ectopics or VT, LBBB pattern</li></ul></div>
+<div class="card r" data-i="3"><h3>Amyloid</h3><ul class="b"><li><b>Low voltage</b> despite thick walls</li><li>AF, conduction disease</li><li>V122I variant: 3–4% of people of West African or Caribbean ancestry</li></ul></div></div>
+<div class="card r" data-i="4" style="margin-top:12px"><h3>Family (cascade) screening</h3><ul class="b"><li>Offer <b>first-degree relatives</b> of anyone with HCM, DCM or ARVC an <b>ECG and echo</b> at an <b>inherited cardiac conditions clinic</b></li><li>If the family's variant is known: <b>cascade genetic testing</b>, with genetic counselling</li><li>Young sudden unexplained death: refer the family</li></ul></div>`,
+ b:[[1,"In HCM, look for big voltages with deep T wave inversion."],[2,"In arrhythmogenic cardiomyopathy, T wave inversion in V1 to V3, and sometimes an epsilon wave."],[3,"In amyloid, the walls are thick but the voltages are small. That mismatch is the clue."],[4,"And first-degree relatives need an ECG and echo at an inherited cardiac conditions clinic, plus genetic testing if the family's variant is known."]]},
+{ch:3,tag:"STEP 3 · MANAGE",h:"HCM drug check: use or avoid?",stop:1,html:()=>`
+<div class="g2"><div class="plist r" data-i="1">${DRUGS.map((d,k)=>`<button class="chip" data-d="${k}">${d[0]}</button>`).join("")}</div>
+<div class="card dosebox r" data-i="1"><span id="dwho" style="color:var(--mut)">Tap a medicine</span><span class="pill" id="dpill">?</span><span id="dnote"></span></div></div>`,
+ init(){stage.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>pickDrug(+b.dataset.d))},
+ b:[[1,"A beta-blocker is first line for symptoms in HCM.",()=>pickDrug(0)],[1,"Verapamil or diltiazem if a beta-blocker isn't tolerated.",()=>pickDrug(1)],[1,"But avoid nitrates. They lower filling pressure and worsen the obstruction.",()=>pickDrug(2)],[1,"The same goes for vasodilators like amlodipine, and digoxin.",()=>pickDrug(5)],[1,"And mavacamten is a specialist drug for symptomatic obstructive HCM. Tap the others yourself, then press next.",()=>pickDrug(6)]]},
+{ch:3,tag:"STEP 3 · MANAGE",h:"Treat the type",html:()=>`
+<div class="g2"><div class="card r" data-i="1"><h3>HCM</h3><ul class="b"><li>Beta-blocker, then verapamil or diltiazem; avoid dehydration</li><li>Specialist: mavacamten, septal reduction, <b>ICD</b> if high risk</li><li><b>AF in HCM: anticoagulate regardless of CHA₂DS₂-VASc</b></li></ul></div>
+<div class="card r" data-i="2"><h3>DCM</h3><ul class="b"><li>Treat as heart failure with reduced EF: <b>the four pillars</b></li><li>Alcohol-related: <b>stop completely</b>; function can recover</li></ul></div>
+<div class="card r" data-i="3"><h3>ATTR amyloid</h3><ul class="b"><li>Diuretics; reduce BP tablets if hypotensive</li><li>Specialist: <b>tafamidis</b> or <b>acoramidis</b></li></ul></div>
+<div class="card r" data-i="4"><h3>Peripartum</h3><ul class="b"><li>Heart failure late in pregnancy or in the months after delivery</li><li><b>Same-day</b> assessment; can recur in a later pregnancy</li></ul></div></div>
+<div class="pearl r" data-i="5"><b>Exercise (ESC 2023):</b> regular low-to-moderate exercise suits most people. Competitive or high-intensity sport is an individual decision with the specialist. In ARVC, avoid high-intensity exercise.</div>`,
+ b:[[1,"HCM: beta-blockers first, specialist drugs and an ICD for those at high risk. And AF in HCM is anticoagulated whatever the CHA2DS2-VASc score."],[2,"Dilated cardiomyopathy is treated like heart failure with reduced ejection fraction. If alcohol is the cause, stopping completely can let the heart recover."],[3,"Transthyretin amyloid can be treated with tafamidis or acoramidis, started by specialists."],[4,"And breathlessness in a new mother needs same-day assessment for peripartum cardiomyopathy."],[5,"Most people with a cardiomyopathy should do regular moderate exercise. Competitive sport is decided with the specialist."]]},
+{ch:4,tag:"STEP 4 · PRESCRIBE / REFER",h:"How fast to refer",html:()=>`
+<div class="ladder">${[["999 / same day","Chest pain like ACS, acute heart failure, sustained VT, syncope with ongoing symptoms","var(--red)"],["Same day","Breathless or oedematous in late pregnancy or after delivery","var(--red)"],["Urgent","Exertional syncope, or syncope with an abnormal ECG or family history of sudden death. No sport until seen","var(--amber)"],["Routine","Suspected cardiomyopathy without red flags: echo and cardiology","var(--teal)"],["ICC clinic","First-degree relatives; families after a young sudden death","var(--purple)"]].map((r,k)=>`<div class="rung r" data-i="${k+1}" style="border-left-color:${r[2]}"><b style="color:${r[2]}">${r[0]}</b>${r[1]}</div>`).join("")}</div>`,
+ b:[[1,"Chest pain like a heart attack, acute heart failure or sustained VT: 999."],[2,"A breathless new mother: same-day assessment."],[3,"Syncope on exertion: urgent cardiology, and no sport or strenuous exercise until assessed."],[4,"Suspected cardiomyopathy without red flags: echo and routine cardiology."],[5,"And relatives go to an inherited cardiac conditions clinic."]]},
+{ch:4,tag:"STEP 4 · PRESCRIBE / REFER",h:"DVLA checker",stop:1,html:()=>`
+<div class="g2"><div class="r" data-i="1"><div class="seg" role="group" aria-label="Licence"><button data-dg="g1">Group 1 (car)</button><button data-dg="g2">Group 2 (bus, lorry)</button></div>
+<div class="seg" role="group" aria-label="Condition"><button data-dc="hcm">HCM</button><button data-dc="dcm">DCM</button><button data-dc="arvc">ARVC</button><button data-dc="icd">ICD fitted</button></div></div>
+<div class="card scorebox r" data-i="1"><span style="color:var(--mut)" id="dvh"></span><div class="verdict" id="dvv"></div></div></div>`,
+ init(){stage.querySelectorAll("[data-dg]").forEach(b=>b.onclick=()=>setDv(b.dataset.dg,dvc));stage.querySelectorAll("[data-dc]").forEach(b=>b.onclick=()=>setDv(dvg,b.dataset.dc));setDv("g1","hcm")},
+ b:[[1,"Car drivers with HCM need not tell the DVLA, as long as there's no syncope, arrhythmia or other disqualifying condition.",()=>setDv("g1","hcm")],[1,"The same applies to dilated cardiomyopathy.",()=>setDv("g1","dcm")],[1,"Bus and lorry drivers must notify for all of them.",()=>setDv("g2","hcm")],[1,"And after an ICD fitted for a ventricular arrhythmia, no car driving for six months. Try the combinations, then press next.",()=>setDv("g1","icd")]]},
+{ch:5,tag:"QUIZ",h:"Ten questions",stop:1,html:()=>`<div class="qz r in" data-i="0" id="qz"></div>`,init(){quiz()},
+ b:[[0,"Ten questions. Pick the single best answer for each, and you'll get your score at the end."]]},
+{ch:6,tag:"RECAP",h:"The facts to take into the exam",html:()=>`
+<div class="nums">${[["Stand ↑","HCM murmur louder on standing or Valsalva"],["No GTN","nitrates and vasodilators worsen HCM obstruction"],["50%","risk to each child: screen first-degree relatives"],["Low voltage","+ thick walls + carpal tunnel: amyloid"],["Any score","AF in HCM: anticoagulate"]].map((n,k)=>`<div class="num r" data-i="${k+1}"><b>${n[0]}</b>${n[1]}</div>`).join("")}</div>`,
+ b:[[1,"The HCM murmur gets louder on standing and Valsalva."],[2,"Avoid nitrates and vasodilators in HCM."],[3,"Each child has a fifty percent chance of inheriting it, so screen first-degree relatives."],[4,"Thick walls with low voltages and carpal tunnel: think amyloid."],[5,"And AF in HCM is anticoagulated whatever the score. That's topic fourteen."]]}
+];
+
+/* ---------- helpers ---------- */
+function revealCase(b){if(b.querySelector("small"))return;b.classList.add("q");b.insertAdjacentHTML("beforeend",`<small>${CASES[b.dataset.w][1]}</small>`)}
+function setPos(k){if(!$("hcmsvg"))return;const [v,h,t]=POS[k];
+ stage.querySelectorAll("[data-pos]").forEach(b=>b.classList.toggle("on",b.dataset.pos===k));
+ $("posbar").style.width=v+"%";$("posh").textContent=h;$("post").textContent=t;
+ const sx=60+22+v*0.34,tipx=228-40-v*0.75,mid=(sx+tipx)/2,gw=Math.max(4,tipx-sx);let arcs="";
+ for(let n=0;n<Math.round(v/22);n++)arcs+=`<path d="M${190+n*14} 34 q9 -12 0 -24" fill="none" stroke="var(--red)" stroke-width="3" stroke-linecap="round" opacity="${1-n*0.18}"/>`;
+ $("hcmsvg").innerHTML=`<path d="M125 44 L60 44 Q40 44 40 64 L40 170 Q40 210 150 212 Q260 210 260 170 L260 64 Q260 44 240 44 L175 44" fill="color-mix(in srgb,var(--red) 10%,transparent)" stroke="var(--red)" stroke-width="3"/>
+ <path d="M125 44 L125 4 M175 44 L175 4" stroke="var(--red)" stroke-width="3"/>
+ <clipPath id="lvc"><rect x="41" y="45" width="218" height="165"/></clipPath><ellipse clip-path="url(#lvc)" cx="40" cy="100" rx="${sx-40}" ry="52" fill="var(--amber)" opacity=".9"/>
+ <path d="M258 150 Q240 110 ${tipx} 82" fill="none" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/>
+ <path d="M${mid} 170 L${mid} 30" stroke="var(--blue)" stroke-width="${Math.max(2,Math.min(6,gw/8))}" marker-end="url(#ah)"/>
+ <defs><marker id="ah" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--blue)"/></marker></defs>
+ <text x="150" y="-2" dy="14" text-anchor="middle" font-size="12" fill="var(--mut)">aorta</text>
+ <text x="48" y="190" font-size="12" fill="var(--amber)" font-weight="700">septum</text>
+ <text x="252" y="190" text-anchor="end" font-size="12" font-weight="700" fill="var(--ink)">mitral leaflet</text>${arcs}`}
+function pickDrug(k){const d=DRUGS[k];stage.querySelectorAll("[data-d]").forEach(b=>b.classList.toggle("sel",+b.dataset.d===k));
+ const p=$("dpill");if(!p)return;$("dwho").textContent=d[0];p.textContent=d[1];p.classList.toggle("hi",!!d[3]);$("dnote").textContent=d[2];
+ p.classList.add("pop");setTimeout(()=>p.classList.remove("pop"),350)}
+function setDv(g,c){dvg=g;dvc=c;if(!$("dvv"))return;
+ stage.querySelectorAll("[data-dg]").forEach(b=>b.classList.toggle("on",b.dataset.dg===g));stage.querySelectorAll("[data-dc]").forEach(b=>b.classList.toggle("on",b.dataset.dc===c));
+ const [k,t]=DV[g][c];$("dvh").textContent=(g==="g1"?"Group 1 · ":"Group 2 · ")+{hcm:"HCM",dcm:"DCM",arvc:"ARVC",icd:"ICD"}[c];const v=$("dvv");v.className="verdict "+k;v.textContent=t}
+
+let qi=0,qa=[];
+function quiz(){const q=QS[qi],L="ABCDE",box=$("qz");if(!box)return;const done=qa[qi]!==undefined;
+ box.innerHTML=`<p class="stem"><b>Q${qi+1}.</b> ${q[0]}</p><div class="opts">${q[1].map((o,k)=>`<button class="opt${done?(k===q[2]?" right":k===qa[qi]?" wrong":""):""}" data-o="${k}" ${done?"disabled":""}><i>${L[k]}</i>${o}</button>`).join("")}</div>
+ ${done?`<div class="fb${qa[qi]===q[2]?"":" no"}"><b>${qa[qi]===q[2]?"Correct.":"Not quite: the answer is "+L[q[2]]+"."}</b> ${q[3]}</div>`:""}
+ <div class="qnav"><div class="qdots">${QS.map((_,k)=>`<span class="${qa[k]===undefined?"":qa[k]===QS[k][2]?"ok":"no"}${k===qi?" cur":""}"></span>`).join("")}</div>
+ <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" id="qread">Read aloud</button>${qi>0?`<button class="btn ghost" id="qprev">Back</button>`:""}${qi<QS.length-1?`<button class="btn" id="qnext">Next question</button>`:`<button class="btn" id="qscore">See my score</button>`}</div></div>`;
+ box.querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>{qa[qi]=+b.dataset.o;quiz();const ok=qa[qi]===q[2];say((ok?"Correct. ":"Not quite. The answer is "+L[q[2]]+". ")+q[3])});
+ $("qread").onclick=()=>say(`Question ${qi+1}. ${q[0]} `+q[1].map((o,k)=>L[k]+": "+o+".").join(" "));
+ if($("qprev"))$("qprev").onclick=()=>{qi--;quiz()};if($("qnext"))$("qnext").onclick=()=>{qi++;quiz()};if($("qscore"))$("qscore").onclick=score}
+function score(){const n=qa.filter((a,k)=>a===QS[k][2]).length,box=$("qz");
+ const band=n>=9?["var(--teal)","Exam-ready","Move on, and re-test once in 2 weeks."]:n>=7?["var(--blue)","Nearly there","Revisit the chapters behind the questions you missed, then re-test within a week."]:n>=5?["var(--amber)","Shaky","Replay Steps 3 and 4, then repeat the questions in 48 hours."]:["var(--red)","Not yet","Replay the whole lesson before re-attempting."];
+ box.innerHTML=`<div class="card" style="border-top:6px solid ${band[0]}"><div class="res" style="color:${band[0]}">${n} / 10</div><h3 style="color:${band[0]};margin-top:10px">${band[1]}</h3><p style="margin:0 0 12px">${band[2]}</p><button class="btn" id="qagain">Try again</button></div>`;
+ $("qagain").onclick=()=>{qi=0;qa=[];quiz()};say(`You scored ${n} out of 10. ${band[1]}. ${band[2]}`)}
+
+/* ---------- speech ---------- */
+const REP=[[/CHA₂DS₂-VASc|CHA2DS2-VASc/g,"chads vasc"],[/\bDOACs?\b/g,"D O A C"],[/\bTIA\b/g,"T I A"],[/\bPAD\b/g,"P A D"],[/\bWPW\b/g,"W P W"],[/\bCrCl\b/g,"creatinine clearance"],[/\bINR\b/g,"I N R"],[/\bTOE\b/g,"T O E"],[/QRISK3/g,"Q-risk three"],[/non-HDL/g,"non H D L"],[/\bLDL\b/g,"L D L"],[/\bHDL\b/g,"H D L"],[/\bHbA1c\b/g,"H B A 1 C"],[/\beGFR\b/g,"e G F R"],[/\bALT\b/g,"A L T"],[/\bCK\b/g,"C K"],[/\bTSH\b/g,"T S H"],[/\bCKD\b/g,"C K D"],[/\bCVD\b/g,"cardiovascular disease"],[/\bCHD\b/g,"coronary heart disease"],[/\bFH\b/g,"F H"],[/\bMI\b/g,"M I"],[/\bACR\b/g,"A C R"],[/(\d)\s*mg\b/g,"$1 milligrams"],[/mmol\/L/g,"millimoles per litre"],[/(\d)\s*%/g,"$1 percent"],[/(\d)\s*×/g,"$1 times"],[/(\d)\s*[–-]\s*(\d)/g,"$1 to $2"],[/IU\/L/g,"units per litre"]];
+const clean=t=>REP.reduce((s,[a,b])=>s.replace(a,b),t);
+const synth=window.speechSynthesis;let voices=[];
+function loadVoices(){if(!synth)return;voices=synth.getVoices().filter(v=>/^en/i.test(v.lang));if(!voices.length)return;
+ const rank=v=>(/natural|neural|premium|enhanced|siri/i.test(v.name)?4:0)+(/en[-_]GB/i.test(v.lang)?2:0)+(/google uk|sonia|libby|ryan|serena|daniel|kate/i.test(v.name)?1:0);
+ voices.sort((a,b)=>rank(b)-rank(a));let keep=voiceS.value;
+ voiceS.innerHTML=`<option value="">Captions only</option>`+voices.map((v,k)=>`<option value="${k}">${v.name.replace(/[<>&"]/g,"")} (${v.lang})</option>`).join("");
+ voiceS.value=keep===""&&!voiceS.dataset.touched?"0":keep}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices}else{$("vhint").textContent="This browser can't speak the narration, so captions only."}
+voiceS.onchange=()=>{voiceS.dataset.touched=1};
+function say(text,onend){cap.textContent=text;const v=voices[+voiceS.value];
+ if(synth)synth.cancel();
+ if(!synth||voiceS.value===""||!v){if(onend)timer=setTimeout(onend,(1200+text.split(/\s+/).length*330)/+speedS.value);return}
+ const u=new SpeechSynthesisUtterance(clean(text));u.voice=v;u.lang=v.lang;u.rate=+speedS.value;
+ let fired=false;const fin=()=>{if(fired)return;fired=true;clearTimeout(guard);if(onend)timer=setTimeout(onend,350)};
+ u.onend=fin;u.onerror=fin;const guard=setTimeout(fin,(4000+text.split(/\s+/).length*700)/+speedS.value);synth.speak(u)}
+
+/* ---------- player ---------- */
+let si=0,bi=-1,playing=false,timer=null;
+$("rail").innerHTML=CH.map((c,k)=>`<button data-ch="${k}" style="--c:${C[k]}">${c}</button>`).join("");
+$("rail").querySelectorAll("button").forEach(b=>b.onclick=()=>{const k=S.findIndex(s=>s.ch===+b.dataset.ch);go(k,true)});
+function render(){const s=S[si];document.documentElement.style.setProperty("--c",C[s.ch]);$("player").style.setProperty("--c",C[s.ch]);
+ stage.innerHTML=`<span class="tag">${s.tag}</span><h2>${s.h}</h2>`+s.html();if(s.init)s.init();
+ $("rail").querySelectorAll("button").forEach(b=>b.classList.toggle("on",+b.dataset.ch===s.ch));
+ $("prog").style.width=((si+1)/S.length*100)+"%";$("next").classList.remove("pulse")}
+function reveal(i){stage.querySelectorAll(".r").forEach(e=>{const d=+e.dataset.i;e.classList.toggle("in",d<=i);e.classList.toggle("now",d===i&&d>0)})}
+function beat(){const s=S[si];bi++;
+ if(bi>=s.b.length){if(s.stop||si===S.length-1){stop();if(si<S.length-1){$("next").classList.add("pulse");cap.textContent="Your turn. Press ▶▶ for the next scene when you're ready."}return}
+  timer=setTimeout(()=>{si++;bi=-1;render();beat()},700);return}
+ const [i,t,f]=s.b[bi];reveal(i);if(f)f();say(t,()=>{if(playing)beat()})}
+function start(){playing=true;playB.textContent="❚❚ Pause";if(bi>=S[si].b.length-1&&S[si].b.length){bi=-1;render()}beat()}
+function stop(){playing=false;playB.textContent="▶ Play";clearTimeout(timer);if(synth)synth.cancel()}
+function go(k,autoplay){stop();si=Math.max(0,Math.min(S.length-1,k));bi=-1;render();
+ if(autoplay){start()}else{reveal(99);cap.textContent=S[si].b[0][1]}}
+playB.onclick=()=>playing?stop():(bi>=0&&bi<S[si].b.length?(bi--,start()):start());
+$("next").onclick=()=>go(si+1,true);$("prev").onclick=()=>go(si-1,true);
+speedS.onchange=()=>{};
+document.addEventListener("keydown",e=>{if(/INPUT|SELECT|BUTTON/.test(e.target.tagName))return;if(e.code==="Space"){e.preventDefault();playB.click()}if(e.key==="ArrowRight")$("next").click();if(e.key==="ArrowLeft")$("prev").click()});
+render();reveal(99);
+}
+</script>
+</body>
+</html>
