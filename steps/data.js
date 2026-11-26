@@ -31,6 +31,12 @@ const STEPS=[
   "Claudication: supervised exercise, about 2 hours a week for 3 months",
   "Still limiting: naftidrofuryl or routine vascular referral",
   "Rest pain, ulcer or gangrene: urgent vascular; the 6 Ps: 999"]},
+ {id:"vte",cat:"cardiology",topic:"Venous thromboembolism: DVT and PE",src:"NICE NG158",url:"https://www.nice.org.uk/guidance/ng158",lesson:"../cardiology/vte.html",steps:[
+  "Score the 2-level Wells (DVT or PE); PERC only if suspicion is low",
+  "Likely: leg ultrasound within 4 hours, or same-day CTPA for PE",
+  "Unlikely: D-dimer within 4 hours; if positive, image",
+  "Delay or confirmed clot: apixaban or rivaroxaban (LMWH in pregnancy)",
+  "Duration: 3 months if provoked; consider longer if unprovoked"]},
  {id:"rosacea",cat:"dermatology",topic:"Rosacea",src:"NICE CKS",url:null,lesson:"../dermatology/rosacea.html",steps:[
   "Clinical diagnosis: avoid triggers, daily SPF, no facial steroids",
   "Papules and pustules: topical ivermectin 1% (or azelaic acid, metronidazole)",

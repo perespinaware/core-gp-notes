@@ -54,7 +54,7 @@ const AKT_AREAS=[
   ["cv-af","Atrial fibrillation",1,{notes:1,lesson:1,bank:["Atrial fibrillation"]}],
   ["cv-acs","Chest pain and acute coronary syndrome",1,{notes:1,bank:["Acute coronary syndrome and myocardial infarction"]}],
   ["cv-hf","Heart failure",1,{notes:1,bank:["Heart failure"]}],
-  ["cv-vte","DVT, PE and anticoagulation",1,{}],
+  ["cv-vte","DVT, PE and anticoagulation",1,{notes:1,lesson:1,bank:["Venous thromboembolism: DVT and PE"]}],
   ["cv-brady","Bradycardia and heart block",2,{notes:1,bank:["Bradycardia and heart block"]}],
   ["cv-tachy","Tachyarrhythmias and palpitations",2,{notes:1,bank:["Tachyarrhythmias"]}],
   ["cv-arrest","Cardiac arrest, CPR and anaphylaxis",2,{notes:1,bank:["Cardiac arrest and CPR"]}],

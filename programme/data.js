@@ -175,8 +175,8 @@ const CURRIC=[
 /* AKT practice topics that count towards each topic guide's confidence (by guide number, 1-based).
    New lessons are matched automatically by their category (see CAT_GUIDE). */
 const GUIDE_TOPICS={13:["Rosacea","Psoriasis","Lichen simplex, planus and sclerosus","Scabies","Acne vulgaris","Atopic eczema","Contact dermatitis"],3:["Sensitivity and specificity","Positive and negative predictive value","Calculations (new numbers every time)"],5:["The GP contract and QOF"],
- 8:["Heart failure","QRISK, lipids and statins","Atrial fibrillation"],12:["QRISK, lipids and statins","Atrial fibrillation","Bradycardia and heart block","Tachyarrhythmias","Acute coronary syndrome and myocardial infarction","Cardiac arrest and CPR","Heart failure","Heart valve disease","Cardiomyopathy","Syncope and collapse","Peripheral arterial disease"],
- 32:["Acute coronary syndrome and myocardial infarction","Cardiac arrest and CPR","Syncope and collapse"]};
+ 8:["Heart failure","QRISK, lipids and statins","Atrial fibrillation"],12:["QRISK, lipids and statins","Atrial fibrillation","Bradycardia and heart block","Tachyarrhythmias","Acute coronary syndrome and myocardial infarction","Cardiac arrest and CPR","Heart failure","Heart valve disease","Cardiomyopathy","Syncope and collapse","Peripheral arterial disease","Venous thromboembolism: DVT and PE"],
+ 29:["Venous thromboembolism: DVT and PE"],32:["Acute coronary syndrome and myocardial infarction","Cardiac arrest and CPR","Syncope and collapse","Venous thromboembolism: DVT and PE"]};
 const CAT_GUIDE={cardiology:12,dermatology:13,statistics:3,admin:5};
 /* Which lesson pages and practice topics count for each statistics/admin stream topic. Topics with no lesson yet use the study timer. */
 const STREAM_MAP={

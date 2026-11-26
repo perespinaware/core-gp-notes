@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Venous thromboembolism: DVT and PE · Cardiology · Road to GP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday learning: a revision lesson that plays like a video, then lets you touch the numbers
+   IDEA the Core Cardiology guide come to life: same ink, red and step colours, scenes that build as they are narrated
+   PICTURE the player stage itself: each scene animates in, with live sliders, gauges and a quiz inside it
+   COLOUR ink #16212a ground in the controls, white stage, red #b3263a accent, step colours blue, teal, amber, purple
+   TYPE Bricolage Grotesque headings (the guide's own face) + Atkinson Hyperlegible text
+   LAYOUT laptop: chapter rail on top, stage, caption bar, controls; phone: same order stacked, controls wrap */
+:root{color-scheme:light dark;--bg:light-dark(#eef1f1,#0f1519);--stage:light-dark(#ffffff,#172128);--ink:light-dark(#16212a,#e8eef0);--mut:light-dark(#576470,#9aabb4);--line:light-dark(#dfe3e6,#2a3a44);--soft:light-dark(#f4f6f6,#1c2a33);--red:light-dark(#b3263a,#ff7385);--blue:light-dark(#2f66d0,#79a2f2);--teal:light-dark(#0b8577,#3cc7b3);--amber:light-dark(#b86e00,#f1aa45);--purple:light-dark(#7b46c7,#b08cf0);--bar:#16212a;--okbg:light-dark(#e3f4f0,#123630);--stopbg:light-dark(#fbe6e9,#3d1820)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif;overflow-x:clip}
+b{font-weight:700}
+.wrap{max-width:1180px;margin:0 auto;padding:18px max(16px,3vw) 40px}
+h1{font:800 clamp(26px,3.4vw,38px)/1.08 "Bricolage Grotesque",system-ui,sans-serif;margin:0 0 4px;letter-spacing:-.02em}
+.sub{color:var(--mut);margin:0 0 14px}
+.rail{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.rail button{font:700 14px "Atkinson Hyperlegible",sans-serif;border:0;border-radius:30px;padding:8px 14px;min-height:38px;background:var(--line);color:var(--mut);cursor:pointer}
+.rail button.on{color:#fff;background:var(--c)}
+.rail button:focus-visible,.ctl button:focus-visible,.ctl select:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.player{background:var(--stage);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px -18px rgba(0,0,0,.35)}
+.stage{position:relative;min-height:540px;padding:26px clamp(16px,3vw,36px) 22px}
+.tag{display:inline-block;font:600 12px "IBM Plex Mono",monospace;letter-spacing:.12em;color:#fff;background:var(--c);border-radius:5px;padding:4px 10px}
+.stage h2{font:800 clamp(24px,3vw,36px)/1.1 "Bricolage Grotesque",sans-serif;margin:10px 0 18px;letter-spacing:-.01em}
+.r:not(.in){display:none}
+.r.in{animation:rin .5s ease both}
+@keyframes rin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.r.now{box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 55%,transparent)}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
+.card{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.card h3{font:700 19px/1.2 "Bricolage Grotesque",sans-serif;margin:0 0 10px}
+.card.red h3{color:var(--red)}.card.amber h3{color:var(--amber)}
+ul.b{list-style:none;margin:0;padding:0}
+ul.b li{position:relative;padding:5px 8px 5px 26px;border-radius:8px;margin-bottom:2px}
+ul.b li:before{content:"";position:absolute;left:9px;top:14px;width:8px;height:8px;border-radius:50%;background:var(--c)}
+ol.dec{list-style:none;margin:0;padding:0;counter-reset:n;display:grid;gap:10px}
+ol.dec li{counter-increment:n;display:flex;gap:16px;align-items:center;font-size:clamp(17px,2vw,22px);background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+ol.dec li:before{content:counter(n);font:800 22px "Bricolage Grotesque",sans-serif;color:#fff;background:var(--red);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
+ol.dec li span{display:block}
+.title{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;margin-bottom:22px}
+.big{font:800 clamp(70px,11vw,130px)/.9 "Bricolage Grotesque",sans-serif;color:var(--red)}
+.title p{margin:6px 0 0;color:var(--mut)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;text-align:left;border:1px solid var(--line);background:var(--stage);color:var(--ink);border-radius:12px;padding:10px 14px;min-height:44px;cursor:pointer;transition:background .3s,border-color .3s}
+.chip small{display:block;font-weight:700;margin-top:4px}
+.chip.q{background:var(--okbg);border-color:var(--teal)}.chip.q small{color:var(--teal)}
+.chip.t{background:var(--stopbg);border-color:var(--red)}.chip.t small{color:var(--red)}
+.chip.sel{border:2px solid var(--c);background:color-mix(in srgb,var(--c) 10%,var(--stage))}
+.try{margin-top:16px;border:2px dashed color-mix(in srgb,var(--c) 60%,transparent);border-radius:14px;padding:14px 16px}
+.try h3{font:700 18px "Bricolage Grotesque",sans-serif;margin:0 0 10px;color:var(--c)}
+.meter{margin:6px 0 12px}
+.meter .top{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.meter .val{font:800 26px "Bricolage Grotesque",sans-serif;white-space:nowrap}
+.track{position:relative;height:16px;border-radius:8px;display:flex;overflow:hidden;margin:8px 0 2px}
+.track i{display:block;height:100%}
+.pin{position:absolute;top:-6px;width:4px;height:28px;background:var(--ink);border-radius:2px;transition:left .6s ease}
+.tw{position:relative}
+input[type=range]{width:100%;accent-color:var(--c);height:32px}
+.verdict{border-radius:10px;padding:10px 14px;font-weight:700;margin-top:4px;transition:background .3s}
+.verdict.ok{background:var(--okbg);color:var(--teal)}.verdict.mid{background:color-mix(in srgb,var(--amber) 16%,var(--stage));color:var(--amber)}.verdict.stop{background:var(--stopbg);color:var(--red)}
+.dosebox{text-align:center;padding:22px 18px;min-height:250px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px}
+.pill{font:800 clamp(30px,4.4vw,48px) "Bricolage Grotesque",sans-serif;padding:10px 26px;border-radius:60px;background:color-mix(in srgb,var(--amber) 18%,var(--stage));color:var(--amber);transition:transform .35s,background .3s,color .3s}
+.pill.hi{background:var(--red);color:#fff}
+.pill.pop{transform:scale(1.08)}
+.plist{display:grid;gap:8px}
+.tl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;position:relative;margin-bottom:16px}
+.st{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px;transition:border-color .4s,background .4s}
+.st b{display:block;font:800 20px "Bricolage Grotesque",sans-serif;color:var(--c)}
+.st.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 10%,var(--stage))}
+.calc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.res{font:800 clamp(34px,5vw,54px) "Bricolage Grotesque",sans-serif;line-height:1}
+.fallbar{position:relative;height:22px;background:var(--line);border-radius:11px;margin:12px 0 26px}
+.fallbar span{position:absolute;left:0;top:0;bottom:0;border-radius:11px;background:var(--red);transition:width .6s ease,background .3s}
+.fallbar em{position:absolute;left:40%;top:-6px;bottom:-6px;border-left:3px dashed var(--teal)}
+.fallbar em:after{content:"40% aim";position:absolute;top:30px;left:-26px;font:700 13px "Atkinson Hyperlegible",sans-serif;color:var(--teal);white-space:nowrap;font-style:normal}
+.ladder{display:grid;gap:8px}
+.rung{background:var(--soft);border:1px solid var(--line);border-left:6px solid var(--c);border-radius:10px;padding:10px 14px}
+.rung b{display:block;font:700 17px "Bricolage Grotesque",sans-serif}
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.num{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:16px}
+.num b{display:block;font:800 clamp(34px,4vw,48px)/1 "Bricolage Grotesque",sans-serif;color:var(--red);margin-bottom:8px}
+.qz .stem{font-size:clamp(17px,2vw,20px);margin:0 0 14px}
+.opts{display:grid;gap:8px}
+.opt{font:inherit;text-align:left;display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:12px;padding:10px 14px;min-height:48px;cursor:pointer}
+.opt i{font:800 16px "Bricolage Grotesque",sans-serif;font-style:normal;width:32px;height:32px;border-radius:50%;background:var(--line);display:flex;align-items:center;justify-content:center;flex:none}
+.opt.right{background:var(--okbg);border-color:var(--teal)}.opt.right i{background:var(--teal);color:#fff}
+.opt.wrong{background:var(--stopbg);border-color:var(--red)}.opt.wrong i{background:var(--red);color:#fff}
+.opt:disabled{cursor:default}
+.fb{margin-top:12px;border-left:5px solid var(--teal);background:var(--okbg);border-radius:8px;padding:10px 14px}
+.fb.no{border-color:var(--red);background:var(--stopbg)}
+.qnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.qdots{display:flex;gap:5px;flex-wrap:wrap}
+.qdots span{width:12px;height:12px;border-radius:50%;background:var(--line)}
+.qdots span.ok{background:var(--teal)}.qdots span.no{background:var(--red)}.qdots span.cur{outline:2px solid var(--ink);outline-offset:1px}
+.btn{font:700 15px "Atkinson Hyperlegible",sans-serif;border:0;border-radius:10px;padding:10px 16px;min-height:44px;background:var(--ink);color:var(--stage);cursor:pointer}
+.btn.ghost{background:var(--line);color:var(--ink)}
+.cap{background:var(--bar);color:#fff;min-height:74px;display:flex;align-items:center;gap:14px;padding:12px clamp(16px,3vw,36px);font-size:clamp(16px,1.7vw,19px);line-height:1.35}
+.cap:before{content:"";width:5px;align-self:stretch;min-height:36px;border-radius:3px;background:var(--c);flex:none}
+.ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px clamp(16px,3vw,36px);border-top:1px solid var(--line)}
+.ctl button{font:700 15px "Atkinson Hyperlegible",sans-serif;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:10px;min-height:44px;min-width:44px;padding:0 14px;cursor:pointer}
+.ctl button.play{background:var(--red);border-color:var(--red);color:#fff;min-width:110px}
+.ctl .grow{flex:1}
+.ctl label{font-size:14px;color:var(--mut);display:flex;align-items:center;gap:6px}
+.ctl select{font:16px "Atkinson Hyperlegible",sans-serif;border:1px solid var(--line);background:var(--stage);color:var(--ink);border-radius:8px;min-height:40px;padding:0 6px;max-width:230px}
+.prog{height:5px;background:var(--line)}
+.prog span{display:block;height:100%;background:var(--c);transition:width .4s}
+.hint{font-size:14px;color:var(--mut);margin-top:12px}
+.pulse{animation:pu 1.4s ease-in-out infinite}
+@keyframes pu{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--red) 30%,transparent)}}
+@media(prefers-reduced-motion:reduce){.r.in{animation:none}.pulse{animation:none}.pin,.fallbar span{transition:none}}
+@media(max-width:760px){.g2,.g3,.calc{grid-template-columns:minmax(0,1fr)}.tl{grid-template-columns:repeat(2,minmax(0,1fr))}.stage{min-height:0}.title{grid-template-columns:minmax(0,1fr);gap:8px}}
+.types{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
+.ty{background:var(--soft);border:1px solid var(--line);border-top:5px solid var(--c);border-radius:12px;padding:12px 14px;font-size:15px}
+.ty b{display:block;font:700 17px "Bricolage Grotesque",sans-serif;margin-bottom:4px}
+.strips{display:grid;gap:8px;margin-bottom:14px}
+.strip svg{display:block;width:100%;height:64px;border-radius:8px}
+.cap2{font-size:15px;margin-bottom:3px}.cap2 span{color:var(--mut)}
+.strip.in .ln{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 3s linear forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.togs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.tog{font:inherit;text-align:left;display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:12px;padding:10px 14px;min-height:48px;cursor:pointer}
+.tog b{font:800 16px "Bricolage Grotesque",sans-serif;color:var(--mut)}
+.tog.on{background:color-mix(in srgb,var(--c) 14%,var(--stage));border-color:var(--c)}.tog.on b{color:var(--c)}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.seg button{font:inherit;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:10px;padding:8px 14px;min-height:44px;cursor:pointer}
+.seg button.on{background:var(--c);border-color:var(--c);color:#fff}
+.scorebox{text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;padding:22px}
+.scorebox .res{font-size:clamp(56px,8vw,88px)}
+.pearl{margin-top:14px;border:2px dashed color-mix(in srgb,var(--red) 50%,transparent);border-radius:12px;padding:12px 16px}
+.sl{margin-bottom:8px}
+.drow{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.drow b{font:800 20px "Bricolage Grotesque",sans-serif;color:var(--c)}
+@media(max-width:760px){.types{grid-template-columns:repeat(2,minmax(0,1fr))}.togs{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){.strip.in .ln{animation:none;stroke-dashoffset:0}}
+.scn{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.sc1{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.sc1 p{margin:0 0 8px;font-weight:700}
+.sbtn{display:flex;gap:6px;flex-wrap:wrap}
+.sbtn button{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--stage);color:var(--ink);border-radius:10px;padding:8px 12px;min-height:44px;cursor:pointer}
+.sbtn button.right{background:var(--okbg);border-color:var(--teal);color:var(--teal);font-weight:700}
+.sbtn button.wrong{background:var(--stopbg);border-color:var(--red);color:var(--red)}
+.sfb{font-size:15px;margin-top:6px}.sfb.ok{color:var(--teal)}.sfb.no{color:var(--red)}
+@media(max-width:820px){.scn{grid-template-columns:minmax(0,1fr)}}
+.exitbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;padding-top:16px;border-top:1px solid var(--line,#dfe3e6)}
+.exitbar a{font:inherit;font-weight:700;text-decoration:none;border-radius:12px;padding:11px 18px}
+.exitbar .exit{background:var(--c,#16212a);color:#fff}
+.exitbar .exit2{border:1px solid var(--line,#dfe3e6);color:inherit}
+.exitbar a:hover{text-decoration:underline}
+.exitbar.now{box-shadow:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="crumbs" aria-label="Breadcrumb" style="margin-bottom:8px;font-weight:700;color:var(--mut)"><a href="../" style="color:inherit;text-decoration:none">← Home</a> <span aria-hidden="true">›</span> <a href="./" style="color:inherit;text-decoration:none">Cardiology</a></nav>
+<h1>Venous thromboembolism: DVT and PE</h1>
+<p class="sub">Topic 17 of Core Cardiology for the GP AKT, as a narrated lesson. Press play, or tap any chapter. Try every interactive yourself.</p>
+<nav class="rail" id="rail" aria-label="Chapters"></nav>
+<section class="player" id="player" aria-label="Lesson player">
+<div class="prog"><span id="prog"></span></div>
+<div class="stage" id="stage" aria-live="polite"></div>
+<div class="cap" id="cap">Press play to start. The narration uses a voice on your device.</div>
+<div class="ctl">
+<button id="prev" aria-label="Previous scene">◀</button>
+<button class="play" id="play">▶ Play</button>
+<button id="next" aria-label="Next scene">▶▶</button>
+<span class="grow"></span>
+<label for="speed">Speed <select id="speed"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select></label>
+<label for="voice">Voice <select id="voice"><option value="">Captions only</option></select></label>
+</div>
+</section>
+<p class="hint" id="vhint">For the most natural voice, choose one marked Natural, Enhanced, Premium or Siri, if your device has one. Microsoft Edge offers natural online voices; on iPhone and Mac you can download Enhanced voices in your Accessibility settings.</p>
+</div>
+<script>
+{
+const C={0:"var(--ink)",1:"var(--blue)",2:"var(--teal)",3:"var(--amber)",4:"var(--purple)",5:"var(--red)",6:"var(--ink)"};
+const CH=["Intro","1 Recognise","2 Diagnose","3 Manage","4 Prescribe","5 Quiz","Recap"];
+const $=id=>document.getElementById(id);
+const stage=$("stage"),cap=$("cap"),playB=$("play"),voiceS=$("voice"),speedS=$("speed");
+
+/* ---------- Venous thromboembolism: DVT and PE data ---------- */
+const QS=[["A 46-year-old woman has a painful, swollen right calf 10 days after a knee arthroscopy. The whole leg is swollen and the deep veins are tender. Her 2-level DVT Wells score is 3. What is the most appropriate next step?", ["Arrange a D-dimer and review in 48 hours", "Proximal leg vein ultrasound with the result within 4 hours", "Start aspirin", "Prescribe compression stockings", "Reassure: it is post-operative swelling"], 1, "Proximal leg vein ultrasound with the result within 4 hours. Wells 2 or more means DVT likely. If the scan can't be done within 4 hours, take a D-dimer, start interim anticoagulation and scan within 24 hours."], ["A 34-year-old man has mild calf pain after football. His DVT Wells score is 0. What is the most appropriate next step?", ["Proximal leg vein ultrasound within 4 hours", "CT pulmonary angiogram", "D-dimer with the result available within 4 hours", "Start rivaroxaban for 3 months", "No further assessment needed"], 2, "D-dimer with the result available within 4 hours. DVT unlikely (Wells 1 or less): D-dimer first. A negative result excludes DVT; a positive one needs ultrasound. Use interim anticoagulation if the result will take longer than 4 hours."], ["A 29-year-old woman has sharp left chest pain after a cough. She is not on hormones, has no leg swelling, no haemoptysis and no history of VTE. Pulse 84, SpO₂ 98%. Your suspicion of PE is low. What does NICE suggest?", ["D-dimer", "CT pulmonary angiogram", "Apply the PERC rule: if all criteria are negative, no further testing for PE", "V/Q scan", "Start apixaban while awaiting tests"], 2, "Apply the PERC rule: if all criteria are negative, no further testing for PE. With low suspicion (under 15%), PERC can exclude PE when all 8 criteria are absent. She is under 50, not on oestrogen and has normal pulse and saturations."], ["A 62-year-old man has sudden breathlessness and pleuritic pain. His PE Wells score is 6, BP 128/80, SpO₂ 94%. You are in a GP surgery. What is the most appropriate management?", ["D-dimer and review tomorrow", "Same-day hospital referral for CTPA, starting interim anticoagulation if there will be a delay", "Chest X-ray within 2 weeks", "Start aspirin", "Outpatient echocardiogram"], 1, "Same-day hospital referral for CTPA, starting interim anticoagulation if there will be a delay. A PE Wells score over 4 means PE likely: CTPA immediately. She is not shocked, so this is same-day referral rather than 999."], ["A 55-year-old man has a confirmed proximal DVT. eGFR 78, no cancer, not on other medicines. Which treatment is first line?", ["Warfarin alone", "LMWH for 5 days then dabigatran", "Apixaban or rivaroxaban", "Aspirin 300 mg", "Compression stockings and review"], 2, "Apixaban or rivaroxaban. NICE NG158 recommends apixaban or rivaroxaban first line. LMWH then dabigatran or edoxaban, or LMWH with a VKA, are used if these are unsuitable."], ["A 41-year-old woman had a DVT 2 weeks after a hip operation. She is now fully mobile. How long should anticoagulation usually last?", ["6 weeks", "3 months", "6 months", "12 months", "Lifelong"], 1, "3 months. A provoked VTE where the trigger has resolved is usually treated for 3 months. Unprovoked VTE: consider continuing beyond 3 months."], ["A 58-year-old man has an unprovoked PE. History, examination and baseline bloods are normal. What further investigation for cancer does NICE recommend?", ["CT abdomen and pelvis", "PSA and CA-125", "Whole-body PET scan", "No further investigations unless there are symptoms or signs", "Upper and lower GI endoscopy"], 3, "No further investigations unless there are symptoms or signs. NICE no longer recommends extra cancer tests (such as CT) for unprovoked VTE. Do a history, examination and baseline bloods only."], ["A 32-year-old woman, 28 weeks pregnant, has a confirmed DVT. What is the most appropriate treatment?", ["Apixaban", "Rivaroxaban", "Warfarin", "Weight-based low molecular weight heparin", "Aspirin"], 3, "Weight-based low molecular weight heparin. DOACs and warfarin are avoided in pregnancy. LMWH continues for the rest of pregnancy and at least 6 weeks after birth (at least 3 months in total)."], ["A 47-year-old woman with a second unprovoked DVT has triple-positive antiphospholipid syndrome. Which anticoagulant is most appropriate long term?", ["Apixaban", "Rivaroxaban", "Edoxaban", "Warfarin (after LMWH)", "Dabigatran"], 3, "Warfarin (after LMWH). In triple-positive antiphospholipid syndrome, NICE recommends LMWH followed by a VKA. DOACs are associated with more arterial events in this group."], ["A 60-year-old man has a tender, red cord 8 cm long along a varicose vein in his mid-thigh. Ultrasound shows no DVT, and it is more than 3 cm from the saphenofemoral junction. What treatment should be considered?", ["Fondaparinux 2.5 mg daily for 45 days", "Flucloxacillin", "Apixaban 10 mg twice daily", "No treatment needed", "Compression stockings only"], 0, "Fondaparinux 2.5 mg daily for 45 days. Superficial thrombophlebitis 5 cm or longer carries a risk of extension. Consider prophylactic fondaparinux. Within 3 cm of the saphenofemoral junction, treat as DVT."]];
+const TG3=[["Active cancer", 1], ["Paralysis or recent leg plaster", 1], ["Bedridden 3+ days or major surgery within 12 weeks", 1], ["Tender along the deep veins", 1], ["Entire leg swollen", 1], ["Calf 3 cm bigger than the other", 1], ["Pitting oedema in that leg", 1], ["Collateral superficial veins", 1], ["Previous DVT", 1], ["Alternative diagnosis at least as likely", -2, "−2"]];
+const TF3=s=>["DVT Wells",s+(s===1||s===-1?" point":" points"),s>=2?"stop":"ok",s>=2?"DVT likely: ultrasound within 4 hours (or D-dimer, interim anticoagulation, scan within 24 hours)":"DVT unlikely: D-dimer with the result within 4 hours"];
+const TG4=[["Clinical signs of DVT", 3], ["Alternative diagnosis less likely than PE", 3], ["Heart rate over 100", 1.5], ["Immobilised 3+ days or surgery in past 4 weeks", 1.5], ["Previous DVT or PE", 1.5], ["Haemoptysis", 1], ["Malignancy", 1]];
+const TF4=s=>["PE Wells",s+" points",s>4?"stop":"ok",s>4?"PE likely: CTPA immediately (same-day referral); interim anticoagulation if any delay":"PE unlikely: D-dimer within 4 hours; positive means CTPA"];
+const SRT5=[["Whole leg swollen after a hip replacement; DVT Wells 3", "Scan in 4 h", "DVT likely: proximal leg ultrasound"], ["Calf ache after a run; DVT Wells 0", "D-dimer", "DVT unlikely: D-dimer first"], ["Breathless with pleuritic pain, PE Wells 6, stable", "Same-day CTPA", "PE likely"], ["PE Wells 3, D-dimer positive", "Same-day CTPA", "Unlikely but D-dimer positive: image"], ["Low suspicion of PE, aged 28, all 8 PERC criteria absent", "No tests", "PERC negative: PE excluded"], ["Low suspicion of PE, but takes the combined pill", "D-dimer", "PERC fails (oestrogen): Wells unlikely, so D-dimer"], ["DVT Wells 1, D-dimer positive", "Scan in 4 h", "Positive D-dimer needs ultrasound"], ["DVT Wells 0, D-dimer negative", "No tests", "DVT excluded: think of other causes"]];
+const PK6={"std": ["Proximal DVT or PE", "Apixaban / rivaroxaban", "First line; no heparin lead-in needed", "teal"], "wait": ["Result after 4 hours", "Interim DOAC", "Start now; stop if the scan and D-dimer rule it out", ""], "uns": ["Those two unsuitable", "LMWH → dabigatran", "Or edoxaban; or LMWH + warfarin until INR 2+ twice", ""], "ca": ["Active cancer", "DOAC, 3–6 months", "Weigh bleeding risk (GI or GU cancers); otherwise LMWH", ""], "aps": ["Triple-positive APS", "LMWH → warfarin", "Avoid DOACs", "red"], "preg": ["Pregnant", "LMWH", "Rest of pregnancy and 6 weeks after birth; no DOAC or warfarin", ""], "low": ["Low-risk PE", "Outpatient", "Use PESI or sPESI, with support at home", ""], "shock": ["PE with shock", "999", "Thrombolysis in hospital", "red"]};
+const PK7={"prov": ["Provoked, trigger gone", "3 months", "Surgery, trauma, immobility or oestrogen: then stop", "teal"], "unprov": ["Unprovoked", "3 months +", "Consider continuing beyond 3 months, weighing bleeding risk", ""], "ca": ["Active cancer", "3–6 months", "Then review", ""], "preg": ["In pregnancy", "3 months +", "At least until 6 weeks after birth", ""]};
+const SRT9=[["CT abdomen for everyone with an unprovoked PE", "Trap", "No extra cancer tests without symptoms or signs"], ["A hereditary thrombophilia screen after every clot", "Trap", "Not routinely"], ["Compression stockings to prevent post-thrombotic syndrome", "Trap", "NICE says don't offer them for this"], ["Apixaban 10 mg twice daily for 7 days, then 5 mg twice daily", "True", "The treatment regimen"], ["Use a D-dimer to rule out VTE in pregnancy", "Trap", "D-dimer rises in pregnancy: image instead"], ["Take the D-dimer before starting interim anticoagulation", "True", "Anticoagulation can lower it"], ["Within 3 cm of the saphenofemoral junction: treat as DVT", "True", "High risk of extension"], ["Wait for kidney function before any anticoagulation", "Trap", "Don't delay; check bloods alongside"]];
+
+/* ---------- shared lesson helpers ---------- */
+function bindSorter(data){stage.querySelectorAll(".sc1").forEach(d=>d.querySelectorAll("button").forEach(b=>b.onclick=()=>{const s=data[d.dataset.a],ok=b.dataset.o===s[1];d.querySelectorAll("button").forEach(x=>x.classList.toggle("right",x.dataset.o===s[1]));if(!ok)b.classList.add("wrong");const f=d.querySelector(".sfb");f.className="sfb "+(ok?"ok":"no");f.textContent=(ok?"Correct: ":"Answer: "+s[1]+". ")+s[2]}))}
+function pick(id,P,k){if(!$(id+"p"))return;stage.querySelectorAll("[data-pk]").forEach(b=>b.classList.toggle("on",b.dataset.pk===k));const v=P[k];$(id+"q").textContent=v[0];$(id+"p").textContent=v[1];$(id+"n").textContent=v[2];const p=$(id+"p");p.style.color=v[3]==="red"?"var(--red)":v[3]==="teal"?"var(--teal)":"";p.classList.add("pop");setTimeout(()=>p.classList.remove("pop"),350)}
+function bindPick(id,P){stage.querySelectorAll("[data-pk]").forEach(b=>b.onclick=()=>pick(id,P,b.dataset.pk))}
+let TG=new Set();
+function upTog(T,F){if(!$("tgs"))return;stage.querySelectorAll("[data-tg]").forEach(b=>{const on=TG.has(+b.dataset.tg);b.classList.toggle("on",on);b.setAttribute("aria-pressed",on)});const s=[...TG].reduce((a,k)=>a+T[k][1],0),r=F(s);$("tgh").textContent=r[0];$("tgs").textContent=r[1];$("tgs").style.color=r[2]==="stop"?"var(--red)":r[2]==="mid"?"var(--amber)":"var(--teal)";const v=$("tgv");v.className="verdict "+r[2];v.textContent=r[3]}
+function bindTog(T,F){TG=new Set();stage.querySelectorAll("[data-tg]").forEach(b=>b.onclick=()=>{const k=+b.dataset.tg;TG.has(k)?TG.delete(k):TG.add(k);upTog(T,F)});upTog(T,F)}
+function setTog(T,F,ks){TG=new Set(ks);upTog(T,F)}
+
+/* ---------- scenes ---------- */
+const S=[
+{ch:0,tag:"TOPIC 17",h:"Four things examiners test",html:()=>"<div class=\"title r in\" data-i=\"0\"><div class=\"big\">17<\/div><div><b style=\"font-size:20px\">Venous thromboembolism: DVT and PE<\/b><p>NICE NG158 (updated 2023) · NICE CKS · RCOG Green-top 37b<\/p><\/div><\/div><ol class=\"dec\"><li class=\"r\" data-i=\"1\"><span><b>Wells score<\/b>: image or D-dimer?<\/span><\/li><li class=\"r\" data-i=\"2\"><span>The <b>4-hour rule<\/b> and interim anticoagulation<\/span><\/li><li class=\"r\" data-i=\"3\"><span><b>Apixaban or rivaroxaban<\/b>, and for how long<\/span><\/li><li class=\"r\" data-i=\"4\"><span>Special cases: <b>pregnancy, APS, cancer<\/b>, and what <b>not<\/b> to test<\/span><\/li><\/ol>",b:[[0, "Topic seventeen: venous thromboembolism, DVT and PE. Questions test four things."], [1, "Using the Wells score to choose between imaging and a D-dimer."], [2, "The four-hour rule, and interim anticoagulation."], [3, "Apixaban or rivaroxaban, and how long to treat."], [4, "And the special cases: pregnancy, antiphospholipid syndrome, cancer, and the tests you shouldn't order."]]},
+{ch:1,tag:"STEP 1 · RECOGNISE",h:"Who might have a clot",html:()=>"<div class=\"g2\"><div class=\"card  r\" data-i=\"1\"><h3>DVT<\/h3><ul class=\"b\"><li><b>Unilateral<\/b> calf or leg pain and swelling<\/li><li>Tender deep veins, pitting oedema, warmth<\/li><li>Look-alikes: Baker's cyst, cellulitis, muscle tear<\/li><\/ul><\/div><div class=\"card  r\" data-i=\"2\"><h3>PE<\/h3><ul class=\"b\"><li>Sudden <b>breathlessness<\/b>, <b>pleuritic pain<\/b><\/li><li>Haemoptysis, tachycardia, low saturations<\/li><li>Look-alikes: pneumonia, pneumothorax, ACS<\/li><\/ul><\/div><div class=\"card red r\" data-i=\"3\"><h3>Massive PE<\/h3><ul class=\"b\"><li><b>Shock<\/b>, hypotension, syncope, severe hypoxia<\/li><li><b>999<\/b>: thrombolysis in hospital<\/li><\/ul><\/div><div class=\"card  r\" data-i=\"4\"><h3>Risk factors<\/h3><ul class=\"b\"><li>Previous VTE, active cancer<\/li><li>Surgery, immobility, long-haul travel<\/li><li><b>Oestrogen<\/b>, pregnancy and 6 weeks after birth<\/li><li>Thrombophilia, antiphospholipid syndrome<\/li><\/ul><\/div><\/div><div class=\"pearl r\" data-i=\"5\">Signs alone can't confirm or exclude a clot. <b>Score it, then test<\/b>, with a decision within 4 hours.<\/div>",b:[[1, "A DVT is a unilateral painful, swollen leg with tender deep veins. Think of a Baker's cyst or cellulitis as alternatives."], [2, "A PE: sudden breathlessness, pleuritic pain, haemoptysis and tachycardia."], [3, "Massive PE with shock is a 999 call."], [4, "Risk factors include previous clots, cancer, surgery, immobility, oestrogen and pregnancy."], [5, "Signs alone can't settle it: score the probability, then test, with a decision within four hours."]]},
+{ch:2,tag:"STEP 2 · DIAGNOSE",h:"2-level DVT Wells score",stop:1,html:()=>"<div class=\"g2\"><div class=\"r\" data-i=\"1\"><p style=\"margin-top:0\">Which apply?<\/p><div class=\"togs\"><button class=\"tog\" data-tg=\"0\" aria-pressed=\"false\">Active cancer<b>+1<\/b><\/button><button class=\"tog\" data-tg=\"1\" aria-pressed=\"false\">Paralysis or recent leg plaster<b>+1<\/b><\/button><button class=\"tog\" data-tg=\"2\" aria-pressed=\"false\">Bedridden 3+ days or major surgery within 12 weeks<b>+1<\/b><\/button><button class=\"tog\" data-tg=\"3\" aria-pressed=\"false\">Tender along the deep veins<b>+1<\/b><\/button><button class=\"tog\" data-tg=\"4\" aria-pressed=\"false\">Entire leg swollen<b>+1<\/b><\/button><button class=\"tog\" data-tg=\"5\" aria-pressed=\"false\">Calf 3 cm bigger than the other<b>+1<\/b><\/button><button class=\"tog\" data-tg=\"6\" aria-pressed=\"false\">Pitting oedema in that leg<b>+1<\/b><\/button><button class=\"tog\" data-tg=\"7\" aria-pressed=\"false\">Collateral superficial veins<b>+1<\/b><\/button><button class=\"tog\" data-tg=\"8\" aria-pressed=\"false\">Previous DVT<b>+1<\/b><\/button><button class=\"tog\" data-tg=\"9\" aria-pressed=\"false\">Alternative diagnosis at least as likely<b>−2<\/b><\/button><\/div><\/div><div class=\"card scorebox r\" data-i=\"1\"><span style=\"color:var(--mut)\" id=\"tgh\"><\/span><span class=\"res\" id=\"tgs\">0<\/span><div class=\"verdict\" id=\"tgv\"><\/div><\/div><\/div>",init(){bindTog(TG3,TF3)},b:[[1,"Ten days after surgery, with tender deep veins and a whole leg swollen: three points. DVT likely, so a proximal leg ultrasound within four hours.",()=>setTog(TG3,TF3,[2, 3, 4])],[1,"Tender calf, but a muscle tear is just as likely: minus one. DVT unlikely, so a D-dimer first.",()=>setTog(TG3,TF3,[3, 9])],[1,"If the scan can't happen within four hours, take a D-dimer, start interim anticoagulation, and scan within twenty-four hours. Try it, then press next."]]},
+{ch:2,tag:"STEP 2 · DIAGNOSE",h:"2-level PE Wells score",stop:1,html:()=>"<div class=\"g2\"><div class=\"r\" data-i=\"1\"><p style=\"margin-top:0\">Which apply?<\/p><div class=\"togs\"><button class=\"tog\" data-tg=\"0\" aria-pressed=\"false\">Clinical signs of DVT<b>+3<\/b><\/button><button class=\"tog\" data-tg=\"1\" aria-pressed=\"false\">Alternative diagnosis less likely than PE<b>+3<\/b><\/button><button class=\"tog\" data-tg=\"2\" aria-pressed=\"false\">Heart rate over 100<b>+1.5<\/b><\/button><button class=\"tog\" data-tg=\"3\" aria-pressed=\"false\">Immobilised 3+ days or surgery in past 4 weeks<b>+1.5<\/b><\/button><button class=\"tog\" data-tg=\"4\" aria-pressed=\"false\">Previous DVT or PE<b>+1.5<\/b><\/button><button class=\"tog\" data-tg=\"5\" aria-pressed=\"false\">Haemoptysis<b>+1<\/b><\/button><button class=\"tog\" data-tg=\"6\" aria-pressed=\"false\">Malignancy<b>+1<\/b><\/button><\/div><\/div><div class=\"card scorebox r\" data-i=\"1\"><span style=\"color:var(--mut)\" id=\"tgh\"><\/span><span class=\"res\" id=\"tgs\">0<\/span><div class=\"verdict\" id=\"tgv\"><\/div><\/div><\/div>",init(){bindTog(TG4,TF4)},b:[[1,"PE is the most likely diagnosis and the pulse is over a hundred: four and a half. More than four means PE likely, so same-day CTPA.",()=>setTog(TG4,TF4,[1, 2])],[1,"A fast pulse and haemoptysis, but another diagnosis is as likely: two and a half. PE unlikely, so a D-dimer first.",()=>setTog(TG4,TF4,[2, 5])],[1,"If suspicion is low to start with, under fifteen percent, the PERC rule can exclude PE when all eight criteria are absent. Try it, then press next."]]},
+{ch:2,tag:"STEP 2 · DIAGNOSE",h:"What next?",stop:1,html:()=>"<div class=\"scn r\" data-i=\"1\"><div class=\"sc1\" data-a=\"0\"><p>Whole leg swollen after a hip replacement; DVT Wells 3<\/p><div class=\"sbtn\"><button data-o=\"Scan in 4 h\">Scan in 4 h<\/button><button data-o=\"D-dimer\">D-dimer<\/button><button data-o=\"Same-day CTPA\">Same-day CTPA<\/button><button data-o=\"No tests\">No tests<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"1\"><p>Calf ache after a run; DVT Wells 0<\/p><div class=\"sbtn\"><button data-o=\"Scan in 4 h\">Scan in 4 h<\/button><button data-o=\"D-dimer\">D-dimer<\/button><button data-o=\"Same-day CTPA\">Same-day CTPA<\/button><button data-o=\"No tests\">No tests<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"2\"><p>Breathless with pleuritic pain, PE Wells 6, stable<\/p><div class=\"sbtn\"><button data-o=\"Scan in 4 h\">Scan in 4 h<\/button><button data-o=\"D-dimer\">D-dimer<\/button><button data-o=\"Same-day CTPA\">Same-day CTPA<\/button><button data-o=\"No tests\">No tests<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"3\"><p>PE Wells 3, D-dimer positive<\/p><div class=\"sbtn\"><button data-o=\"Scan in 4 h\">Scan in 4 h<\/button><button data-o=\"D-dimer\">D-dimer<\/button><button data-o=\"Same-day CTPA\">Same-day CTPA<\/button><button data-o=\"No tests\">No tests<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"4\"><p>Low suspicion of PE, aged 28, all 8 PERC criteria absent<\/p><div class=\"sbtn\"><button data-o=\"Scan in 4 h\">Scan in 4 h<\/button><button data-o=\"D-dimer\">D-dimer<\/button><button data-o=\"Same-day CTPA\">Same-day CTPA<\/button><button data-o=\"No tests\">No tests<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"5\"><p>Low suspicion of PE, but takes the combined pill<\/p><div class=\"sbtn\"><button data-o=\"Scan in 4 h\">Scan in 4 h<\/button><button data-o=\"D-dimer\">D-dimer<\/button><button data-o=\"Same-day CTPA\">Same-day CTPA<\/button><button data-o=\"No tests\">No tests<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"6\"><p>DVT Wells 1, D-dimer positive<\/p><div class=\"sbtn\"><button data-o=\"Scan in 4 h\">Scan in 4 h<\/button><button data-o=\"D-dimer\">D-dimer<\/button><button data-o=\"Same-day CTPA\">Same-day CTPA<\/button><button data-o=\"No tests\">No tests<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"7\"><p>DVT Wells 0, D-dimer negative<\/p><div class=\"sbtn\"><button data-o=\"Scan in 4 h\">Scan in 4 h<\/button><button data-o=\"D-dimer\">D-dimer<\/button><button data-o=\"Same-day CTPA\">Same-day CTPA<\/button><button data-o=\"No tests\">No tests<\/button><\/div><div class=\"sfb\"><\/div><\/div><\/div>",init(){bindSorter(SRT5)},b:[[1, "Choose the next step for each one, then press next."]]},
+{ch:3,tag:"STEP 3 · MANAGE",h:"Which anticoagulant?",stop:1,html:()=>"<div class=\"g2\"><div class=\"r\" data-i=\"1\"><p style=\"margin-top:0\">Which patient?<\/p><div class=\"seg\" role=\"group\" aria-label=\"Which patient?\"><button data-pk=\"std\">Proximal DVT or PE<\/button><button data-pk=\"wait\">Result after 4 hours<\/button><button data-pk=\"uns\">Those two unsuitable<\/button><button data-pk=\"ca\">Active cancer<\/button><button data-pk=\"aps\">Triple-positive APS<\/button><button data-pk=\"preg\">Pregnant<\/button><button data-pk=\"low\">Low-risk PE<\/button><button data-pk=\"shock\">PE with shock<\/button><\/div><\/div><div class=\"card dosebox r\" data-i=\"1\"><span id=\"pk6q\" style=\"color:var(--mut)\">Choose an option<\/span><span class=\"pill\" id=\"pk6p\">?<\/span><span id=\"pk6n\"><\/span><\/div><\/div>",init(){bindPick("pk6",PK6)},b:[[1,"For confirmed proximal DVT or PE, apixaban or rivaroxaban is first line.",()=>pick("pk6",PK6,"std")],[1,"If a result will take longer than four hours, start interim anticoagulation now.",()=>pick("pk6",PK6,"wait")],[1,"In triple-positive antiphospholipid syndrome, use heparin then warfarin, not a DOAC.",()=>pick("pk6",PK6,"aps")],[1,"In pregnancy, low molecular weight heparin, continued until at least six weeks after birth.",()=>pick("pk6",PK6,"preg")],[1,"Low-risk PE can be treated at home, using a tool such as PESI.",()=>pick("pk6",PK6,"low")],[1,"Try the others, then press next."]]},
+{ch:3,tag:"STEP 3 · MANAGE",h:"How long?",stop:1,html:()=>"<div class=\"g2\"><div class=\"r\" data-i=\"1\"><p style=\"margin-top:0\">What kind of clot?<\/p><div class=\"seg\" role=\"group\" aria-label=\"What kind of clot?\"><button data-pk=\"prov\">Provoked, trigger gone<\/button><button data-pk=\"unprov\">Unprovoked<\/button><button data-pk=\"ca\">Active cancer<\/button><button data-pk=\"preg\">In pregnancy<\/button><\/div><div class=\"card\" style=\"margin-top:10px\"><h3>Unprovoked: what to check<\/h3><ul class=\"b\"><li>History, examination, baseline bloods<\/li><li><b>No further cancer tests<\/b> without symptoms or signs<\/li><li><b>No routine thrombophilia testing<\/b><\/li><li>Antiphospholipid antibodies if planning to stop<\/li><\/ul><\/div><\/div><div class=\"card dosebox r\" data-i=\"1\"><span id=\"pk7q\" style=\"color:var(--mut)\">Choose an option<\/span><span class=\"pill\" id=\"pk7p\">?<\/span><span id=\"pk7n\"><\/span><\/div><\/div>",init(){bindPick("pk7",PK7)},b:[[1,"A provoked clot, where the trigger has gone: three months.",()=>pick("pk7",PK7,"prov")],[1,"Unprovoked: at least three months, and consider continuing, weighing the bleeding risk.",()=>pick("pk7",PK7,"unprov")],[1,"With active cancer: three to six months, then review.",()=>pick("pk7",PK7,"ca")],[1,"For unprovoked clots, don't order extra cancer scans or routine thrombophilia tests. Press next when ready."]]},
+{ch:4,tag:"STEP 4 · PRESCRIBE / REFER",h:"Doses, superficial clots and referral",html:()=>"<div class=\"g2\"><div class=\"card  r\" data-i=\"1\"><h3>Doses<\/h3><ul class=\"b\"><li><b>Apixaban<\/b> 10 mg twice daily for 7 days, then 5 mg twice daily<\/li><li><b>Rivaroxaban<\/b> 15 mg twice daily for 21 days, then 20 mg daily <b>with food<\/b><\/li><li>Dabigatran or edoxaban only after 5 days of LMWH<\/li><\/ul><\/div><div class=\"card  r\" data-i=\"2\"><h3>Superficial thrombophlebitis<\/h3><ul class=\"b\"><li>Under 5 cm: NSAID, warm compress<\/li><li><b>5 cm or more<\/b>: duplex; fondaparinux 2.5 mg daily for 45 days<\/li><li>Within 3 cm of the saphenofemoral junction: treat as DVT<\/li><\/ul><\/div><div class=\"card  r\" data-i=\"3\"><h3>Counselling<\/h3><ul class=\"b\"><li>Bleeding signs; head injury needs urgent review<\/li><li>Stop oestrogen-containing contraception<\/li><li>Check renal function, LFTs, FBC; watch interactions<\/li><\/ul><\/div><div class=\"card red r\" data-i=\"4\"><h3>Referral<\/h3><ul class=\"b\"><li>Shock or hypotension: <b>999<\/b><\/li><li>PE likely or D-dimer positive: <b>same-day CTPA<\/b><\/li><li>Suspected VTE in pregnancy: <b>same day<\/b><\/li><\/ul><\/div><\/div>",b:[[1, "Apixaban starts at ten milligrams twice daily for a week; rivaroxaban at fifteen milligrams twice daily for three weeks, with food."], [2, "Superficial thrombophlebitis of five centimetres or more: consider fondaparinux for forty-five days. Near the groin, treat as a DVT."], [3, "Counsel about bleeding, and stop oestrogen-containing contraception."], [4, "PE with shock is a 999 call; likely PE needs same-day CTPA."]]},
+{ch:4,tag:"STEP 4 · PRESCRIBE / REFER",h:"True, or exam trap?",stop:1,html:()=>"<div class=\"scn r\" data-i=\"1\"><div class=\"sc1\" data-a=\"0\"><p>CT abdomen for everyone with an unprovoked PE<\/p><div class=\"sbtn\"><button data-o=\"True\">True<\/button><button data-o=\"Trap\">Trap<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"1\"><p>A hereditary thrombophilia screen after every clot<\/p><div class=\"sbtn\"><button data-o=\"True\">True<\/button><button data-o=\"Trap\">Trap<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"2\"><p>Compression stockings to prevent post-thrombotic syndrome<\/p><div class=\"sbtn\"><button data-o=\"True\">True<\/button><button data-o=\"Trap\">Trap<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"3\"><p>Apixaban 10 mg twice daily for 7 days, then 5 mg twice daily<\/p><div class=\"sbtn\"><button data-o=\"True\">True<\/button><button data-o=\"Trap\">Trap<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"4\"><p>Use a D-dimer to rule out VTE in pregnancy<\/p><div class=\"sbtn\"><button data-o=\"True\">True<\/button><button data-o=\"Trap\">Trap<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"5\"><p>Take the D-dimer before starting interim anticoagulation<\/p><div class=\"sbtn\"><button data-o=\"True\">True<\/button><button data-o=\"Trap\">Trap<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"6\"><p>Within 3 cm of the saphenofemoral junction: treat as DVT<\/p><div class=\"sbtn\"><button data-o=\"True\">True<\/button><button data-o=\"Trap\">Trap<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"7\"><p>Wait for kidney function before any anticoagulation<\/p><div class=\"sbtn\"><button data-o=\"True\">True<\/button><button data-o=\"Trap\">Trap<\/button><\/div><div class=\"sfb\"><\/div><\/div><\/div>",init(){bindSorter(SRT9)},b:[[1, "True, or exam trap? Decide each one, then press next."]]},
+{ch:5,tag:"QUIZ",h:"Ten questions",stop:1,html:()=>`<div class="qz r in" data-i="0" id="qz"></div>`,init(){quiz()},b:[[0,"Ten questions from the guide. Pick the single best answer for each, and you'll get your score at the end."]]},
+{ch:6,tag:"RECAP",h:"The facts to take into the exam",html:()=>"<div class=\"nums\"><div class=\"num r\" data-i=\"1\"><b>2 · 4<\/b>Wells cut-offs: DVT 2+, PE over 4 = likely<\/div><div class=\"num r\" data-i=\"2\"><b>4 hours<\/b>scan or D-dimer, or interim anticoagulation<\/div><div class=\"num r\" data-i=\"3\"><b>Apixaban / rivaroxaban<\/b>first line<\/div><div class=\"num r\" data-i=\"4\"><b>3 months<\/b>provoked; consider longer if unprovoked<\/div><div class=\"num r\" data-i=\"5\"><b>LMWH<\/b>pregnancy; warfarin in triple-positive APS<\/div><\/div>",b:[[1, "Wells: two or more for DVT, and over four for PE, means likely."], [2, "A result within four hours, or start interim anticoagulation."], [3, "Apixaban or rivaroxaban is first line."], [4, "Three months for a provoked clot; consider longer if unprovoked."], [5, "And heparin in pregnancy, warfarin in triple-positive antiphospholipid syndrome. That's topic seventeen."]]}
+];
+let qi=0,qa=[];
+function quiz(){const q=QS[qi],L="ABCDE",box=$("qz");if(!box)return;const done=qa[qi]!==undefined;
+ box.innerHTML=`<p class="stem"><b>Q${qi+1}.</b> ${q[0]}</p><div class="opts">${q[1].map((o,k)=>`<button class="opt${done?(k===q[2]?" right":k===qa[qi]?" wrong":""):""}" data-o="${k}" ${done?"disabled":""}><i>${L[k]}</i>${o}</button>`).join("")}</div>
+ ${done?`<div class="fb${qa[qi]===q[2]?"":" no"}"><b>${qa[qi]===q[2]?"Correct.":"Not quite: the answer is "+L[q[2]]+"."}</b> ${q[3]}</div>`:""}
+ <div class="qnav"><div class="qdots">${QS.map((_,k)=>`<span class="${qa[k]===undefined?"":qa[k]===QS[k][2]?"ok":"no"}${k===qi?" cur":""}"></span>`).join("")}</div>
+ <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" id="qread">Read aloud</button>${qi>0?`<button class="btn ghost" id="qprev">Back</button>`:""}${qi<QS.length-1?`<button class="btn" id="qnext">Next question</button>`:`<button class="btn" id="qscore">See my score</button>`}</div></div>`;
+ box.querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>{qa[qi]=+b.dataset.o;quiz();const ok=qa[qi]===q[2];try{const K="cgn-v1",D=JSON.parse(localStorage.getItem(K)||"null")||{q:{},log:[],cases:{}},ID=location.pathname.replace(/^.*?(\/[^/]+\/[^/]+\.html)$/,"$1")+"#"+qi,C=D.q[ID]||{box:0,due:0,n:0,ok:0},G=[0,1,3,7,14,30,60];C.n++;if(ok){C.ok++;C.box=Math.min(6,C.box+1);C.due=Date.now()+G[C.box]*864e5}else{C.box=0;C.due=Date.now()+6e5}D.q[ID]=C;D.log.push({t:Date.now(),theme:(document.querySelector("h1")||{}).textContent||"",ok,id:ID});localStorage.setItem(K,JSON.stringify(D))}catch(e){}say((ok?"Correct. ":"Not quite. The answer is "+L[q[2]]+". ")+q[3])});
+ $("qread").onclick=()=>say(`Question ${qi+1}. ${q[0]} `+q[1].map((o,k)=>L[k]+": "+o+".").join(" "));
+ if($("qprev"))$("qprev").onclick=()=>{qi--;quiz()};if($("qnext"))$("qnext").onclick=()=>{qi++;quiz()};if($("qscore"))$("qscore").onclick=score}
+function score(){const n=qa.filter((a,k)=>a===QS[k][2]).length,box=$("qz");
+ const band=n>=9?["var(--teal)","Exam-ready","Move on, and re-test once in 2 weeks."]:n>=7?["var(--blue)","Nearly there","Revisit the chapters behind the questions you missed, then re-test within a week."]:n>=5?["var(--amber)","Shaky","Replay Steps 3 and 4, then repeat the questions in 48 hours."]:["var(--red)","Not yet","Replay the whole lesson before re-attempting."];
+ box.innerHTML=`<div class="card" style="border-top:6px solid ${band[0]}"><div class="res" style="color:${band[0]}">${n} / 10</div><h3 style="color:${band[0]};margin-top:10px">${band[1]}</h3><p style="margin:0 0 12px">${band[2]}</p><button class="btn" id="qagain">Try again</button></div>`;
+ $("qagain").onclick=()=>{qi=0;qa=[];quiz()};say(`You scored ${n} out of 10. ${band[1]}. ${band[2]}`)}
+
+/* ---------- speech ---------- */
+const REP=[[/CHA₂DS₂-VASc|CHA2DS2-VASc/g,"chads vasc"],[/\bDOACs?\b/g,"D O A C"],[/\bTIA\b/g,"T I A"],[/\bPAD\b/g,"P A D"],[/\bWPW\b/g,"W P W"],[/\bCrCl\b/g,"creatinine clearance"],[/\bINR\b/g,"I N R"],[/\bTOE\b/g,"T O E"],[/QRISK3/g,"Q-risk three"],[/non-HDL/g,"non H D L"],[/\bLDL\b/g,"L D L"],[/\bHDL\b/g,"H D L"],[/\bHbA1c\b/g,"H B A 1 C"],[/\beGFR\b/g,"e G F R"],[/\bALT\b/g,"A L T"],[/\bCK\b/g,"C K"],[/\bTSH\b/g,"T S H"],[/\bCKD\b/g,"C K D"],[/\bCVD\b/g,"cardiovascular disease"],[/\bCHD\b/g,"coronary heart disease"],[/\bFH\b/g,"F H"],[/\bMI\b/g,"M I"],[/\bACR\b/g,"A C R"],[/(\d)\s*mg\b/g,"$1 milligrams"],[/mmol\/L/g,"millimoles per litre"],[/(\d)\s*%/g,"$1 percent"],[/(\d)\s*×/g,"$1 times"],[/(\d)\s*[–-]\s*(\d)/g,"$1 to $2"],[/IU\/L/g,"units per litre"]];
+const clean=t=>REP.reduce((s,[a,b])=>s.replace(a,b),t);
+const synth=window.speechSynthesis;let voices=[];
+function loadVoices(){if(!synth)return;voices=synth.getVoices().filter(v=>/^en/i.test(v.lang));if(!voices.length)return;
+ const rank=v=>(/natural|neural|premium|enhanced|siri/i.test(v.name)?4:0)+(/en[-_]GB/i.test(v.lang)?2:0)+(/google uk|sonia|libby|ryan|serena|daniel|kate/i.test(v.name)?1:0);
+ voices.sort((a,b)=>rank(b)-rank(a));let keep=voiceS.value;
+ voiceS.innerHTML=`<option value="">Captions only</option>`+voices.map((v,k)=>`<option value="${k}">${v.name.replace(/[<>&"]/g,"")} (${v.lang})</option>`).join("");
+ voiceS.value=keep===""&&!voiceS.dataset.touched?"0":keep}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices}else{$("vhint").textContent="This browser can't speak the narration, so captions only."}
+voiceS.onchange=()=>{voiceS.dataset.touched=1};
+function say(text,onend){cap.textContent=text;const v=voices[+voiceS.value];
+ if(synth)synth.cancel();
+ if(!synth||voiceS.value===""||!v){if(onend)timer=setTimeout(onend,(1200+text.split(/\s+/).length*330)/+speedS.value);return}
+ const u=new SpeechSynthesisUtterance(clean(text));u.voice=v;u.lang=v.lang;u.rate=+speedS.value;
+ let fired=false;const fin=()=>{if(fired)return;fired=true;clearTimeout(guard);if(onend)timer=setTimeout(onend,350)};
+ u.onend=fin;u.onerror=fin;const guard=setTimeout(fin,(4000+text.split(/\s+/).length*700)/+speedS.value);synth.speak(u)}
+
+/* ---------- player ---------- */
+let si=0,bi=-1,playing=false,timer=null;
+$("rail").innerHTML=CH.map((c,k)=>`<button data-ch="${k}" style="--c:${C[k]}">${c}</button>`).join("");
+$("rail").querySelectorAll("button").forEach(b=>b.onclick=()=>{const k=S.findIndex(s=>s.ch===+b.dataset.ch);go(k,true)});
+function render(){const s=S[si];document.documentElement.style.setProperty("--c",C[s.ch]);$("player").style.setProperty("--c",C[s.ch]);
+ stage.innerHTML=`<span class="tag">${s.tag}</span><h2>${s.h}</h2>`+s.html();if(s.init)s.init();if(si===S.length-1)stage.insertAdjacentHTML("beforeend",`<div class="exitbar r" data-i="${Math.max(0,...s.b.map(x=>x[0]))}"><a class="exit" href="./">Exit lesson ✓</a><a class="exit2" href="../guides/Core_Cardiology_for_the_GP_AKT.pdf" target="_blank" rel="noopener">Open the PDF guide</a><a class="exit2" href="../akt/">Practise questions</a></div>`);
+ $("rail").querySelectorAll("button").forEach(b=>b.classList.toggle("on",+b.dataset.ch===s.ch));
+ $("prog").style.width=((si+1)/S.length*100)+"%";$("next").classList.remove("pulse")}
+function reveal(i){stage.querySelectorAll(".r").forEach(e=>{const d=+e.dataset.i;e.classList.toggle("in",d<=i);e.classList.toggle("now",d===i&&d>0)})}
+function beat(){const s=S[si];bi++;
+ if(bi>=s.b.length){if(s.stop||si===S.length-1){stop();if(si<S.length-1){$("next").classList.add("pulse");cap.textContent="Your turn. Press ▶▶ for the next scene when you're ready."}return}
+  timer=setTimeout(()=>{si++;bi=-1;render();beat()},700);return}
+ const [i,t,f]=s.b[bi];reveal(i);if(f)f();say(t,()=>{if(playing)beat()})}
+function start(){playing=true;playB.textContent="❚❚ Pause";if(bi>=S[si].b.length-1&&S[si].b.length){bi=-1;render()}beat()}
+function stop(){playing=false;playB.textContent="▶ Play";clearTimeout(timer);if(synth)synth.cancel()}
+function go(k,autoplay){stop();si=Math.max(0,Math.min(S.length-1,k));bi=-1;render();
+ if(autoplay){start()}else{reveal(99);cap.textContent=S[si].b[0][1]}}
+playB.onclick=()=>playing?stop():(bi>=0&&bi<S[si].b.length?(bi--,start()):start());
+$("next").onclick=()=>go(si+1,true);$("prev").onclick=()=>go(si-1,true);
+speedS.onchange=()=>{};
+document.addEventListener("keydown",e=>{if(/INPUT|SELECT|BUTTON/.test(e.target.tagName))return;if(e.code==="Space"){e.preventDefault();playB.click()}if(e.key==="ArrowRight")$("next").click();if(e.key==="ArrowLeft")$("prev").click()});
+render();reveal(99);
+}
+</script>
+<script src="/time.js" defer></script>
+</body>
+</html>
