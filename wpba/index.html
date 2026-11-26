@@ -37,7 +37,8 @@
 .yr{display:flex;gap:6px}
 .yr button{font:inherit;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:4px 12px;cursor:pointer}
 .yr button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-@media(max-width:480px){.req{grid-template-columns:minmax(0,1fr) 72px}.req .tag{grid-column:1/-1;justify-self:start}}
+.req.esr{grid-template-columns:minmax(0,1fr) 170px 110px}
+@media(max-width:480px){.req{grid-template-columns:minmax(0,1fr) 72px}.req .tag{grid-column:1/-1;justify-self:start}.req.esr{grid-template-columns:minmax(0,1fr) auto}.req.esr .tag{grid-column:auto}.req.esr input[type=date]{grid-column:1/-1;grid-row:2}}
 </style>
 </head>
 <body>
@@ -57,12 +58,15 @@ const cd=n=>n===null?"Not set":n<0?`${-n} days ago`:n===0?"Today":n<=60?`in ${n}
 function draw(){const s=wpbaStatus(D),st=view||s.y.st,cur=st===s.y.st,c=((D.counts=D.counts||{})["st"+st]=D.counts["st"+st]||{});
  const rows=WPBA_REQ.map(([k,label,a,b,c3,note])=>{let req=[a,b,c3][st-1];if(req==="post")req=s.posts;const done=+c[k]||0,pace=cur?Math.floor(req*s.y.frac+1e-9):req;return {k,label,req,done,note,pace}}).filter(r=>r.req>0);
  let alert="";
- if(cur){if(s.urgent)alert=`<div class="alert bad">ARCP ${cd(s.arcp)}: ${s.missing.length} requirement${s.missing.length!==1?"s":""} not yet met${s.ticks.some(t=>!t.ok)?" and mandatory training to confirm":""}.</div>`;
+ if(cur){if(s.esr!==null&&s.esr<0)alert=`<div class="alert bad">${s.nextESR.label} was due ${cd(s.esr)}. Tick it once it's done, or change its date.</div>`;
+  else if(s.urgent)alert=`<div class="alert bad">ARCP ${cd(s.arcp)}: ${s.missing.length} requirement${s.missing.length!==1?"s":""} not yet met${s.ticks.some(t=>!t.ok)?" and mandatory training to confirm":""}.</div>`;
   else if(s.behind.length)alert=`<div class="alert warn">Behind pace on ${s.behind.map(r=>r.label).join(", ")}. The marker on each bar shows where you should be by now.</div>`;
   else if(s.updated)alert=`<div class="alert ok">On pace for ST${s.y.st}.</div>`}
  $("app").innerHTML=`${alert}
- <div class="card"><h2>Review dates</h2><div class="dates">
-  <div><label for="esr">Next ESR</label><input type="date" id="esr" value="${D.esr||""}"><div class="cd">${cd(s.esr)}</div></div>
+ <div class="card"><h2>ST${st} educational supervisor reviews</h2>
+  ${wpbaESRs(D,st).map(e=>`<div class="req esr"><div><b>${e.label}</b><small>${e.custom?"Date changed by you":"Set automatically from 5 Aug"} · ${e.done?"done":cd(Math.ceil((new Date(e.date+"T00:00:00")-new Date())/864e5))}</small></div><input type="date" data-ed="${e.k}" value="${e.date}" aria-label="${e.label} date" style="font-size:15px"><label class="tag ${e.done?"ok":Math.ceil((new Date(e.date+"T00:00:00")-new Date())/864e5)<0?"warn":"mut"}" style="cursor:pointer;display:flex;gap:6px;align-items:center;justify-content:center"><input type="checkbox" data-ek="esr${e.m}" ${e.done?"checked":""} style="width:16px;height:16px;margin:0">Done</label></div>`).join("")}
+  <p class="note" style="margin:8px 0 0">Before each ESR: update your PDP, and check CbDs (at least 2 per review in ST1 and ST2), case reviews and the CSR.</p></div>
+ <div class="card"><h2>ARCP and posts</h2><div class="dates">
   <div><label for="arcp">Next ARCP</label><input type="date" id="arcp" value="${D.arcp||""}"><div class="cd">${cd(s.arcp)}</div></div>
   <div><label for="posts">Posts this training year</label><input type="number" id="posts" min="1" max="6" value="${s.posts}"><div class="cd">For CSRs and planning meetings</div></div>
  </div></div>
@@ -77,7 +81,9 @@ function draw(){const s=wpbaStatus(D),st=view||s.y.st,cur=st===s.y.st,c=((D.coun
  <div class="foot"><a class="btn" href="https://www.fourteenfish.com/" target="_blank" rel="noopener">Open FourteenFish</a><span class="note" style="margin:0">${D.updated?`Last updated ${fmt(new Date(D.updated))}${s.stale?" · due a refresh from FourteenFish":""}`:"Not updated yet"}</span></div>
  <p class="note">Minimum numbers from the RCGP Table of Requirements, unchanged by the August 2026 WPBA changes. Always check FourteenFish and your deanery for local extras. Saved in this browser only.</p>`;
  const touch=()=>{D.updated=Date.now();wpbaSave(D)};
- ["esr","arcp"].forEach(id=>$(id).onchange=e=>{D[id]=e.target.value;touch();draw()});
+ $("arcp").onchange=e=>{D.arcp=e.target.value;touch();draw()};
+ document.querySelectorAll("[data-ed]").forEach(i=>i.onchange=()=>{D.esrDates=D.esrDates||{};if(i.value)D.esrDates[i.dataset.ed]=i.value;else delete D.esrDates[i.dataset.ed];touch();draw()});
+ document.querySelectorAll("[data-ek]").forEach(i=>i.onchange=()=>{c[i.dataset.ek]=i.checked;touch();draw()});
  $("posts").onchange=e=>{D.posts=Math.max(1,+e.target.value||2);touch();draw()};
  document.querySelectorAll("[data-k]").forEach(i=>i.onchange=()=>{c[i.dataset.k]=i.value===""?"":Math.max(0,+i.value);touch();draw()});
  document.querySelectorAll("[data-t]").forEach(i=>i.onchange=()=>{c[i.dataset.t]=i.checked;touch();draw()});
