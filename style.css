@@ -44,3 +44,11 @@ a.row:focus-visible{outline:3px solid var(--c);outline-offset:-3px}
 .pdfs{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px;font-size:15px}
 .pdfs a{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:6px 14px;text-decoration:none;font-weight:700}
 .pdfs a:hover{border-color:var(--ink)}
+/* study-area illustrations */
+.band.cat .in{position:relative}
+.band.cat .art{position:absolute;right:0;top:50%;transform:translateY(-50%);width:clamp(120px,19vw,230px);height:auto;pointer-events:none}
+@media(min-width:721px){.band.cat .in>*:not(.art){max-width:calc(100% - clamp(140px,21vw,260px))}}
+@media(max-width:720px){.band.cat .art{width:96px;top:4px;transform:none;opacity:.5}.band.cat h1,.band.cat .back{padding-right:90px}}
+.spine .sart{position:absolute;right:-6px;bottom:-8px;width:clamp(110px,10vw,140px);height:auto;opacity:.5;pointer-events:none}
+.spine.has-art:after{display:none}
+.spine>div,.spine>span{position:relative;z-index:1}

@@ -124,7 +124,7 @@ $("plan").innerHTML=`<a class="tile" style="--c:#b3263a" href="programme/"><h3>A
 
 /* ---------- 2 study areas ---------- */
 $("shelf").innerHTML=CATS.filter(c=>c.id!=="sca").map(c=>{const n=c.lessons.length,l=c.lessons.filter(x=>x[2]).length;
- return `<a class="spine" style="--c:${c.c}" href="${c.id}/"><div><h2>${esc(c.name)}</h2><p>${esc(c.src)}</p></div><span>${n} topic${n>1?"s":""} · ${l} live</span></a>`}).join("");
+ return `<a class="spine has-art" style="--c:${c.c}" href="${c.id}/"><img class="sart" src="img/areas/${c.id}.svg" alt="" width="240" height="200" onerror="this.remove();this.parentNode&&this.parentNode.classList.remove('has-art')"><div><h2>${esc(c.name)}</h2><p>${esc(c.src)}</p></div><span>${n} topic${n>1?"s":""} · ${l} live</span></a>`}).join("");
 
 $("pdfs").innerHTML=`<span class="note" style="margin:0">PDF guides:</span>`+CATS.filter(c=>PDFS[c.id]).map(c=>`<a href="guides/${PDFS[c.id][0]}" target="_blank" rel="noopener">${esc(c.name)} · ${PDFS[c.id][1]} pages</a>`).join("");
 /* ---------- 3 questions and practice ---------- */
