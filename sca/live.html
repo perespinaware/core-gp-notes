@@ -75,6 +75,7 @@ textarea{flex:1;font:inherit;font-size:16px;border:1px solid var(--line);border-
 .talk .mouth{animation:tk .2s infinite alternate}.mouth{transform-box:fill-box;transform-origin:center}
 @keyframes tk{from{transform:scaleY(.3)}to{transform:scaleY(1.2)}}
 .hide{display:none!important}
+.vs{font:inherit;font-size:15px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);flex:1;max-width:100%}
 .warn{padding:10px 12px;border-radius:12px;background:var(--bad);color:var(--red);margin-top:10px}
 </style>
 </head>
@@ -135,7 +136,7 @@ function loadVoices(){if(!("speechSynthesis" in window))return;VOICES=speechSynt
  try{const a=localStorage.getItem("sca-vm"),b=localStorage.getItem("sca-vd");vMark=VOICES.find(v=>v.name===a)||vMark;vDoc=VOICES.find(v=>v.name===b)||vDoc}catch(e){}
  vMark=vMark||VOICES.find(male)||VOICES[0]||null;vDoc=vDoc||VOICES.find(v=>v!==vMark)||vMark;fillVoices()}
 if("speechSynthesis" in window){loadVoices();speechSynthesis.onvoiceschanged=loadVoices}
-function fillVoices(){[["vsel-m",()=>vMark],["vsel-d",()=>vDoc]].forEach(([id,g])=>{const s=$(id);if(!s)return;s.innerHTML=VOICES.length?VOICES.map((v,i)=>`<option value="${i}"${v===g()?" selected":""}>${esc(v.name.replace(/Microsoft |Google /,"").slice(0,30))}</option>`).join(""):"<option>No voices on this device</option>"})}
+function fillVoices(){const vn=$("vnote");if(vn)vn.textContent=VOICES.length?`${VOICES.length} English voices on this device. Natural, Enhanced or Online voices sound most human.`:"No voices found yet. Try Microsoft Edge, or on iPhone download an Enhanced voice in Settings › Accessibility › Spoken Content › Voices.";[["vsel-m",()=>vMark],["vsel-d",()=>vDoc],["vsel-c",()=>vMark]].forEach(([id,g])=>{const s=$(id);if(!s)return;s.innerHTML=VOICES.length?VOICES.map((v,i)=>`<option value="${i}"${v===g()?" selected":""}>${esc(v.name.replace(/Microsoft |Google /,"").slice(0,30))}</option>`).join(""):"<option>No voices on this device</option>"})}
 function say1(text,v){return new Promise(res=>{if(!("speechSynthesis" in window)||!VOICES.length){setTimeout(res,Math.min(6000,text.length*50));return}const u=new SpeechSynthesisUtterance(text);u.voice=v;u.lang=(v&&v.lang)||"en-GB";u.pitch=v===vMark&&vMark===vDoc?0.8:1;let d=false;const f=()=>{if(!d){d=true;res()}};u.onend=f;u.onerror=f;setTimeout(f,30000);speechSynthesis.speak(u)})}
 let lineCb=null,stopped=false;
 const tts=("speechSynthesis" in window)?{speak(x,o){stopped=false;speechSynthesis.cancel();if(typeof x==="string")return say1(x,vMark);return (async()=>{for(const l of x){if(stopped)throw {code:"stopped"};lineCb&&lineCb({id:l.id});await say1(l.text,l.voice==="glassy"?vDoc:vMark)}})()},stop(){stopped=true;speechSynthesis.cancel()},onLine(f){lineCb=f}}:null;
@@ -147,12 +148,14 @@ function reading(){let r=180;
  <div class="card"><div style="display:flex;justify-content:space-between;align-items:baseline"><h2>Get ready</h2><span class="big" id="rc">3:00</span></div>
  <label class="opt"><input type="checkbox" id="live" checked><span><b>Practice mode</b>: show your consultation template ticking live, and allow hints. Untick for <b>exam mode</b>.</span></label>
  <label class="opt"><input type="checkbox" id="voice" checked><span>Mark speaks his answers aloud</span></label>
+ <div class="opt" style="display:block;cursor:default"><b>Voices</b><div class="row"><label class="tiny" for="vsel-m">Mark (patient)</label><select id="vsel-m" class="vs"></select><button class="btn ghost" id="vtest" style="min-height:40px;padding:6px 12px">▶ Hear Mark</button></div>
+ <div class="row"><label class="tiny" for="vsel-d">Doctor (model replay)</label><select id="vsel-d" class="vs"></select></div><p class="tiny" id="vnote" style="margin:6px 0 0"></p></div>
  <p class="tiny">How to talk: tap the microphone, say your line, tap again to send. Or type and press Enter. The 12-minute clock runs in real time.</p>
  <details class="opt" style="display:block" ${CONF.pass?"":"open"}><summary><b>Connection and voices</b></summary>
  <p class="tiny">Your passcode is the one in your sca-config.php file. It's saved in this browser only.</p>
  <div class="row"><input id="pass" type="password" placeholder="Passcode" value="${esc(CONF.pass)}" style="flex:1;font:inherit;font-size:16px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)"><button class="btn ghost" id="test">Save and test</button></div>
  <div class="row"><input id="ep" type="url" value="${esc(CONF.ep)}" aria-label="Connector address" style="flex:1;font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)"></div>
- <div class="row tiny">Mark's voice <select id="vsel-m"></select> Doctor (model replay) <select id="vsel-d"></select> <button class="btn ghost" id="vtest" style="min-height:36px;padding:6px 12px">Hear Mark</button></div><div class="tiny" id="tres"></div></details>
+ <div class="tiny" id="tres"></div></details>
  <div id="cap-note"></div><button class="btn" id="go" style="width:100%;margin-top:8px">Connect the video call</button></div></div>`;
  capNote();fillVoices();
  $("vsel-m").onchange=e=>{vMark=VOICES[+e.target.value];try{localStorage.setItem("sca-vm",vMark.name)}catch(x){}};$("vsel-d").onchange=e=>{vDoc=VOICES[+e.target.value];try{localStorage.setItem("sca-vd",vDoc.name)}catch(x){}};
@@ -166,11 +169,12 @@ function start(){clearInterval(timer);S.live=$("live").checked;speechOn=$("voice
  $("app").innerHTML=`<div class="g2"><div><div class="call">${AV}<div class="hud"><span class="pill">● Video · Mark</span><span class="pill" id="cp"><b id="clk">12:00</b> left</span></div><div class="cap" id="cap">Connected. Mark is waiting.</div></div>
  <div class="mood">Mark: <div class="mb"><div id="mbar"></div></div><span id="mtx"></span></div>
  <div class="say"><button class="mic" id="mic" aria-label="Speak"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button><textarea id="tx" placeholder="Say or type what you'd say to Mark…" aria-label="Your words"></textarea></div>
+ <div class="row tiny"><label for="vsel-c">Mark's voice</label><select id="vsel-c" class="vs" style="max-width:260px"></select></div>
  <div class="row"><button class="btn" id="send">Send</button><button class="btn ghost" id="hintb">Stuck? Hint</button><button class="btn ghost" id="end">End consultation</button><span class="tiny" id="st"></span></div>
  <div id="hint"></div><div class="tr" id="tr"></div></div>
  <div class="card"><h2>What you've found</h2><ul class="clues" id="clues"><li class="none">What Mark tells you collects here.</li></ul>
  <div class="tpl ${S.live?"":"hide"}" id="tpl"></div><p class="tiny ${S.live?"hide":""}">Exam mode: your template and hints are hidden until the debrief.</p><div id="cap-note"></div></div></div>`;
- capNote();if(!S.live)$("hintb").classList.add("hide");
+ capNote();fillVoices();$("vsel-c").onchange=e=>{vMark=VOICES[+e.target.value];try{localStorage.setItem("sca-vm",vMark.name)}catch(x){}};if(!S.live)$("hintb").classList.add("hide");
  $("send").onclick=send;$("tx").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}};$("mic").onclick=micToggle;$("end").onclick=finish;$("hintb").onclick=hint;
  if(!dict)$("mic").classList.add("hide");if(!CONF.pass)sys("Not connected: go back and set your passcode.");
  S.t0=Date.now();timer=setInterval(tick,250);mood();tpl();sys("Call connected")}
