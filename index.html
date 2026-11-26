@@ -24,7 +24,7 @@
 {
 const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 document.getElementById("shelf").innerHTML=CATS.map(c=>{const n=c.lessons.length,l=c.lessons.filter(x=>x[2]).length;
- return `<a class="spine" style="--c:${c.c}" href="${c.id}/"><div><h2>${esc(c.name)}</h2><p>${esc(c.src)}</p></div><span>${n} topic${n>1?"s":""} · ${l} live</span></a>`}).join("");
+ return `<a class="spine" style="--c:${c.c}" href="${c.id}/"><div><h2>${esc(c.name)}</h2><p>${esc(c.src)}</p></div><span>${n} topic${n>1?"s":""} · ${l} live</span></a>`}).join("")+`<a class="spine" style="--c:#0b5f86" href="akt/"><div><h2>AKT practice</h2><p>Free, fast question practice at exam pace</p></div><span>Daily review · quick-fire · mock exam</span></a>`;
 }
 </script>
 </body>
