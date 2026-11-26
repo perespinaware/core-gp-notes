@@ -90,6 +90,7 @@ kbd{font:600 12px ui-monospace,monospace;border:1px solid var(--line);border-bot
 </div>
 <script src="../lessons.js"></script>
 <script src="bank-static.js"></script>
+<script src="bank-derm.js"></script>
 <script src="cases.js"></script>
 <script>
 {
@@ -128,7 +129,7 @@ async function buildBank(){const live=[];(typeof CATS!=="undefined"?CATS:[]).for
  const got=await Promise.all(live.map(async t=>{try{const h=await (await fetch(`../${t.cat}/${t.file}`)).text();const m=h.match(/const QS=(\[[\s\S]*?\]);\s*\n/);if(!m)return null;const QS=JSON.parse(m[1]);const h1=(h.match(/<h1>([^<]+)<\/h1>/)||[])[1];
   return {key:`${t.cat}/${t.file}`,name:h1?h1.replace(/&amp;/g,"&"):t.name,cat:t.cat,link:`../${t.cat}/${t.file}`,qs:QS.map((q,i)=>({id:`/${t.cat}/${t.file}#${i}`,s:q[0],o:q[1],a:q[2],e:q[3]}))}}catch(e){return null}}));
  TOPICS=got.filter(Boolean);
- const st={};(typeof STATIC_BANK!=="undefined"?STATIC_BANK:[]).forEach(q=>{(st[q.topic]=st[q.topic]||{key:"static/"+q.topic,name:q.topic,cat:q.cat,link:null,qs:[]}).qs.push({id:q.id,s:q.s,o:q.o,a:q.a,e:q.e})});
+ const st={};[...(typeof STATIC_BANK!=="undefined"?STATIC_BANK:[]),...(typeof DERM_BANK!=="undefined"?DERM_BANK:[])].forEach(q=>{(st[q.topic]=st[q.topic]||{key:"static/"+q.topic,name:q.topic,cat:q.cat,link:null,qs:[]}).qs.push({id:q.id,s:q.s,o:q.o,a:q.a,e:q.e})});
  TOPICS.push(...Object.values(st));
  if(typeof CASES!=="undefined")Object.entries(CASES).forEach(([k,c])=>{let t=TOPICS.find(x=>x.name===c.topic);if(!t){t={key:"case/"+k,name:c.topic,cat:c.cat,link:c.lesson||null,qs:[]};TOPICS.push(t)}t.caseId=k;
   c.steps.forEach((q,i)=>t.qs.push({id:`case-${k}#${i}`,s:q.solo||q.s,o:q.o,a:q.a,e:q.e}))});
