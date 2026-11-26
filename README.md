@@ -1,4 +1,4 @@
-# Core GP Notes
+# Road to GP
 
 Interactive, narrated revision notes for the MRCGP AKT and SCA, by Peres Pinaware.
 

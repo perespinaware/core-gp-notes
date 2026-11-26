@@ -1,4 +1,4 @@
-/* Core GP Notes: counts active study time on this site, per day and per page (stored only in this browser).
+/* Road to GP: counts active study time on this site, per day and per page (stored only in this browser).
    Time counts while the page is open in front of you and you have used it in the last few minutes. */
 (function(){var K="cgn-time",P=location.pathname.replace(/index\.html$/,"");
  if(/^\/$|^\/(programme|blueprint|prototype|tools)\//.test(P))return;

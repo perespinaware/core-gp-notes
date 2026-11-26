@@ -1,4 +1,4 @@
-/* Core GP Notes progress store: saved in this browser only */
+/* Road to GP progress store: saved in this browser only */
 const CGN={
  key:"cgn-v1",
  load(){try{return JSON.parse(localStorage.getItem(this.key))||{q:{},log:[],cases:{}}}catch(e){return {q:{},log:[],cases:{}}}},

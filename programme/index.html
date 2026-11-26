@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AKT Programme · Core GP Notes</title>
+<title>AKT Programme · Road to GP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
@@ -78,7 +78,7 @@ tr.click{cursor:pointer}tr.click:hover td{background:var(--soft)}
 </head>
 <body>
 <div class="wrap">
-<a class="back" href="../">← Core GP Notes</a>
+<a class="back" href="../">← Road to GP</a>
 <h1>AKT Programme</h1>
 <p class="sub">Your 69-week plan, rebuilt high-yield first: areas the RCGP flags most come earliest, and every week starts with the must-know items. Questions you answer in AKT practice count automatically.</p>
 <nav class="nav" id="nav"></nav>
@@ -310,7 +310,7 @@ function settings(){$("app").innerHTML=`<div class="card"><h2>Settings</h2>
  <div class="row"><button class="btn" id="exp">Download backup</button><label class="btn ghost" for="imp">Load a backup</label><input id="imp" type="file" accept=".json" class="hide"></div><p class="note" id="imsg"></p></div>`;
  $("s-start").onchange=e=>{S.start=e.target.value;save()};$("s-exam").onchange=e=>{S.exam=e.target.value;save()};$("s-target").onchange=e=>{S.target=Math.min(1,Math.max(.5,+e.target.value/100));save()};
  $("exp").onclick=()=>{let p={};try{p=JSON.parse(localStorage.getItem("cgn-v1"))||{}}catch(e){}const blob=new Blob([JSON.stringify({programme:S,practice:p,saved:new Date().toISOString()},null,1)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="core-gp-notes-backup-"+new Date().toISOString().slice(0,10)+".json";a.click()};
- $("imp").onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{const j=JSON.parse(t);if(j.programme){S=j.programme;save()}if(j.practice&&j.practice.log)localStorage.setItem("cgn-v1",JSON.stringify(j.practice));$("imsg").textContent="Backup loaded.";setTimeout(()=>location.reload(),600)}).catch(()=>$("imsg").textContent="That file isn't a Core GP Notes backup.")}}
+ $("imp").onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{const j=JSON.parse(t);if(j.programme){S=j.programme;save()}if(j.practice&&j.practice.log)localStorage.setItem("cgn-v1",JSON.stringify(j.practice));$("imsg").textContent="Backup loaded.";setTimeout(()=>location.reload(),600)}).catch(()=>$("imsg").textContent="That file isn't a Road to GP backup.")}}
 route();
 }
 </script>

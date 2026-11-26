@@ -1,9 +1,9 @@
-/* Core GP Notes · high-yield blueprint
+/* Road to GP · high-yield blueprint
    Tier 1 = must know (repeatedly flagged by RCGP AKT feedback, or very common and high-stakes)
    Tier 2 = high yield (common in GP or flagged once)   Tier 3 = useful
    Sources: RCGP AKT feedback reports (5-year summary Oct 2020–Jan 2025; AKT 57 Oct 2025; AKT 58 Jan 2026; AKT 60 Jul 2026)
    and the RCGP SCA blueprint of 12 clinical experience groups.
-   have: notes = PDF guide topic · lesson = Core GP Notes lesson · bank = AKT practice topic name(s) · case = AKT case id */
+   have: notes = PDF guide topic · lesson = Road to GP lesson · bank = AKT practice topic name(s) · case = AKT case id */
 const AKT_AREAS=[
  {area:"Prescribing and patient safety",domain:"Clinical",flag:"Flagged in 11 sittings over 5 years; side effects of long-term drugs flagged again in AKTs 57–60",topics:[
   ["rx-monitor","Drug monitoring (DMARDs, lithium, amiodarone, methotrexate)",1,{}],
