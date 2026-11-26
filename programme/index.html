@@ -65,6 +65,7 @@ tr.click{cursor:pointer}tr.click:hover td{background:var(--soft)}
 .note{font-size:13px;color:var(--mut)}
 .pass{display:inline-block;min-width:34px;text-align:center;font-size:12px;font-weight:700;padding:3px 6px;border-radius:7px;border:1px solid var(--line);color:var(--mut);background:var(--soft)}
 .pass.d{background:var(--ok);border-color:var(--teal);color:var(--teal)}.pass.p{border-color:var(--amber);color:var(--amber)}
+.meas{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}.meas .note{grid-column:1/-1;margin:0}
 .conf{display:flex;gap:3px;align-items:center}.conf i{width:12px;height:12px;border-radius:3px;background:var(--soft);border:1px solid var(--line)}
 .conf i.on.l1,.conf i.on.l2{background:var(--red);border-color:var(--red)}.conf i.on.l3{background:var(--amber);border-color:var(--amber)}.conf i.on.l4,.conf i.on.l5{background:var(--teal);border-color:var(--teal)}
 .conf b{margin-left:6px;font-size:15px}
@@ -102,7 +103,29 @@ const auto=n=>{const a=wkStart(n).getTime(),b=a+7*DAY,L=practice.log.filter(x=>x
 const qs=n=>{const a=auto(n),w=W(n);return {q:a.q+(+w.oq||0),c:a.c+(+w.oc||0),a}};
 const pct=x=>x===null||isNaN(x)?"–":Math.round(x*100)+"%";
 const mscore=v=>v==="Yes"?1:v==="Partial"?0.5:0;
-const mastery=n=>{const m=W(n).m||[];return m.reduce((s,v)=>s+mscore(v),0)/4};
+/* The four mastery measures, worked out from what you do. A value you set before this change is kept only where there is no evidence yet. */
+const RET_GAP=7*DAY;
+function meas(n){const i=info(n),w=W(n),old=w.m||[],a=wkStart(n).getTime(),b=a+7*DAY,out=[];
+ const L=practice.log.filter(x=>x.t>=a&&x.t<b),q=qs(n);
+ // 1 Coverage: the must-know and then lists you've ticked (revision weeks: questions done)
+ const tk=w.ticks||{};let v="",why="";
+ if(i.must.length){const mD=i.must.filter((x,k)=>tk["m"+k]).length,tD=i.then.filter((x,k)=>tk["t"+k]).length,tot=i.must.length+i.then.length;
+  v=mD===i.must.length&&tD===i.then.length?"Yes":(mD===i.must.length||(mD+tD)>=tot/2)?"Partial":"";why=`${mD}/${i.must.length} must-know and ${tD}/${i.then.length} then ticked`}
+ else{v=q.q>=i.q?"Yes":q.q>=i.q/2?"Partial":"";why=`${q.q} of ${i.q} revision questions`}
+ out.push({v,why});
+ // 2 Understanding: reasoning answers (case steps, and questions answered with recall first)
+ const U=L.filter(x=>x.r||String(x.id).startsWith("case-")),uc=U.filter(x=>x.ok).length,ua=U.length?uc/U.length:0;
+ out.push({v:U.length>=10&&ua>=.7?"Yes":U.length>=5&&ua>=.5?"Partial":"",why:U.length?`${U.length} reasoning answers (cases, recall first), ${pct(ua)} right`:"No case steps or recall-first answers yet"});
+ // 3 Application: all questions this week against your target
+ const acc=q.q?q.c/q.q:0,need=Math.min(40,i.q);
+ out.push({v:q.q>=need&&acc>=S.target?"Yes":q.q>=10&&acc>=.6?"Partial":"",why:q.q?`${q.q} questions, ${pct(acc)} right (Yes needs ${need}+ at ${pct(S.target)})`:"No questions yet"});
+ // 4 Retention: questions first met this week, answered again at least 7 days later
+ const first={};practice.log.forEach(x=>{if(first[x.id]===undefined)first[x.id]=x.t});
+ const R=practice.log.filter(x=>first[x.id]>=a&&first[x.id]<b&&x.t-first[x.id]>=RET_GAP),rc=R.filter(x=>x.ok).length,ra=R.length?rc/R.length:0;
+ out.push({v:R.length>=10&&ra>=.8?"Yes":R.length>=5&&ra>=.6?"Partial":"",why:R.length?`${R.length} re-answered 7+ days later, ${pct(ra)} right`:(Date.now()<b+RET_GAP?"Checked from "+fmt(new Date(b+RET_GAP))+" onwards, in Daily review":"No re-answers yet: do Daily review")});
+ out.forEach((o,k)=>{if(!o.v&&old[k]&&!(k===0?i.must.some((x,j)=>tk["m"+j]):k===1?U.length:k===2?q.q:R.length)){o.v=old[k];o.why="Entered by you before measures became automatic"}});
+ return out}
+const mastery=n=>meas(n).reduce((s,o)=>s+mscore(o.v),0)/4;
 const statusTag=s=>`<span class="tag ${s==="Done"?"done":s==="In progress"?"prog":""}">${esc(s||"Not started")}</span>`;
 const TABS=[["week","This week"],["dash","Dashboard"],["plan","Programme"],["curric","Curriculum"],["stats","Statistics"],["admin","Admin"],["errors","Error log"],["mocks","Mocks"],["settings","Settings"]];
 let view=null;
@@ -129,19 +152,20 @@ function weekView(n){const i=info(n),w=W(n),q=qs(n),cw=curWeek();
   <div class="field"><label for="oc">Other question banks: correct</label><input id="oc" type="number" min="0" value="${w.oc??""}"></div>
   <div class="field"><label for="hours">Hours studied</label><input id="hours" type="number" min="0" step="0.5" value="${w.hours??""}"></div>
   <h3>The four mastery measures</h3>
-  ${MEAS.map((m,k)=>`<div class="field"><label for="m${k}">${m}</label><select id="m${k}">${["","Partial","Yes"].map(v=>`<option value="${v}" ${(w.m||[])[k]===v?"selected":""}>${v||"–"}</option>`).join("")}</select></div>`).join("")}
+  ${meas(n).map((o,k)=>`<div class="meas"><span>${MEAS[k]}</span><span class="tag ${o.v==="Yes"?"done":o.v==="Partial"?"prog":""}">${o.v||"Not yet"}</span><div class="note">${esc(o.why)}</div></div>`).join("")}
+  <p class="note">These fill in automatically. Tick the lists to show coverage. Do cases or turn on recall first for understanding. Answer questions for application. Daily review brings questions back after a week for retention.</p>
   <h3>Weekly streams (1 hour each)</h3>
   <div class="field"><label for="sst">Statistics: ${esc(st?st[0]:"all done")}</label><select id="sst">${["","Partial","Yes"].map(v=>`<option value="${v}" ${w.stats===v?"selected":""}>${v||"–"}</option>`).join("")}</select></div>
   <div class="field"><label for="ast">Admin: ${esc(ad?ad[0]:"all done")}</label><select id="ast">${["","Partial","Yes"].map(v=>`<option value="${v}" ${w.admin===v?"selected":""}>${v||"–"}</option>`).join("")}</select></div>
   <label class="note" for="wnotes">Notes</label><textarea id="wnotes">${esc(w.notes||"")}</textarea>
   <div class="row" style="margin-top:10px"><a class="btn" href="../akt/">Practise in AKT practice</a><a class="btn ghost" href="../blueprint/">Blueprint</a></div>
  </div></div></div>`;
- const up=()=>{w.status=$("status").value;w.oq=$("oq").value;w.oc=$("oc").value;w.hours=$("hours").value;w.m=[0,1,2,3].map(k=>$("m"+k).value);w.stats=$("sst").value;w.admin=$("ast").value;w.notes=$("wnotes").value;
+ const up=()=>{w.status=$("status").value;w.oq=$("oq").value;w.oc=$("oc").value;w.hours=$("hours").value;w.stats=$("sst").value;w.admin=$("ast").value;w.notes=$("wnotes").value;
   if(w.stats==="Yes"&&st&&S.stats[st[0]]!=="Done"){S.stats[st[0]]="Done"}if(w.admin==="Yes"&&ad&&S.admin[ad[0]]!=="Done"){S.admin[ad[0]]="Done"}save()};
- ["status","oq","oc","hours","m0","m1","m2","m3","sst","ast","wnotes"].forEach(id=>$(id).onchange=()=>{up();if(["status","oq","oc","sst","ast"].includes(id))weekView(n)});
+ ["status","oq","oc","hours","sst","ast","wnotes"].forEach(id=>$(id).onchange=()=>{up();if(["status","oq","oc","sst","ast"].includes(id))weekView(n)});
  document.querySelectorAll("[data-t]").forEach(c=>c.onchange=()=>{w.ticks=w.ticks||{};w.ticks[c.dataset.t]=c.checked;
   const total=i.must.length+i.then.length,done=Object.entries(w.ticks).filter(([k,v])=>v&&(k[0]==="m"||k[0]==="t")).length;if(done&&(!w.status||w.status==="Not started"))w.status="In progress";
-  if(i.must.every((x,k)=>w.ticks["m"+k])&&!(w.m||[])[0]){w.m=w.m||["","","",""];w.m[0]=i.then.every((x,k)=>w.ticks["t"+k])?"Yes":"Partial"}save();if(!$("status").value||$("status").value!==w.status)weekView(n)})}
+  save();weekView(n)})}
 
 /* ---------- dashboard ---------- */
 function dash(){const cw=curWeek(),done=Object.entries(S.weeks).filter(([k,v])=>v.status==="Done").length;
@@ -149,7 +173,7 @@ function dash(){const cw=curWeek(),done=Object.entries(S.weeks).filter(([k,v])=>
  const weeksLeft=Math.max(0,Math.ceil((new Date(S.exam+"T00:00:00")-Date.now())/7/DAY));
  const rows=PHASES.map(p=>{let wd=0,qt=0,qd=0,qc=0,h=0;for(let n=p.weeks[0];n<=p.weeks[1];n++){const w=W(n),q=qs(n);if(w.status==="Done")wd++;qt+=info(n).q;qd+=q.q;qc+=q.c;h+=+w.hours||0}return {p,wd,tot:p.weeks[1]-p.weeks[0]+1,qt,qd,qc,h}});
  const all=rows.reduce((a,r)=>({wd:a.wd+r.wd,tot:a.tot+r.tot,qt:a.qt+r.qt,qd:a.qd+r.qd,qc:a.qc+r.qc,h:a.h+r.h}),{wd:0,tot:0,qt:0,qd:0,qc:0,h:0});
- const ms=[0,1,2,3].map(k=>{let s=0;for(let n=1;n<=69;n++)s+=mscore((W(n).m||[])[k]);return s/69});
+ const ms=[0,1,2,3].map(k=>{let s=0;for(let n=1;n<=69;n++)s+=mscore(meas(n)[k].v);return s/69});
  const sd=STATS.filter(([n])=>S.stats[n]==="Done").length,ad=ADMIN.filter(([n])=>S.admin[n]==="Done").length;
  const openErr=S.errors.filter(e=>e.status!=="Resolved").length,mk=allMocks();
  $("app").innerHTML=`<div class="kpis"><div class="kpi"><b>${cw||"–"}</b><span>current week of 69</span></div><div class="kpi"><b>${weeksLeft}</b><span>weeks until the exam</span></div><div class="kpi"><b>${pct(all.wd/69)}</b><span>${all.wd} weeks done</span></div><div class="kpi"><b style="color:${behind?"var(--red)":"var(--teal)"}">${behind?behind+" behind":"On track"}</b><span>schedule</span></div></div>
@@ -183,7 +207,7 @@ function passOf(c,k){const m=c[3],weeks=m["p"+k]||[];
 function guideConf(i){const c=CURRIC[i],m=c[3],themes=new Set(GUIDE_TOPICS[i+1]||[]);
  const L=practice.log.filter(x=>themes.has(x.theme)).slice(-30);let q=L.length,k=L.filter(x=>x.ok).length;
  const wks=[...(m.p1||[]),...(m.p2||[]),...(m.p3||[]),...(m.p4||[])];let oq=0,oc=0,ms=[],ret=0;
- wks.forEach(n=>{const w=S.weeks[n];if(!w)return;oq+=+w.oq||0;oc+=+w.oc||0;const mm=w.m||[];if(mm.some(Boolean)){ms.push(mastery(n));if(mm[3]==="Yes")ret++}});
+ wks.forEach(n=>{const w=S.weeks[n];if(!w)return;oq+=+w.oq||0;oc+=+w.oc||0;const mm=meas(n);if(mm.some(o=>o.v)){ms.push(mastery(n));if(mm[3].v==="Yes")ret++}});
  q+=oq;k+=oc;
  if(q>=10){const a=k/q;let lv=a>=.85?5:a>=.75?4:a>=.65?3:a>=.5?2:1;if(lv===5&&!ret&&q<40)lv=4;return {lv,why:`${q} questions, ${Math.round(a*100)}% correct${lv===4&&a>=.85?" (5 needs retention or 40+ questions)":""}`}}
  if(ms.length){const avg=ms.reduce((s,x)=>s+x,0)/ms.length;return {lv:Math.max(1,Math.min(3,1+Math.round(avg*2))),why:`From your mastery ratings; ${q?q+" questions so far, ":""}answer 10+ questions for a full score`}}
@@ -197,7 +221,7 @@ function curric(){const P=["First pass","Depth","Consolidation","Exam revision"]
  $("app").innerHTML=`<div class="kpis"><div class="kpi"><b>${pct(pc)}</b><span>curriculum completion, all passes</span></div><div class="kpi"><b>${first}/32</b><span>topic guides: first pass done</span></div><div class="kpi"><b>${CURRIC.filter(c=>[1,2,3,4].every(k=>["Done","–"].includes(passOf(c,k)))).length}/32</b><span>all four passes complete</span></div><div class="kpi"><b>${(()=>{const v=CURRIC.map((c,i)=>guideConf(i).lv).filter(Boolean);return v.length?(v.reduce((a,b)=>a+b,0)/v.length).toFixed(1)+" /5":"–"})()}</b><span>average confidence (${CURRIC.map((c,i)=>guideConf(i).lv).filter(Boolean).length} guides rated)</span></div></div>
  <div class="card"><h2>RCGP curriculum: 32 topic guides</h2><p class="note" style="margin-top:0">Every guide is covered by the programme. The passes fill in automatically from the weeks and streams mapped to each guide: Done when all of them are done, Part when some are started. The high-yield order decides when you study each guide, not whether you do.</p>
  <div class="scroll"><table><thead><tr><th class="n">#</th><th>Topic guide</th>${P.map((p,k)=>`<th class="n">${k+1}. ${p}</th>`).join("")}<th class="hm">Confidence (automatic)</th></tr></thead><tbody>${rows}</tbody></table></div>
- <p class="note"><b>Confidence</b> fills in from your performance: your last 30 answers in AKT practice, lesson quizzes and cases for that guide, plus questions you log from other banks in its weeks. 1 = under 50% correct, 2 = 50–64%, 3 = 65–74%, 4 = 75–84%, 5 = 85% or more with retention confirmed or 40+ questions. With fewer than 10 questions it uses your mastery ratings, up to 3.</p>
+ <p class="note"><b>Confidence</b> fills in from your performance: your last 30 answers in AKT practice, lesson quizzes and cases for that guide, plus questions you log from other banks in its weeks. 1 = under 50% correct, 2 = 50–64%, 3 = 65–74%, 4 = 75–84%, 5 = 85% or more with retention at Yes in one of its weeks, or 40+ questions. With fewer than 10 questions it uses your mastery ratings, up to 3.</p>
  <p class="note">Phase 2 has no separate pass for the professional guides covered only by the statistics or admin streams; they're revisited in Phases 3 and 4 (set those on the Statistics and Admin tabs).</p></div>`;
 }
 

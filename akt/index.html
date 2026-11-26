@@ -187,7 +187,7 @@ function stopTimers(){clearInterval(paceT);clearInterval(mockT)}
 function start(title,qs,opt={}){if(!qs.length){alert("No questions here yet.");return}S={title,qs:qs.map(real),i:0,ans:[],t0:Date.now(),endless:!!opt.endless,mock:!!opt.mock,flags:new Set(),qt:Date.now()};
  if(S.mock){S.end=Date.now()+S.qs.length*60000;mockT=setInterval(mockTick,1000)}show()}
 function record(q,ok,ms){const d=load(),c=d.q[q.id]||{box:0,due:0,n:0,ok:0};c.n++;if(ok){c.ok++;c.box=Math.min(GAPS.length-1,c.box+1);c.due=Date.now()+GAPS[c.box]*DAY}else{c.box=0;c.due=Date.now()+10*60000}d.q[q.id]=c;
- d.log.push({t:Date.now(),theme:q.topic,ok,id:q.id,ms});if(d.log.length>5000)d.log=d.log.slice(-5000);save(d);return c}
+ d.log.push(Object.assign({t:Date.now(),theme:q.topic,ok,id:q.id,ms},SET.recall&&!S.mock?{r:1}:{}));if(d.log.length>5000)d.log=d.log.slice(-5000);save(d);return c}
 function show(){stopTimers();if(S.mock)mockT=setInterval(mockTick,1000);const q=S.qs[S.i],ans=S.ans[S.i],done=ans!==undefined&&!S.mock;S.qt=Date.now();
  const hidden=SET.recall&&ans===undefined&&!S.mock&&!S.revealed;
  $("app").innerHTML=`<div class="qbar"><span><b>${esc(S.title)}</b> · ${S.endless?`${S.i+1}`:`${S.i+1} of ${S.qs.length}`}${S.mock?"":` · ${S.ans.filter((a,i)=>a===S.qs[i].a).length} right`}</span><span>${S.mock?`<b id="mclk"></b> left · `:""}<a href="#" id="quit">${S.mock?"Finish":"Stop"}</a></span></div>
