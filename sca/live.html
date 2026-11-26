@@ -76,6 +76,10 @@ textarea{flex:1;font:inherit;font-size:16px;border:1px solid var(--line);border-
 @keyframes tk{from{transform:scaleY(.3)}to{transform:scaleY(1.2)}}
 .hide{display:none!important}
 .vs{font:inherit;font-size:15px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);flex:1;max-width:100%}
+.board textarea{width:100%;min-height:96px;font:inherit;font-size:15.5px;line-height:1.5;border:1px solid var(--line);border-radius:12px;padding:9px 11px;background:color-mix(in srgb,#fff7cf 55%,var(--card));color:var(--ink);resize:vertical}
+:root[data-theme=dark] .board textarea{background:var(--soft)}
+.board label{display:flex;justify-content:space-between;align-items:baseline;font-weight:700;font-size:15px;margin:10px 0 4px}
+.board label small{font-weight:400;color:var(--mut)}
 .warn{padding:10px 12px;border-radius:12px;background:var(--bad);color:var(--red);margin-top:10px}
 </style>
 </head>
@@ -140,11 +144,20 @@ function fillVoices(){const vn=$("vnote");if(vn)vn.textContent=VOICES.length?`${
 function say1(text,v){return new Promise(res=>{if(!("speechSynthesis" in window)||!VOICES.length){setTimeout(res,Math.min(6000,text.length*50));return}const u=new SpeechSynthesisUtterance(text);u.voice=v;u.lang=(v&&v.lang)||"en-GB";u.pitch=v===vMark&&vMark===vDoc?0.8:1;let d=false;const f=()=>{if(!d){d=true;res()}};u.onend=f;u.onerror=f;setTimeout(f,30000);speechSynthesis.speak(u)})}
 let lineCb=null,stopped=false;
 const tts=("speechSynthesis" in window)?{speak(x,o){stopped=false;speechSynthesis.cancel();if(typeof x==="string")return say1(x,vMark);return (async()=>{for(const l of x){if(stopped)throw {code:"stopped"};lineCb&&lineCb({id:l.id});await say1(l.text,l.voice==="glassy"?vDoc:vMark)}})()},stop(){stopped=true;speechSynthesis.cancel()},onLine(f){lineCb=f}}:null;
+/* ---- notes board ---- */
+const BKEY="sca-board-htn";
+function bload(){try{return JSON.parse(localStorage.getItem(BKEY))||{h:"",n:""}}catch(e){return {h:"",n:""}}}
+function bsave(){const b={h:($("bh")||{}).value||"",n:($("bn")||{}).value||""};S.board=b;try{localStorage.setItem(BKEY,JSON.stringify(b))}catch(e){}const st=$("bst");if(st){st.textContent="Saved";clearTimeout(bsave.t);bsave.t=setTimeout(()=>st.textContent="",1200)}}
+function boardHTML(title){const b=bload();S.board=b;return `<div class="card board" style="margin-top:14px"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h2 style="margin:0">${title}</h2><span class="tiny" id="bst"></span></div>
+ <label for="bh">Hypotheses <small>what you'll test</small></label><textarea id="bh" placeholder="e.g. Non-adherence (indapamide gap)? NSAIDs? White coat? Lifestyle?">${esc(b.h)}</textarea>
+ <label for="bn">Notes <small>from the notes and the call</small></label><textarea id="bn" placeholder="Key facts, cues, things to come back to…">${esc(b.n)}</textarea>
+ <div class="row"><button class="btn ghost" id="bclr" style="min-height:38px;padding:6px 12px">Clear board</button></div></div>`}
+function bbind(){["bh","bn"].forEach(id=>{const t=$(id);if(t)t.oninput=bsave});const c=$("bclr");if(c)c.onclick=()=>{$("bh").value="";$("bn").value="";bsave()}}
 function capNote(){const n=$("cap-note");if(!n)return;const m=[];if(!CONF.pass)m.push("Set up the connection first (below).");if(!dict)m.push("Speaking isn't supported in this browser. Use Chrome, Edge or Safari, or type instead.");n.innerHTML=m.map(x=>`<div class="warn">${esc(x)}</div>`).join("")}
 
 /* ---------------- reading ---------------- */
 function reading(){let r=180;
- $("app").innerHTML=`<div class="g2"><div class="card"><h2>Reading time</h2><p class="tiny" style="margin-top:0">3 minutes with the notes before the call connects. Plan your hypotheses.</p><dl>${NOTES.map(n=>`<dt>${esc(n[0])}</dt><dd>${esc(n[1])}</dd>`).join("")}</dl></div>
+ $("app").innerHTML=`<div class="g2"><div><div class="card"><h2>Reading time</h2><p class="tiny" style="margin-top:0">3 minutes with the notes before the call connects. Plan your hypotheses.</p><dl>${NOTES.map(n=>`<dt>${esc(n[0])}</dt><dd>${esc(n[1])}</dd>`).join("")}</dl></div>${boardHTML("My notes board")}</div>
  <div class="card"><div style="display:flex;justify-content:space-between;align-items:baseline"><h2>Get ready</h2><span class="big" id="rc">3:00</span></div>
  <label class="opt"><input type="checkbox" id="live" checked><span><b>Practice mode</b>: show your consultation template ticking live, and allow hints. Untick for <b>exam mode</b>.</span></label>
  <label class="opt"><input type="checkbox" id="voice" checked><span>Mark speaks his answers aloud</span></label>
@@ -157,7 +170,7 @@ function reading(){let r=180;
  <div class="row"><input id="ep" type="url" value="${esc(CONF.ep)}" aria-label="Connector address" style="flex:1;font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)"></div>
  <div class="tiny" id="tres"></div></details>
  <div id="cap-note"></div><button class="btn" id="go" style="width:100%;margin-top:8px">Connect the video call</button></div></div>`;
- capNote();fillVoices();
+ capNote();fillVoices();bbind();
  $("vsel-m").onchange=e=>{vMark=VOICES[+e.target.value];try{localStorage.setItem("sca-vm",vMark.name)}catch(x){}};$("vsel-d").onchange=e=>{vDoc=VOICES[+e.target.value];try{localStorage.setItem("sca-vd",vDoc.name)}catch(x){}};
  $("vtest").onclick=()=>tts&&tts.speak("The nurse says my blood pressure's still high. I'm on three tablets, I don't get it.");
  $("test").onclick=async()=>{try{localStorage.setItem("sca-pass",$("pass").value.trim());localStorage.setItem("sca-ep",$("ep").value.trim())}catch(e){}$("tres").textContent="Testing…";
@@ -172,9 +185,9 @@ function start(){clearInterval(timer);S.live=$("live").checked;speechOn=$("voice
  <div class="row tiny"><label for="vsel-c">Mark's voice</label><select id="vsel-c" class="vs" style="max-width:260px"></select></div>
  <div class="row"><button class="btn" id="send">Send</button><button class="btn ghost" id="hintb">Stuck? Hint</button><button class="btn ghost" id="end">End consultation</button><span class="tiny" id="st"></span></div>
  <div id="hint"></div><div class="tr" id="tr"></div></div>
- <div class="card"><h2>What you've found</h2><ul class="clues" id="clues"><li class="none">What Mark tells you collects here.</li></ul>
- <div class="tpl ${S.live?"":"hide"}" id="tpl"></div><p class="tiny ${S.live?"hide":""}">Exam mode: your template and hints are hidden until the debrief.</p><div id="cap-note"></div></div></div>`;
- capNote();fillVoices();$("vsel-c").onchange=e=>{vMark=VOICES[+e.target.value];try{localStorage.setItem("sca-vm",vMark.name)}catch(x){}};if(!S.live)$("hintb").classList.add("hide");
+ <div>${boardHTML("My notes board")}<div class="card" style="margin-top:14px"><h2>What you've found</h2><ul class="clues" id="clues"><li class="none">What Mark tells you collects here.</li></ul>
+ <div class="tpl ${S.live?"":"hide"}" id="tpl"></div><p class="tiny ${S.live?"hide":""}">Exam mode: your template and hints are hidden until the debrief.</p><div id="cap-note"></div></div></div></div>`;
+ capNote();fillVoices();bbind();$("vsel-c").onchange=e=>{vMark=VOICES[+e.target.value];try{localStorage.setItem("sca-vm",vMark.name)}catch(x){}};if(!S.live)$("hintb").classList.add("hide");
  $("send").onclick=send;$("tx").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}};$("mic").onclick=micToggle;$("end").onclick=finish;$("hintb").onclick=hint;
  if(!dict)$("mic").classList.add("hide");if(!CONF.pass)sys("Not connected: go back and set your passcode.");
  S.t0=Date.now();timer=setInterval(tick,250);mood();tpl();sys("Call connected")}
@@ -231,11 +244,13 @@ Clinical management (weighted more heavily): not adding a fourth drug yet; resta
 Relating to others: rapport and identity/privacy checks on video; ideas, concerns, expectations; thanking for disclosure without blame; linking explanation to dad's stroke and "no more tablets"; shared decision; plain language; teach-back.
 Common errors: closed "Are you taking your tablets?"; missing ibuprofen; lecturing; adding spironolactone now; jargon; vague safety-net.
 Time used: ${Math.floor(used/60)} min ${used%60} s of 12. Hints used: ${S.hints}.
+DOCTOR'S WRITTEN HYPOTHESES (from reading time and the call): ${(S.board&&S.board.h)||"(none written)"}
+DOCTOR'S WRITTEN NOTES: ${(S.board&&S.board.n)||"(none written)"}
 TRANSCRIPT:
 ${transcript}
 
 Return ONLY JSON:
-{"DG":{"score":0-3,"did":["..."],"missed":["..."]},"CM":{"score":0-3,"did":["..."],"missed":["..."]},"RTO":{"score":0-3,"did":["..."],"missed":["..."]},"better":[{"yours":"exact doctor line from transcript","better":"a stronger phrasing","why":"short reason"}],"top_tip":"one sentence"}
+{"DG":{"score":0-3,"did":["..."],"missed":["..."]},"CM":{"score":0-3,"did":["..."],"missed":["..."]},"RTO":{"score":0-3,"did":["..."],"missed":["..."]},"better":[{"yours":"exact doctor line from transcript","better":"a stronger phrasing","why":"short reason"}],"top_tip":"one sentence","hypotheses":"2 sentences: were the written hypotheses sensible, and which were tested or left untested in the consultation?"}
 Give 2–4 "better" items, choosing the doctor's weakest lines. Keep each list item under 15 words.`;
  let j=null;try{const r=await sample(prompt,{modelTier:"complex",cache:false});j=parse(r.text)}catch(e){}
  try{const h=JSON.parse(localStorage.getItem("sca-live-htn")||"[]");if(j)h.push({d:Date.now(),s:[j.DG.score,j.CM.score,j.RTO.score]});localStorage.setItem("sca-live-htn",JSON.stringify(h.slice(-20)));S.prev=h}catch(e){}
@@ -245,6 +260,8 @@ Give 2–4 "better" items, choosing the doctor's weakest lines. Keep each list i
  $("app").innerHTML=`<div class="card"><h2>Debrief</h2><p class="tiny" style="margin-top:0">Time used ${Math.floor(used/60)}:${String(used%60).padStart(2,"0")} of 12:00 · Mark ended the call: ${esc($("mtx")?$("mtx").textContent:"")} · Hints: ${S.hints}${S.prev&&S.prev.length>1?` · Attempt ${S.prev.length}`:""}</p>
  ${j?`<div class="dom">${dm("DG","Data gathering and diagnosis")}${dm("CM","Clinical management")}${dm("RTO","Relating to others")}</div>${j.top_tip?`<div class="hint"><b>Top tip:</b> ${esc(j.top_tip)}</div>`:""}
  <h2 style="margin-top:16px">Say it better</h2><div class="bt">${(j.better||[]).map(b=>`<div><div class="y">You: “${esc(b.yours)}”</div><div class="b">Better: “${esc(b.better)}”</div><div class="tiny">${esc(b.why)}</div></div>`).join("")}</div>`:`<div class="warn">The examiner couldn't mark this time. Your template and transcript are below.</div>`}
+ ${j&&j.hypotheses?`<h2 style="margin-top:16px">Your hypotheses</h2><div class="hint" style="background:var(--soft)">${esc(j.hypotheses)}</div>`:""}
+ ${(S.board&&(S.board.h||S.board.n))?`<details style="margin-top:10px"><summary>Your notes board</summary><p style="white-space:pre-wrap"><b>Hypotheses:</b> ${esc(S.board.h)}</p><p style="white-space:pre-wrap"><b>Notes:</b> ${esc(S.board.n)}</p></details>`:""}
  <h2 style="margin-top:16px">Your template</h2><div class="tpl">${tplDone}</div>
  <p class="tiny">Marks are an AI examiner's training estimate, not RCGP marks. In the real SCA, clinical management carries more weight.</p>
  <div class="row"><button class="btn ghost" onclick="location.reload()">Try again</button><button class="btn" id="model">▶ Hear a model consultation</button><span class="tiny" id="mst"></span></div>
