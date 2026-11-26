@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blueprint · Core GP Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#eef1f3,#0f1519);--card:light-dark(#fff,#172128);--ink:light-dark(#16212a,#e8eef0);--mut:light-dark(#576470,#9aabb4);--line:light-dark(#dde3e7,#2a3a44);--soft:light-dark(#f4f6f7,#1c2a33);--acc:light-dark(#0b5f86,#5cc1ec);--pur:light-dark(#7b46c7,#b08cf0);--red:light-dark(#b3263a,#ff7385);--teal:light-dark(#0b8577,#3cc7b3);--amber:light-dark(#b86e00,#f1aa45);--ok:light-dark(#e3f4f0,#123630)}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif;overflow-x:clip}
+.wrap{max-width:1100px;margin:0 auto;padding:18px 16px 70px}
+a{color:var(--acc)}.back{font-size:14px;text-decoration:none}
+h1{font:800 clamp(28px,4vw,42px)/1.05 "Bricolage Grotesque",sans-serif;margin:6px 0 4px;text-wrap:balance}
+h2{font:800 22px "Bricolage Grotesque",sans-serif;margin:0 0 10px}
+h3{font:800 17px "Bricolage Grotesque",sans-serif;margin:0 0 6px}
+.sub{color:var(--mut);margin:0 0 16px;max-width:760px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:14px}
+@media(max-width:760px){.two{grid-template-columns:minmax(0,1fr)}}
+.ex{border-top:6px solid var(--acc)}.ex.sca{border-top-color:var(--pur)}
+.nums{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-end;margin:4px 0 12px}
+.nums b{display:block;font:800 clamp(38px,6vw,56px)/1 "Bricolage Grotesque",sans-serif}
+.nums span{font-size:14px;color:var(--mut)}
+.track{position:relative;height:16px;background:var(--soft);border:1px solid var(--line);border-radius:8px;margin:4px 0 2px}
+.track .f{position:absolute;inset:0 auto 0 0;border-radius:8px}
+.track .t{position:absolute;top:-5px;bottom:-5px;width:2px;background:var(--ink);left:70%}
+.tl{display:flex;justify-content:space-between;font-size:13px;color:var(--mut);margin-bottom:8px}
+.lists{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media(max-width:760px){.lists{grid-template-columns:minmax(0,1fr)}}
+ol.todo{margin:0;padding-left:22px}ol.todo li{margin-bottom:6px}
+ol.todo small{display:block;color:var(--mut);font-size:13px}
+details.area{border:1px solid var(--line);border-radius:14px;background:var(--card);margin-bottom:8px}
+details.area>summary{list-style:none;cursor:pointer;padding:12px 14px;display:grid;grid-template-columns:minmax(0,1fr) 160px 52px;gap:12px;align-items:center}
+details.area>summary::-webkit-details-marker{display:none}
+details.area>summary b{font-size:16px}details.area>summary small{display:block;color:var(--mut);font-size:13px;font-weight:400}
+@media(max-width:600px){details.area>summary{grid-template-columns:minmax(0,1fr) 52px}details.area>summary .mini{display:none}}
+.mini{height:10px;background:var(--soft);border-radius:5px;overflow:hidden;border:1px solid var(--line)}.mini div{height:100%}
+.pc{font-weight:800;text-align:right}
+.rows{padding:0 14px 10px}
+.row{display:grid;grid-template-columns:22px minmax(0,1fr) auto 64px;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line);font-size:15.5px}
+@media(max-width:600px){.row{grid-template-columns:22px minmax(0,1fr) 54px}.row .chips{grid-column:2/4}}
+.tier{width:14px;height:14px;border-radius:50%;display:inline-block}
+.t1{background:var(--red)}.t2{background:var(--amber)}.t3{background:var(--line)}
+.chips{display:flex;gap:4px;flex-wrap:wrap}
+.chip{font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--mut);background:var(--soft);text-decoration:none}
+.chip.y{border-color:var(--teal);color:var(--teal);background:var(--ok)}
+.m{text-align:right;font-weight:800;font-size:15px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;color:var(--mut);margin-bottom:10px}
+.legend span{display:flex;align-items:center;gap:6px}
+.cegs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media(max-width:900px){.cegs{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){.cegs{grid-template-columns:minmax(0,1fr)}}
+.ceg{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--card)}
+.ceg ul{list-style:none;margin:6px 0 0;padding:0}.ceg li{display:flex;gap:8px;align-items:flex-start;font-size:15px;padding:4px 0}
+.ceg li .tier{margin-top:5px;flex:none}.ceg li.built{font-weight:700}
+.ceg li .st{margin-left:auto;flex:none;font-size:12px;font-weight:700;color:var(--teal)}
+.note{font-size:13px;color:var(--mut)}
+.src{font-size:14px;color:var(--mut)}.src li{margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="../">← Core GP Notes</a>
+<h1>Blueprint: your road to 70%</h1>
+<p class="sub">The high-yield material for the AKT and SCA, ranked using the RCGP's own exam feedback and SCA blueprint. It shows what you've built, what you've mastered, and what to do next.</p>
+<div id="app"></div>
+</div>
+<script src="data.js"></script>
+<script>
+{
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const W={1:3,2:2,3:1};
+let log=[];try{const d=JSON.parse(localStorage.getItem("cgn-v1"));if(d&&d.log)log=d.log}catch(e){}
+const read=k=>{try{return JSON.parse(localStorage.getItem(k))||[]}catch(e){return []}};
+const col=p=>p>=70?"var(--teal)":p>=40?"var(--amber)":"var(--red)";
+/* ---- AKT ---- */
+const topics=AKT_AREAS.flatMap((a,ai)=>a.topics.map(([id,name,tier,have])=>{
+ const names=have.bank||[],L=log.filter(x=>names.includes(x.theme)),last=L.slice(-10),n=L.length,p=last.length?Math.round(last.filter(x=>x.ok).length/last.length*100):null;
+ const cov=have.notes&&names.length?1:(have.notes||have.lesson||names.length)?0.5:0;
+ return {id,name,tier,have,ai,area:a.area,cov,n,p,mastered:n>=5&&p>=70}}));
+const tw=topics.reduce((s,t)=>s+W[t.tier],0);
+const aktCov=Math.round(topics.reduce((s,t)=>s+W[t.tier]*t.cov,0)/tw*100);
+const aktReady=Math.round(topics.reduce((s,t)=>s+(t.mastered?W[t.tier]:0),0)/tw*100);
+const withNotes=topics.filter(t=>t.have.notes||t.have.lesson).length,withQs=topics.filter(t=>(t.have.bank||[]).length).length;
+/* ---- SCA ---- */
+const pats=SCA_GROUPS.flatMap((g,gi)=>g.p.map(([name,tier,have])=>{have=have||{};let last=null;
+ if(have.live){const h=read(have.live);if(h.length)last=h[h.length-1].s}
+ if(!last&&have.guided){const h=read(have.guided);if(h.length){const g2=h[h.length-1].g;last=[g2.DG,g2.CM,g2.RTO]}}
+ const built=!!(have.live||have.guided);return {name,tier,have,gi,group:g.g,built,last,passed:!!(last&&last.every(x=>x>=2))}}));
+const sw=pats.reduce((s,t)=>s+W[t.tier],0);
+const scaCov=Math.round(pats.reduce((s,t)=>s+(t.built?W[t.tier]:0),0)/sw*100);
+const scaReady=Math.round(pats.reduce((s,t)=>s+(t.passed?W[t.tier]:0),0)/sw*100);
+const gauge=(v,c)=>`<div class="track"><div class="f" style="width:${v}%;background:${c}"></div><div class="t" title="70% target"></div></div>`;
+const buildNext=(()=>{const gaps=topics.filter(t=>t.cov<1).sort((a,b)=>a.tier-b.tier||a.cov-b.cov||a.ai-b.ai),out=[];const byA={};gaps.forEach(t=>(byA[t.ai]=byA[t.ai]||[]).push(t));
+ for(let round=0;out.length<10&&round<10;round++)Object.keys(byA).map(Number).sort((a,b)=>a-b).forEach(ai=>{const t=byA[ai][round];if(t&&t.tier===1&&out.length<10)out.push(t)});
+ gaps.forEach(t=>{if(out.length<10&&!out.includes(t))out.push(t)});return out})();
+const reviseNext=topics.filter(t=>(t.have.bank||[]).length&&!t.mastered).sort((a,b)=>a.tier-b.tier||(a.p??-1)-(b.p??-1)).slice(0,8);
+const scaNext=pats.filter(t=>!t.built&&t.tier===1).slice(0,8);
+const chip=(on,label,href)=>href&&on?`<a class="chip y" href="${esc(href)}">${label}</a>`:`<span class="chip${on?" y":""}">${label}</span>`;
+const lessonHref=t=>{const m={"ad-contract":"../admin/gp-contract-qof.html","st-sens":"../statistics/sensitivity-specificity.html","st-ppv":"../statistics/predictive-values.html","cv-qrisk":"../cardiology/qrisk-lipids-statins.html","cv-af":"../cardiology/atrial-fibrillation.html","cv-syncope":"../cardiology/syncope.html","cv-pad":"../cardiology/peripheral-arterial-disease.html","cv-cmp":"../cardiology/cardiomyopathy.html"};return m[t.id]};
+$("app").innerHTML=`
+<div class="two">
+ <div class="card ex"><h2>AKT</h2><div class="nums"><div><b style="color:${col(aktCov)}">${aktCov}%</b><span>high-yield coverage</span></div><div><b style="color:${col(aktReady)}">${aktReady}%</b><span>mastered</span></div></div>
+  <div class="note">Coverage: notes and practice questions built</div>${gauge(aktCov,col(aktCov))}<div class="tl"><span>${withNotes} of ${topics.length} topics have notes · ${withQs} have practice questions</span><span>70% target</span></div>
+  <div class="note">Mastered: at least 5 answers and 70% or more in your last 10</div>${gauge(aktReady,col(aktReady))}<div class="tl"><span>${topics.filter(t=>t.mastered).length} topics mastered</span><span>70% target</span></div></div>
+ <div class="card ex sca"><h2>SCA</h2><div class="nums"><div><b style="color:${col(scaCov)}">${scaCov}%</b><span>case patterns built</span></div><div><b style="color:${col(scaReady)}">${scaReady}%</b><span>passed</span></div></div>
+  <div class="note">Coverage: case patterns built, across the 12 blueprint groups</div>${gauge(scaCov,col(scaCov))}<div class="tl"><span>${pats.filter(p=>p.built).length} of ${pats.length} patterns built</span><span>70% target</span></div>
+  <div class="note">Passed: your latest attempt scored 2 or more in all three domains</div>${gauge(scaReady,col(scaReady))}<div class="tl"><span>${pats.filter(p=>p.passed).length} passed</span><span>70% target</span></div></div>
+</div>
+<div class="lists">
+ <div class="card"><h2>Build next (AKT)</h2><p class="note" style="margin-top:0">Highest-yield gaps first. Ask for these by name.</p><ol class="todo">${buildNext.map(t=>`<li>${esc(t.name)}<small>${esc(t.area)} · Tier ${t.tier}${t.cov?" · notes only, needs questions":""}</small></li>`).join("")}</ol></div>
+ <div class="card"><h2>Revise next (AKT)</h2><p class="note" style="margin-top:0">Built, but not mastered yet. Practise these in <a href="../akt/">AKT practice</a>.</p>${reviseNext.length?`<ol class="todo">${reviseNext.map(t=>`<li>${esc(t.name)}<small>${t.n?`${t.p}% in your last ${Math.min(10,t.n)} · ${t.n} answered`:"Not practised yet"}</small></li>`).join("")}</ol>`:`<p>Everything built so far is mastered.</p>`}</div>
+</div>
+<div class="card"><h2>SCA: build next</h2><p class="note" style="margin-top:0">Tier 1 case patterns with no case yet.</p><ol class="todo">${scaNext.map(t=>`<li>${esc(t.name)}<small>${esc(t.group)}</small></li>`).join("")}</ol></div>
+<h2 style="margin-top:22px">AKT blueprint by area</h2>
+<div class="legend"><span><i class="tier t1"></i>Tier 1: must know</span><span><i class="tier t2"></i>Tier 2: high yield</span><span><i class="tier t3"></i>Tier 3: useful</span><span>Areas ordered by how often the RCGP has flagged them</span></div>
+${AKT_AREAS.map((a,ai)=>{const ts=topics.filter(t=>t.ai===ai),w=ts.reduce((s,t)=>s+W[t.tier],0),c=Math.round(ts.reduce((s,t)=>s+W[t.tier]*t.cov,0)/w*100);
+ return `<details class="area"><summary><div><b>${esc(a.area)}</b><small>${esc(a.flag)}</small></div><div class="mini"><div style="width:${c}%;background:${col(c)}"></div></div><div class="pc" style="color:${col(c)}">${c}%</div></summary><div class="rows">
+ ${ts.map(t=>`<div class="row"><i class="tier t${t.tier}" title="Tier ${t.tier}"></i><div>${esc(t.name)}</div><div class="chips">${chip(t.have.notes,"Notes")}${chip(t.have.lesson,"Lesson",lessonHref(t))}${chip((t.have.bank||[]).length,"Questions","../akt/")}${chip(t.have.case,"Case",t.have.case?"../akt/case.html#"+t.have.case:null)}</div><div class="m" style="color:${t.p===null?"var(--mut)":col(t.p)}">${t.p===null?"–":t.p+"%"}</div></div>`).join("")}
+ </div></details>`}).join("")}
+<h2 style="margin-top:22px">SCA blueprint: 12 clinical experience groups</h2>
+<p class="note" style="margin-top:-4px">The RCGP says to prepare equally for all groups. Each needs a few case patterns; Tier 1 patterns are the most common in practice.</p>
+<div class="cegs">${SCA_GROUPS.map((g,gi)=>{const ps=pats.filter(p=>p.gi===gi);return `<div class="ceg"><h3>${gi+1}. ${esc(g.g)}</h3><ul>${ps.map(p=>`<li class="${p.built?"built":""}"><i class="tier t${p.tier}"></i><span>${p.built&&p.have.link?`<a href="${esc(p.have.link)}">${esc(p.name)}</a>`:esc(p.name)}</span>${p.built?`<span class="st">${p.last?p.last.join("/")+(p.passed?" ✓":""):"built"}</span>`:""}</li>`).join("")}</ul></div>`}).join("")}</div>
+<div class="card" style="margin-top:18px"><h2>How this is worked out</h2>
+<ul class="src"><li><b>Ranking</b> uses the RCGP's AKT feedback reports: the five-year summary of areas causing difficulty (October 2020 to January 2025) and the reports for AKT 57 (October 2025), AKT 58 (January 2026) and AKT 60 (July 2026). Areas flagged most often come first; Tier 1 topics are either repeatedly flagged or common and high-stakes.</li>
+<li><b>Weighting:</b> Tier 1 counts 3, Tier 2 counts 2, Tier 3 counts 1, so coverage reflects what matters most. A topic with notes only counts half until it has practice questions.</li>
+<li><b>Mastery</b> comes from your answers in AKT practice, lesson quizzes and cases on this device. <b>SCA passed</b> uses your latest attempt in SCA Live or the guided version.</li>
+<li><b>SCA groups</b> are the RCGP's official blueprint list. The case patterns under each are common GP scenarios chosen for practice, not leaked exam cases.</li>
+<li>The AKT split is 80% clinical, 10% evidence and statistics, 10% admin, and the exam is 160 questions in 160 minutes.</li></ul></div>`;
+}
+</script>
+</body>
+</html>
