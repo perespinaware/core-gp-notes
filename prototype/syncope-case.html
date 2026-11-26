@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case: The funny turn on the stairs · Core GP Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#eef1f1,#0f1519);--stage:light-dark(#fff,#172128);--ink:light-dark(#16212a,#e8eef0);--mut:light-dark(#576470,#9aabb4);--line:light-dark(#dfe3e6,#2a3a44);--soft:light-dark(#f4f6f6,#1c2a33);--red:light-dark(#b3263a,#ff7385);--blue:light-dark(#2f66d0,#79a2f2);--teal:light-dark(#0b8577,#3cc7b3);--amber:light-dark(#b86e00,#f1aa45);--purple:light-dark(#7b46c7,#b08cf0);--okbg:light-dark(#e3f4f0,#123630);--stopbg:light-dark(#fbe6e9,#3d1820);--midbg:light-dark(#fdf1de,#3a2a10)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif}
+.wrap{max-width:1120px;margin:0 auto;padding:18px 16px 60px}
+a{color:var(--blue)}
+.back{font-size:14px;text-decoration:none}
+h1{font:800 clamp(26px,3.4vw,36px)/1.1 "Bricolage Grotesque",sans-serif;margin:6px 0 4px}
+.sub{color:var(--mut);margin:0 0 14px}
+.tag{font:600 11px "IBM Plex Mono",monospace;letter-spacing:2px;color:#fff;background:var(--red);padding:3px 8px;border-radius:4px;display:inline-block}
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 14px;padding:0;list-style:none}
+.steps li{font-size:13px;padding:5px 11px;border-radius:999px;background:var(--soft);color:var(--mut);border:1px solid var(--line)}
+.steps li.on{background:var(--red);color:#fff;border-color:var(--red);font-weight:700}
+.steps li.done{background:var(--okbg);color:var(--teal);border-color:var(--teal)}
+.grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:14px;align-items:start}
+@media(max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--stage);border:1px solid var(--line);border-radius:16px;padding:18px}
+.panel h2{font:800 22px "Bricolage Grotesque",sans-serif;margin:0 0 6px}
+.panel h3{margin:14px 0 6px;font-size:16px}
+.who{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.av{width:52px;height:52px;border-radius:50%;background:var(--soft);border:2px solid var(--line);display:grid;place-items:center;font:800 18px "Bricolage Grotesque",sans-serif;flex:none}
+.say{background:var(--soft);border-left:4px solid var(--blue);border-radius:10px;padding:10px 14px;margin:8px 0}
+.say b{display:block;font-size:13px;color:var(--mut);font-weight:700}
+.acts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media(max-width:520px){.acts{grid-template-columns:minmax(0,1fr)}}
+.act{font:inherit;font-size:15px;text-align:left;border:1px solid var(--line);background:var(--stage);color:var(--ink);border-radius:12px;padding:10px 12px;min-height:48px;cursor:pointer}
+.act:hover{border-color:var(--blue)}
+.act.used{background:var(--soft);color:var(--mut);cursor:default}
+.act small{display:block;color:var(--mut);font-size:12px}
+.feed{margin-top:12px;display:flex;flex-direction:column;gap:8px;max-height:430px;overflow:auto}
+.res{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--stage);animation:in .35s ease}
+.res .q{font-size:13px;color:var(--mut);font-weight:700}
+.res.key{border-color:var(--teal);background:var(--okbg)}
+.res.waste{border-color:var(--amber);background:var(--midbg)}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.btn{font:inherit;font-weight:700;border:0;background:var(--red);color:#fff;border-radius:12px;padding:12px 18px;min-height:48px;cursor:pointer}
+.btn.ghost{background:var(--soft);color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:default}
+.bar{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:14px;flex-wrap:wrap}
+.clock{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.clock svg{flex:none}
+.clock b{font:800 26px "Bricolage Grotesque",sans-serif}
+.clues{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+.clues li{font-size:15px;padding:7px 10px;border-radius:10px;background:var(--soft);border-left:4px solid var(--mut);animation:in .35s ease}
+.clues li.h{border-left-color:var(--red)}
+.clues li.n{border-left-color:var(--teal)}
+.clues .empty{border:0;background:none;color:var(--mut);font-style:italic}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{font:inherit;text-align:left;border:2px solid var(--line);background:var(--stage);color:var(--ink);border-radius:12px;padding:12px 14px;cursor:pointer;min-height:48px}
+.opt.sel{border-color:var(--blue);background:color-mix(in srgb,var(--blue) 10%,var(--stage))}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border:1px solid var(--line);border-radius:12px;cursor:pointer}
+.chk input{width:20px;height:20px;margin-top:2px;flex:none}
+.story{font-size:18px}
+.story .when{font:600 12px "IBM Plex Mono",monospace;letter-spacing:2px;color:var(--mut)}
+.verdict{border-radius:12px;padding:12px 14px;font-weight:700;margin:10px 0}
+.verdict.ok{background:var(--okbg);color:var(--teal)}.verdict.bad{background:var(--stopbg);color:var(--red)}.verdict.mid{background:var(--midbg);color:var(--amber)}
+.score{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0}
+@media(max-width:520px){.score{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.sc{background:var(--soft);border-radius:12px;padding:10px;text-align:center}
+.sc b{display:block;font:800 26px "Bricolage Grotesque",sans-serif}
+.sc span{font-size:13px;color:var(--mut)}
+.map{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media(max-width:620px){.map{grid-template-columns:minmax(0,1fr)}}
+.map .card{border-radius:12px;padding:12px 14px;border:1px solid var(--line)}
+.map ul{margin:6px 0 0;padding-left:20px}
+.why{list-style:none;padding:0;margin:8px 0 0;display:flex;flex-direction:column;gap:6px}
+.why li{padding:8px 12px;border-radius:10px;background:var(--soft);font-size:15px}
+.why li.right{background:var(--okbg)}
+.why li b{display:block}
+.ecg{width:100%;height:auto;background:#fff5f5;border-radius:8px;border:1px solid #f0c9cf;margin-top:6px}
+.play{font:inherit;font-size:14px;margin-top:6px;border:1px solid var(--teal);color:var(--teal);background:var(--stage);border-radius:999px;padding:6px 14px;cursor:pointer}
+.note{font-size:13px;color:var(--mut);margin-top:14px}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="./">← Prototype</a>
+<h1>The funny turn on the stairs</h1>
+<p class="sub">A case-led consultation: Syncope and collapse (Cardiology Topic 15). You have 10 minutes. Each question, examination or test uses time.</p>
+<ol class="steps" id="steps"></ol>
+<div class="grid">
+ <div class="panel" id="main"></div>
+ <div class="panel" id="side">
+  <div class="clock"><svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="24" fill="none" stroke="var(--line)" stroke-width="6"/><circle id="ring" cx="28" cy="28" r="24" fill="none" stroke="var(--teal)" stroke-width="6" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="0" transform="rotate(-90 28 28)"/></svg><div><b id="mins">10:00</b><div style="font-size:13px;color:var(--mut)">consultation time left</div></div></div>
+  <h3 style="margin-top:0">Clue board</h3>
+  <ul class="clues" id="clues"><li class="empty">What you find out will collect here.</li></ul>
+ </div>
+</div>
+<p class="note">Prototype. Your result is saved in this browser and feeds the <a href="review.html">My revision</a> page.</p>
+</div>
+<script src="store.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const STEPS=["Meet","History","Examine","Investigate","Diagnose","Plan","Outcome","Debrief"];
+let step=0,left=600,used=new Set(),clues=[],waste=0,dx=null,plan=null,safe=new Set();
+const H=[
+ ["What were you doing when it happened?","“Carrying two bags of shopping up the stairs to our flat. I got to the top and the next thing I knew I was on the floor.”","h","Collapsed on exertion (stairs)"],
+ ["Any warning beforehand?","“Not really. Maybe a tight feeling in my chest for a second, then nothing.”","h","No prodrome; brief chest tightness"],
+ ["Ask his wife what she saw","Wife: “He went grey and just dropped. Out for maybe 20 seconds. His arm twitched a couple of times. He came round straight away and knew where he was.”","n","Witness: brief, grey, a few jerks, quick full recovery"],
+ ["Has anything like this happened before?","“I've been getting puffed on the stairs for a few months. I put it down to age. Felt dizzy once digging the allotment.”","h","Months of exertional breathlessness and dizziness"],
+ ["Did you bite your tongue or wet yourself?","“No, nothing like that.”","n","No tongue bite, no incontinence"],
+ ["Any family history of sudden death?","“No. My dad lived to 90.”","n","No family history of sudden death"],
+ ["What medicines do you take?","“Just amlodipine for my blood pressure.”","n","Takes amlodipine"],
+ ["Do you still drive?","“Yes, I drove us here this morning.”","h","Still driving"],
+ ["How much alcohol do you drink?","“A couple of pints on a Sunday.”","w",null],
+ ["How has your mood been?","“Fine, doctor. Bit fed up with being breathless.”","w",null],
+];
+const E=[
+ ["Pulse","68, regular. <b>Slow-rising, low volume.</b>","h","Slow-rising, low-volume pulse"],
+ ["Lying and standing BP","Lying 118/88; standing 114/86 at 3 minutes. No postural drop, but a <b>narrow pulse pressure</b> (30).","h","No postural drop; narrow pulse pressure"],
+ ["Listen to the heart","<b>Harsh ejection systolic murmur</b> at the right upper sternal edge, <b>radiating to the carotids</b>. Quiet second heart sound.<br><button class='play' id='murmur'>▶ Hear it</button>","h","Ejection systolic murmur radiating to carotids"],
+ ["Check the tongue","No bite marks.","n","Tongue normal"],
+ ["Neurological examination","Normal.","w",null],
+ ["Chest","Clear.","w",null],
+];
+const ECGSVG=()=>{let p="M0 60";for(let i=0;i<6;i++){const x=i*100;p+=` L${x+18} 60 Q${x+24} 54 ${x+30} 60 L${x+38} 60 L${x+41} 66 L${x+46} 4 L${x+51} 92 L${x+55} 60 L${x+62} 62 Q${x+74} 82 ${x+86} 62 L${x+100} 60`}
+ return `<svg class="ecg" viewBox="0 0 600 100" aria-label="ECG lead V5: tall QRS complexes with ST depression and inverted T waves"><path d="${p}" fill="none" stroke="#16212a" stroke-width="2"/><text x="6" y="14" font-size="11" fill="#b3263a">V5</text></svg>`};
+const I=[
+ ["12-lead ECG","Sinus rhythm 68. <b>Very tall QRS complexes</b> with ST depression and T inversion in V5–V6: <b>LVH with strain</b>."+ECGSVG(),"h","ECG: LVH with strain"],
+ ["Capillary glucose","6.1 mmol/L.","n","Glucose normal"],
+ ["Full blood count","Hb 138 g/L. Normal.","n","Not anaemic"],
+ ["Request an EEG","<b>Not recommended routinely</b> after TLoC (NICE CG109). An EEG doesn't diagnose or exclude epilepsy here, and adds time.","x",null],
+ ["Request a CT head","<b>Not indicated</b>: no head injury, no neurological signs.","x",null],
+];
+const DX=[
+ ["Uncomplicated faint (vasovagal)","Tempting because he blamed the heat and his arm twitched. But it happened on exertion, with no prodrome."],
+ ["Orthostatic hypotension from amlodipine","Tempting because he takes an antihypertensive. But there was no postural drop, and he was climbing, not standing up."],
+ ["Epileptic seizure","Tempting because of the arm twitches. But a few jerks are common in syncope, and he recovered fully at once with no confusion."],
+ ["Cardiac syncope: probable severe aortic stenosis","Right. Exertional syncope, angina and breathlessness, slow-rising pulse, narrow pulse pressure, ESM to the carotids, LVH with strain."],
+ ["TIA","TIAs very rarely cause loss of consciousness, and there were no focal symptoms."],
+];
+const PL=[
+ ["Reassure, advise fluids, and review if it happens again","bad"],
+ ["Routine echo and cardiology outpatient referral","late"],
+ ["Specialist cardiovascular assessment within 24 hours","ok"],
+ ["Refer to a first seizure clinic within 2 weeks","bad"],
+ ["Stop amlodipine and review in 2 weeks","bad"],
+];
+const SAFE=[["No strenuous exertion until he's been assessed",1],["Don't drive until he's been assessed",1],["Call 999 for chest pain or another collapse",1],["Start aspirin",0],["Increase fluid and salt intake",0]];
+
+function renderSteps(){$("steps").innerHTML=STEPS.map((s,k)=>`<li class="${k===step?"on":k<step?"done":""}">${s}</li>`).join("")}
+function tick(m){left=Math.max(0,left-m*60);const mm=Math.floor(left/60),ss=String(left%60).padStart(2,"0");$("mins").textContent=`${mm}:${ss}`;
+ $("ring").style.strokeDashoffset=150.8*(1-left/600);$("ring").style.stroke=left<=120?"var(--red)":left<=240?"var(--amber)":"var(--teal)"}
+function addClue(t,k){if(!t)return;if(!clues.length)$("clues").innerHTML="";clues.push([t,k]);$("clues").insertAdjacentHTML("beforeend",`<li class="${k}">${t}</li>`)}
+function go(n){step=n;renderSteps();[meet,stage(H,"History","Ask what you want to know. Choose wisely: time is limited."),stage(E,"Examine","What will you examine?"),stage(I,"Investigate","Anything you want to do in the surgery today?"),diag,planS,outcome,debrief][n]();window.scrollTo({top:0,behavior:"smooth"})}
+function meet(){$("main").innerHTML=`<span class="tag">CASE · SYNCOPE</span><div class="who" style="margin-top:12px"><div class="av">GP</div><div><b>Mr Graham Pike, 71</b><br><span style="color:var(--mut)">Retired postman · comes with his wife</span></div></div>
+<div class="say"><b>Mr Pike</b>“I had a funny turn yesterday. My wife made me come. I think it was the heat, to be honest.”</div>
+<p>He looks well and keen to get going. It's a 10-minute appointment, and you're already running late.</p><div class="bar"><span></span><button class="btn" onclick="go(1)">Start the consultation</button></div>`}
+function stage(list,title,lead){return()=>{
+ $("main").innerHTML=`<h2>${title}</h2><p style="margin-top:0;color:var(--mut)">${lead} Each choice uses 1 minute.</p><div class="acts">${list.map((a,k)=>`<button class="act${used.has(title+k)?" used":""}" data-k="${k}">${a[0]}</button>`).join("")}</div><div class="feed" id="feed"></div>
+ <div class="bar"><span style="font-size:14px;color:var(--mut)" id="hint"></span><button class="btn" id="nx">${step===3?"Make a diagnosis":"Next: "+STEPS[step+1]}</button></div>`;
+ document.querySelectorAll(".act").forEach(b=>b.onclick=()=>{const k=+b.dataset.k,id=title+k;if(used.has(id))return;if(left<=0){$("hint").textContent="Out of time: move on.";return}
+  used.add(id);b.classList.add("used");tick(1);const a=list[k];if(a[2]==="x"||a[2]==="w")waste+=a[2]==="x"?1:0;
+  $("feed").insertAdjacentHTML("afterbegin",`<div class="res ${a[2]==="h"?"key":a[2]==="x"?"waste":""}"><div class="q">${a[0]}</div>${a[1]}</div>`);addClue(a[3],a[2]);
+  const m=$("murmur");if(m&&!m.dataset.b){m.dataset.b=1;m.onclick=playMurmur}});
+ $("nx").onclick=()=>go(step+1)}}
+function diag(){$("main").innerHTML=`<h2>What's the most likely diagnosis?</h2><p style="margin-top:0;color:var(--mut)">Use your clue board.</p><div class="opts">${DX.map((d,k)=>`<button class="opt" data-k="${k}">${d[0]}</button>`).join("")}</div><div class="bar"><span></span><button class="btn" id="nx" disabled>Next: Plan</button></div>`;
+ document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{dx=+b.dataset.k;document.querySelectorAll(".opt").forEach(x=>x.classList.toggle("sel",x===b));$("nx").disabled=false});$("nx").onclick=()=>go(5)}
+function planS(){$("main").innerHTML=`<h2>What's your plan?</h2><div class="opts">${PL.map((d,k)=>`<button class="opt" data-k="${k}">${d[0]}</button>`).join("")}</div>
+<h3>What advice do you give before he leaves? (choose all that apply)</h3><div class="opts">${SAFE.map((s,k)=>`<label class="chk"><input type="checkbox" data-s="${k}"> ${s[0]}</label>`).join("")}</div>
+<div class="bar"><span></span><button class="btn" id="nx" disabled>See what happens</button></div>`;
+ document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{plan=+b.dataset.k;document.querySelectorAll(".opt").forEach(x=>x.classList.toggle("sel",x===b));$("nx").disabled=false});
+ document.querySelectorAll("[data-s]").forEach(c=>c.onchange=()=>{c.checked?safe.add(+c.dataset.s):safe.delete(+c.dataset.s)});$("nx").onclick=()=>go(6)}
+function outcome(){const p=PL[plan][1],drive=safe.has(1);let html,v;
+ if(p==="ok"){v=drive?["ok","Good outcome"]:["mid","Good referral, one gap"];
+  html=`<div class="story"><div class="when">THE NEXT DAY</div><p>He's seen in the cardiology assessment unit. Echo shows <b>severe aortic stenosis</b> (valve area 0.7 cm², peak gradient 78 mmHg). He's listed for a <b>TAVI</b>.</p>${drive?"":"<p><b>But:</b> you didn't mention driving, so he drove himself to the hospital. A collapse at the wheel could have killed him or someone else.</p>"}<div class="when">THREE MONTHS LATER</div><p>He carries the shopping up the stairs without stopping, and sends the practice a card.</p></div>`}
+ else if(p==="late"){v=["bad","Delayed diagnosis"];html=`<div class="story"><div class="when">THREE WEEKS LATER</div><p>His echo appointment is still 4 weeks away. ${drive?"Walking up a hill to the shops,":"<b>Driving home from the allotment,</b>"} he blacks out again${drive?" and cuts his head badly":" and hits a parked car. Luckily no one is hurt"}.</p><p>In hospital, echo shows <b>severe aortic stenosis</b>. The cardiologist notes that the murmur and ECG changes should have triggered assessment within 24 hours.</p></div>`}
+ else{v=["bad","Missed cardiac syncope"];html=`<div class="story"><div class="when">NINE DAYS LATER</div><p>He collapses again, at his grandson's football match. A parent starts CPR; the ambulance crew restore a pulse.</p><p>In hospital, echo shows <b>critical aortic stenosis</b>. The discharge letter asks why exertional syncope with a murmur wasn't referred urgently.</p></div>`}
+ $("main").innerHTML=`<h2>What happened next</h2><div class="verdict ${v[0]}">${v[1]}</div>${html}<div class="bar"><span></span><button class="btn" onclick="go(7)">See your debrief</button></div>`}
+function debrief(){
+ const keyH=[...H,...E,...I].filter(a=>a[2]==="h"),found=clues.filter(c=>c[1]==="h").length;
+ const dxOk=dx===3,plOk=PL[plan][1]==="ok",safeOk=SAFE.every((s,k)=>s[1]?safe.has(k):!safe.has(k));
+ const pts=Math.round(found/keyH.length*30)+(dxOk?25:0)+(plOk?30:PL[plan][1]==="late"?10:0)+(safeOk?15:5*[0,1,2].filter(k=>safe.has(k)).length)-waste*5;
+ const score=Math.max(0,Math.min(100,pts));
+ try{const d=CGN.load();d.cases.syncope={score,date:Date.now()};CGN.save(d)}catch(e){}
+ CGN.record("Syncope · faint vs fit",dxOk,"case-dx");CGN.record("Syncope · red flags",plOk,"case-plan");CGN.record("Syncope · DVLA",safe.has(1),"case-drive");
+ $("main").innerHTML=`<h2>Debrief</h2>
+<div class="score"><div class="sc"><b>${score}</b><span>case score / 100</span></div><div class="sc"><b>${found}/${keyH.length}</b><span>key clues found</span></div><div class="sc"><b>${Math.round((600-left)/60)} min</b><span>time used</span></div>
+<div class="sc"><b style="color:${dxOk?"var(--teal)":"var(--red)"}">${dxOk?"✓":"✗"}</b><span>diagnosis</span></div><div class="sc"><b style="color:${plOk?"var(--teal)":"var(--red)"}">${plOk?"✓":"✗"}</b><span>urgency</span></div><div class="sc"><b style="color:${safeOk?"var(--teal)":"var(--amber)"}">${safeOk?"✓":"½"}</b><span>safety advice</span></div></div>
+<h3>Your diagnosis: ${DX[dx][0]}</h3><div class="verdict ${dxOk?"ok":"bad"}" style="font-weight:400">${DX[dx][1]}</div>
+<div class="map"><div class="card" style="border-color:var(--red)"><b>What pointed to the heart</b><ul><li>Collapse <b>on exertion</b></li><li><b>No prodrome</b>; chest tightness</li><li>Months of exertional breathlessness</li><li>Slow-rising pulse, narrow pulse pressure</li><li>ESM to the carotids; LVH with strain</li></ul></div>
+<div class="card"><b>What tried to mislead you</b><ul><li>“It was the heat”: he offered a benign explanation</li><li>Arm twitches: common in syncope</li><li>Amlodipine: but no postural drop</li><li>Looking well in the room</li></ul></div></div>
+<h3>The rule behind the case (NICE CG109)</h3><p style="margin-top:0">TLoC during exertion, a heart murmur, or an ECG abnormality each mean <b>specialist cardiovascular assessment within 24 hours</b>. Advise no driving and no strenuous exertion until assessed.</p>
+<h3>Same knowledge, AKT style</h3><div id="aq"></div>
+<div class="bar"><button class="btn ghost" onclick="location.reload()">Try the case again</button><a class="btn" href="review.html" style="text-decoration:none">Go to My revision →</a></div>`;
+ akt()}
+const AQ=[["A 64-year-old woman lost consciousness while walking briskly uphill. She recovered in under a minute. Her ECG is normal and there is no murmur. What is the most appropriate management?",["Reassure: a normal ECG excludes a cardiac cause","Refer to a first seizure clinic","Specialist cardiovascular assessment within 24 hours","Routine echo","24-hour Holter via the GP"],2,["A normal ECG doesn't exclude structural heart disease or an exercise-induced arrhythmia.","There are no seizure features.","Right. Exertional TLoC alone is a red flag, even with a normal ECG.","Too slow for a red flag.","Monitoring by frequency comes after urgent assessment, not instead of it."]]];
+function akt(){const q=AQ[0];let done=false;$("aq").innerHTML=`<p style="margin:0 0 8px"><b>Q.</b> ${q[0]}</p><div class="opts">${q[1].map((o,k)=>`<button class="opt" data-k="${k}">${String.fromCharCode(65+k)}. ${o}</button>`).join("")}</div><ul class="why" id="why"></ul>`;
+ document.querySelectorAll("#aq .opt").forEach(b=>b.onclick=()=>{if(done)return;done=true;const k=+b.dataset.k,ok=k===q[2];CGN.record("Syncope · red flags",ok,"case-akt1");
+  b.classList.add("sel");if(!ok)b.style.borderColor="var(--red)";$("why").innerHTML=`<li class="${ok?"right":""}" style="font-weight:700">${ok?"Correct.":"Not quite: the answer is "+String.fromCharCode(65+q[2])+"."} Why each option is tempting, or right:</li>`+q[1].map((o,i)=>`<li class="${i===q[2]?"right":""}"><b>${String.fromCharCode(65+i)}. ${o}</b>${q[3][i]}</li>`).join("")})}
+/* synthetic aortic stenosis murmur: S1, crescendo-decrescendo systolic noise, quiet S2 */
+function playMurmur(){try{const C=new (window.AudioContext||window.webkitAudioContext)(),beat=60/68,n=6;const buf=C.createBuffer(1,C.sampleRate*0.5,C.sampleRate),d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+ for(let b=0;b<n;b++){const t=C.currentTime+0.1+b*beat;
+  const thump=(at,g,f)=>{const o=C.createOscillator(),gn=C.createGain();o.frequency.value=f;gn.gain.setValueAtTime(0,at);gn.gain.linearRampToValueAtTime(g,at+0.01);gn.gain.exponentialRampToValueAtTime(0.001,at+0.09);o.connect(gn).connect(C.destination);o.start(at);o.stop(at+0.1)};
+  thump(t,0.9,55);thump(t+0.36,0.25,70);
+  const s=C.createBufferSource();s.buffer=buf;const bp=C.createBiquadFilter();bp.type="bandpass";bp.frequency.value=320;bp.Q.value=1.4;const g=C.createGain();
+  g.gain.setValueAtTime(0,t+0.06);g.gain.linearRampToValueAtTime(0.55,t+0.2);g.gain.linearRampToValueAtTime(0,t+0.34);s.connect(bp).connect(g).connect(C.destination);s.start(t+0.06);s.stop(t+0.36)}}catch(e){}}
+go(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My revision · Core GP Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#eef1f1,#0f1519);--stage:light-dark(#fff,#172128);--ink:light-dark(#16212a,#e8eef0);--mut:light-dark(#576470,#9aabb4);--line:light-dark(#dfe3e6,#2a3a44);--soft:light-dark(#f4f6f6,#1c2a33);--red:light-dark(#b3263a,#ff7385);--blue:light-dark(#2f66d0,#79a2f2);--teal:light-dark(#0b8577,#3cc7b3);--amber:light-dark(#b86e00,#f1aa45);--okbg:light-dark(#e3f4f0,#123630);--stopbg:light-dark(#fbe6e9,#3d1820);--midbg:light-dark(#fdf1de,#3a2a10)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:18px 16px 60px}
+a{color:var(--blue)}.back{font-size:14px;text-decoration:none}
+h1{font:800 clamp(26px,3.4vw,36px)/1.1 "Bricolage Grotesque",sans-serif;margin:6px 0 4px}
+h2{font:800 21px "Bricolage Grotesque",sans-serif;margin:0 0 8px}
+.sub{color:var(--mut);margin:0 0 16px}
+.panel{background:var(--stage);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+.top{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}
+@media(max-width:620px){.top{grid-template-columns:minmax(0,1fr)}}
+.kpi{background:var(--stage);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.kpi b{display:block;font:800 32px "Bricolage Grotesque",sans-serif}
+.kpi span{color:var(--mut);font-size:14px}
+.btn{font:inherit;font-weight:700;border:0;background:var(--red);color:#fff;border-radius:12px;padding:12px 18px;min-height:48px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.ghost{background:var(--soft);color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.4}
+.th{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.6fr) 60px;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.th:last-child{border-bottom:0}
+.th .nm{font-weight:700;font-size:15px}.th .nm small{display:block;color:var(--mut);font-weight:400}
+.meter{height:12px;border-radius:6px;background:var(--soft);overflow:hidden}
+.meter div{height:100%;border-radius:6px;transition:width .6s}
+.pc{font:800 18px "Bricolage Grotesque",sans-serif;text-align:right}
+.weak{display:flex;gap:8px;flex-wrap:wrap}
+.weak span{font-size:14px;padding:5px 11px;border-radius:999px;background:var(--stopbg);color:var(--red);font-weight:700}
+.prog{height:8px;background:var(--soft);border-radius:4px;overflow:hidden;margin:6px 0 14px}.prog div{height:100%;background:var(--red);transition:width .4s}
+.qhead{display:flex;justify-content:space-between;color:var(--mut);font-size:14px;gap:10px;flex-wrap:wrap}
+.chip{font:600 11px "IBM Plex Mono",monospace;letter-spacing:1px;padding:3px 8px;border-radius:4px;background:var(--soft);color:var(--mut)}
+.chip.gen{background:color-mix(in srgb,var(--blue) 14%,var(--stage));color:var(--blue)}
+.stem{font-size:18px;margin:8px 0 12px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{font:inherit;text-align:left;border:2px solid var(--line);background:var(--stage);color:var(--ink);border-radius:12px;padding:11px 14px;cursor:pointer;min-height:48px}
+.opt.right{border-color:var(--teal);background:var(--okbg)}.opt.wrong{border-color:var(--red);background:var(--stopbg)}
+.why{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-direction:column;gap:6px}
+.why li{padding:9px 12px;border-radius:10px;background:var(--soft);font-size:15px}
+.why li.right{background:var(--okbg)}.why li b{display:block}
+.vd{font-weight:700;margin-top:12px;padding:10px 12px;border-radius:10px}
+.vd.ok{background:var(--okbg);color:var(--teal)}.vd.bad{background:var(--stopbg);color:var(--red)}
+.next{font-size:14px;color:var(--mut);margin-top:8px}
+.bar{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:center}
+.case{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.note{font-size:13px;color:var(--mut)}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="./">← Prototype</a>
+<h1>My revision</h1>
+<p class="sub">Knows what you get wrong, and brings it back just before you'd forget it.</p>
+
+<div id="dash">
+ <div class="top">
+  <div class="kpi"><b id="due">0</b><span>questions due today</span></div>
+  <div class="kpi"><b id="acc">–</b><span>accuracy, last 50 answers</span></div>
+  <div class="kpi"><b id="mast">0</b><span>questions mastered (box 4+)</span></div>
+ </div>
+ <div class="panel">
+  <h2>Today's review</h2>
+  <p style="margin-top:0">Ten questions: overdue ones first, then your weakest themes, then new ones. Calculation questions have new numbers every time.</p>
+  <div class="weak" id="weak"></div>
+  <div class="bar"><button class="btn" id="start">Start today's review</button><span class="note" id="dnote"></span></div>
+ </div>
+ <div class="panel">
+  <h2>Weak spots by theme</h2>
+  <div id="themes"></div>
+  <p class="note" style="margin-bottom:0">Based on your last 10 answers in each theme, from reviews, the case and (in the full version) every lesson quiz.</p>
+ </div>
+ <div class="panel case">
+  <div><h2 style="margin:0">Case: The funny turn on the stairs</h2><span class="note" id="casenote">Not tried yet</span></div>
+  <a class="btn ghost" href="syncope-case.html">Open the case</a>
+ </div>
+ <p class="note">Saved in this browser only. <a href="#" id="reset">Reset my progress</a></p>
+</div>
+
+<div id="quiz" class="panel hide"></div>
+</div>
+<script src="store.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const DAY=864e5,GAPS=[0,1,3,7,14,30];
+const THEMES=["Syncope · faint vs fit","Syncope · red flags","Syncope · tests","Syncope · DVLA","PAD · ABPI","PAD · treatment","PAD · urgency","Cardiomyopathy · spotting the type","Cardiomyopathy · HCM drugs","Cardiomyopathy · family and driving"];
+const BANK=[
+{id:"sy1",th:"Syncope · faint vs fit",s:"A 20-year-old fainted at the dentist after feeling hot and sick. Her friend saw her arms jerk for a few seconds. She recovered fully within a minute. What is the most likely diagnosis?",o:["Uncomplicated faint","Epileptic seizure","Cardiac arrhythmia","PoTS","Hypoglycaemia"],a:0,w:["Right. Provocation and a prodrome; brief jerks are common in syncope.","Tempting because of the jerks, but they were brief and recovery was immediate, with no confusion.","No exertion, no lying-down onset and a clear prodrome make a cardiac cause unlikely.","PoTS is a heart rate rise on standing, not a single provoked faint.","Possible in collapse generally, but nothing here suggests it."]},
+{id:"sy2",th:"Syncope · red flags",s:"A 49-year-old man had a blackout. His ECG shows right bundle branch block with coved ST elevation in V1–V2. What is the most appropriate management?",o:["Reassure","Routine cardiology referral","Specialist cardiovascular assessment within 24 hours","Repeat ECG in a month","Epilepsy referral within 2 weeks"],a:2,w:["An ECG abnormality is a red flag.","Too slow: a Brugada pattern with TLoC carries a risk of sudden death.","Right. Any ECG red flag means assessment within 24 hours.","Delay is unsafe.","There are no seizure features."]},
+{id:"sy3",th:"Syncope · tests",s:"A 50-year-old man has unexplained blackouts about once a month. ECG and examination are normal. Which ambulatory ECG is most appropriate?",o:["24-hour Holter","48-hour Holter","External event recorder","Implantable event recorder","None"],a:3,w:["Tempting as the 'default' monitor, but a monthly event is unlikely in 24 hours.","Still too short for monthly events.","For events every 1–2 weeks.","Right. Less than once every 2 weeks: implantable recorder.","Recurrent unexplained TLoC needs investigation."]},
+{id:"sy4",th:"Syncope · DVLA",s:"A car driver had a single blackout with no warning and no seizure markers. Cardiology found no cause. What is the DVLA rule?",o:["Drive after recovery","1 month off","3 months off","6 months off, notify DVLA","12 months off"],a:3,w:["That's for reflex syncope with a reliable prodrome or avoidable trigger.","Tempting, but 1 month applies to a provoked faint while driving.","Not a group 1 period for this.","Right. Single unexplained TLoC: 6 months for group 1.","12 months applies to group 2, or recurrent episodes for group 1."]},
+{id:"pa1",th:"PAD · ABPI",s:"A 72-year-old with diabetes and a toe ulcer has an ABPI of 1.5. What does this mean?",o:["Normal","Mild PAD","Severe PAD","Calcified arteries: unreliable, PAD not excluded","Venous disease"],a:3,w:["Tempting because it's high, but above 1.4 isn't normal.","A low ABPI indicates PAD, not a high one.","Severe PAD gives a low ABPI, below 0.5.","Right. Incompressible arteries; use toe pressures or duplex.","ABPI assesses arterial, not venous, disease."]},
+{id:"pa2",th:"PAD · treatment",s:"What is first-line treatment to improve walking distance in intermittent claudication?",o:["Naftidrofuryl","Cilostazol","Supervised exercise programme","Angioplasty","Aspirin 300 mg"],a:2,w:["Second line, only if exercise hasn't helped.","Not recommended by NICE.","Right. About 2 hours a week for 3 months.","Only after exercise and risk-factor treatment haven't helped enough.","Antiplatelets prevent events but don't improve walking distance; and clopidogrel is first choice."]},
+{id:"pa3",th:"PAD · urgency",s:"A 70-year-old with AF has a sudden pale, cold, pulseless leg with numbness for 3 hours. What do you do?",o:["Urgent referral within 2 weeks","Start a DOAC and review tomorrow","Arrange ABPI","Emergency same-day vascular assessment","Analgesia and review"],a:3,w:["Far too slow: hours count.","Anticoagulation alone won't save the limb.","Don't delay for tests.","Right. Acute limb ischaemia: 999.","Delay risks amputation."]},
+{id:"pa4",th:"PAD · treatment",s:"A man with claudication takes bisoprolol for angina. What should you do with the bisoprolol?",o:["Stop it","Switch to verapamil","Halve the dose","Continue it","Replace with a nitrate"],a:3,w:["Old teaching; beta-blockers don't worsen claudication.","No reason to switch.","No need to change.","Right. Beta-blockers are not contraindicated in PAD.","No reason to change his angina treatment."]},
+{id:"cm1",th:"Cardiomyopathy · HCM drugs",s:"A man with obstructive HCM has exertional chest pain. Which drug should be avoided?",o:["Bisoprolol","Verapamil","Diltiazem","GTN spray","Atorvastatin"],a:3,w:["First line in HCM.","Alternative to a beta-blocker.","Alternative to a beta-blocker.","Right. Vasodilators worsen outflow obstruction.","No effect on obstruction."]},
+{id:"cm2",th:"Cardiomyopathy · spotting the type",s:"A 78-year-old man has HFpEF, bilateral carpal tunnel syndrome, thick LV walls and low ECG voltages. Most likely diagnosis?",o:["HCM","Hypertensive heart disease","DCM","ATTR cardiac amyloidosis","Constrictive pericarditis"],a:3,w:["HCM gives high voltages.","Tempting with thick walls, but voltages would be high.","DCM has thin, dilated walls.","Right. Thick walls with low voltage plus carpal tunnel.","Wouldn't explain thick walls or carpal tunnel."]},
+{id:"cm3",th:"Cardiomyopathy · family and driving",s:"A car driver has HCM, with no syncope or arrhythmia. What does DVLA say?",o:["Need not notify","Must notify and stop","Stop for 1 month","Notify but keep driving","Annual exercise test"],a:0,w:["Right. Group 1 HCM need not be notified without other disqualifying features.","That's for group 2 or symptomatic drivers.","No such rule for HCM.","Group 1 doesn't need to notify at all.","Not a group 1 requirement."]},
+{id:"cm4",th:"Cardiomyopathy · family and driving",s:"A man with HCM has a known gene variant. His 17-year-old daughter is well. What is best?",o:["Nothing unless symptoms","ECG only","Never play sport","Refer to an inherited cardiac conditions clinic","Annual GP echo"],a:3,w:["Relatives can have disease without symptoms.","An ECG alone can miss it.","ESC 2023 doesn't ban all sport; it's individual.","Right. Clinical screening plus cascade genetic testing, with counselling.","Echo screening is done by the ICC team."]},
+];
+function genABPI(){const ra=120+Math.round(Math.random()*50),la=ra-Math.round(Math.random()*12),arm=Math.max(ra,la),targ=[0.42,0.62,0.71,0.78,0.85,1.05][Math.floor(Math.random()*6)],pt=Math.round(arm*targ),dp=pt-4-Math.round(Math.random()*12),v=(pt/arm).toFixed(2);
+ const wrong=new Set([v]);const opts=[v];const cand=[(dp/arm).toFixed(2),(pt/Math.min(ra,la)).toFixed(2),(dp/Math.min(ra,la)).toFixed(2),(+v+0.08).toFixed(2),(+v-0.07).toFixed(2)];for(const c of cand)if(!wrong.has(c)&&opts.length<5){wrong.add(c);opts.push(c)}
+ const order=opts.map((x,i)=>[Math.random(),x]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);const why=order.map(x=>x===v?`Right. Highest ankle (${pt}) ÷ highest arm (${arm}).`:x===(dp/arm).toFixed(2)?"Used the lower ankle pressure: always use the highest.":x===(pt/Math.min(ra,la)).toFixed(2)?"Used the lower arm pressure: always use the highest arm.":x===(dp/Math.min(ra,la)).toFixed(2)?"Used both lower pressures.":"Arithmetic slip.");
+ return {id:"gen-abpi",th:"PAD · ABPI",gen:1,s:`Arm systolic: right ${ra}, left ${la}. Left ankle: dorsalis pedis ${dp}, posterior tibial ${pt}. What is the left ABPI?`,o:order,a:order.indexOf(v),w:why}}
+function genOH(){const ls=120+Math.round(Math.random()*40),ld=70+Math.round(Math.random()*15),pos=Math.random()<0.6,ss=pos?ls-(20+Math.round(Math.random()*15)):ls-Math.round(Math.random()*12),sd=pos?ld-Math.round(Math.random()*8):ld-Math.round(Math.random()*6);
+ const o=["Orthostatic hypotension","No orthostatic hypotension","PoTS","Can't tell without heart rate"],a=pos||ld-sd>=10?0:1;
+ return {id:"gen-oh",th:"Syncope · tests",gen:1,s:`Lying BP ${ls}/${ld}. Standing BP at 3 minutes ${ss}/${sd}. Heart rate rises by 8. What do these readings show?`,o,a,w:[a===0?`Right. Fall of ${ls-ss}/${ld-sd}: systolic ≥20 or diastolic ≥10 within 3 minutes.`:`The fall is ${ls-ss}/${ld-sd}: below the ≥20 systolic or ≥10 diastolic threshold.`,a===1?`Right. A fall of ${ls-ss}/${ld-sd} doesn't meet the threshold.`:`A fall of ${ls-ss} systolic meets the ≥20 threshold.`,"PoTS needs a heart rate rise of 30 or more.","The BP readings alone answer it."]}}
+const GENS={"gen-abpi":genABPI,"gen-oh":genOH};
+
+function stats(){const d=CGN.load(),now=Date.now();
+ const ids=[...BANK.map(b=>b.id),...Object.keys(GENS)];
+ const due=ids.filter(id=>{const c=d.q[id];return c&&c.due<=now}).length,fresh=ids.filter(id=>!d.q[id]).length;
+ const last=d.log.slice(-50),acc=last.length?Math.round(last.filter(l=>l.ok).length/last.length*100):null;
+ const mast=ids.filter(id=>d.q[id]&&d.q[id].box>=4).length;
+ const th={};THEMES.forEach(t=>{const l=d.log.filter(x=>x.theme===t).slice(-10);th[t]=l.length?{p:Math.round(l.filter(x=>x.ok).length/l.length*100),n:l.length}:null});
+ return {d,due,fresh,acc,mast,th}}
+function dash(){const s=stats();$("due").textContent=s.due+s.fresh?Math.min(10,s.due+s.fresh):0;$("acc").textContent=s.acc===null?"–":s.acc+"%";$("mast").textContent=s.mast;
+ $("dnote").textContent=s.due?`${s.due} overdue, ${s.fresh} new`:`${s.fresh} new questions waiting`;
+ $("themes").innerHTML=THEMES.map(t=>{const v=s.th[t],p=v?v.p:0,c=!v?"var(--line)":p>=80?"var(--teal)":p>=60?"var(--amber)":"var(--red)";const [a,b]=t.split(" · ");
+  return `<div class="th"><div class="nm">${b}<small>${a}</small></div><div class="meter"><div style="width:${v?p:0}%;background:${c}"></div></div><div class="pc" style="color:${c}">${v?p+"%":"–"}</div></div>`}).join("");
+ const weak=THEMES.filter(t=>s.th[t]&&s.th[t].p<60);$("weak").innerHTML=weak.length?weak.map(t=>`<span>Focus: ${t}</span>`).join(""):"";
+ const cs=s.d.cases.syncope;$("casenote").textContent=cs?`Last score ${cs.score}/100 · ${new Date(cs.date).toLocaleDateString("en-GB")}`:"Not tried yet"}
+
+function pick(){const s=stats(),d=s.d,now=Date.now();const ids=[...BANK.map(b=>b.id),...Object.keys(GENS)];
+ const themeP=id=>{const th=(BANK.find(b=>b.id===id)||{th:GENS[id]&&GENS[id]().th}).th;const v=s.th[th];return v?v.p:50};
+ const due=ids.filter(id=>d.q[id]&&d.q[id].due<=now).sort((a,b)=>themeP(a)-themeP(b));
+ const fresh=ids.filter(id=>!d.q[id]).sort(()=>Math.random()-0.5);
+ const later=ids.filter(id=>d.q[id]&&d.q[id].due>now).sort((a,b)=>themeP(a)-themeP(b));
+ return [...due,...fresh,...later].slice(0,10)}
+let set=[],qi=0,right=0,cur=null;
+function startQ(){set=pick();qi=0;right=0;$("dash").classList.add("hide");$("quiz").classList.remove("hide");showQ()}
+function getQ(id){return GENS[id]?GENS[id]():BANK.find(b=>b.id===id)}
+function showQ(){cur=getQ(set[qi]);const d=CGN.load(),c=d.q[cur.id];
+ $("quiz").innerHTML=`<div class="qhead"><span>Question ${qi+1} of ${set.length}</span><span><span class="chip${cur.gen?" gen":""}">${cur.gen?"NEW NUMBERS EVERY TIME":c?"REVIEW · BOX "+c.box:"NEW"}</span> <span class="chip">${cur.th.toUpperCase()}</span></span></div>
+ <div class="prog"><div style="width:${qi/set.length*100}%"></div></div><div class="stem">${cur.s}</div>
+ <div class="opts">${cur.o.map((o,k)=>`<button class="opt" data-k="${k}">${String.fromCharCode(65+k)}. ${o}</button>`).join("")}</div><div id="fb"></div>`;
+ document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>answer(+b.dataset.k))}
+function answer(k){if($("fb").innerHTML)return;const ok=k===cur.a;if(ok)right++;
+ document.querySelectorAll(".opt").forEach((b,i)=>{if(i===cur.a)b.classList.add("right");else if(i===k)b.classList.add("wrong")});
+ const d=CGN.load(),c=d.q[cur.id]||{box:0,due:0};c.box=ok?Math.min(5,c.box+1):0;c.due=Date.now()+(ok?GAPS[c.box]*DAY:10*60*1000);d.q[cur.id]=c;
+ d.log.push({t:Date.now(),theme:cur.th,ok,id:cur.id});CGN.save(d);
+ const when=ok?(GAPS[c.box]===1?"tomorrow":`in ${GAPS[c.box]} days`):"again later today";
+ $("fb").innerHTML=`<div class="vd ${ok?"ok":"bad"}">${ok?"Correct.":"Not quite: the answer is "+String.fromCharCode(65+cur.a)+"."}</div>
+ <ul class="why">${cur.o.map((o,i)=>`<li class="${i===cur.a?"right":""}"><b>${String.fromCharCode(65+i)}. ${o}</b>${cur.w[i]}</li>`).join("")}</ul>
+ <div class="next">You'll see this ${when}.</div><div class="bar"><span></span><button class="btn" id="nq">${qi+1<set.length?"Next question":"Finish"}</button></div>`;
+ $("nq").onclick=()=>{qi++;qi<set.length?showQ():finish()}}
+function finish(){const s=stats();const weak=THEMES.filter(t=>s.th[t]&&s.th[t].p<60);
+ $("quiz").innerHTML=`<h2>Review complete: ${right}/${set.length}</h2><p>${right>=8?"Strong session.":right>=5?"Good progress. The questions you missed come back later today.":"These themes need work. Missed questions come back later today, and again tomorrow."}</p>
+ ${weak.length?`<p><b>Your weakest themes now:</b></p><div class="weak">${weak.map(t=>`<span>${t}</span>`).join("")}</div>`:""}
+ <div class="bar"><button class="btn ghost" onclick="location.reload()">Back to My revision</button><a class="btn" href="syncope-case.html">Try the case</a></div>`}
+$("start").onclick=startQ;$("reset").onclick=e=>{e.preventDefault();if(confirm("Reset all saved progress in this browser?")){CGN.reset();dash()}};
+dash();
+</script>
+</body>
+</html>
