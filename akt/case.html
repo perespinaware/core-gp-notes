@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AKT case · Core GP Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#eef2f4,#0f1519);--card:light-dark(#fff,#172128);--ink:light-dark(#16212a,#e8eef0);--mut:light-dark(#576470,#9aabb4);--line:light-dark(#dde3e7,#2a3a44);--soft:light-dark(#f4f7f8,#1c2a33);--acc:light-dark(#0b5f86,#5cc1ec);--red:light-dark(#b3263a,#ff7385);--teal:light-dark(#0b8577,#3cc7b3);--amber:light-dark(#b86e00,#f1aa45);--ok:light-dark(#e3f4f0,#123630);--bad:light-dark(#fbe6e9,#3d1820)}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif;overflow-x:clip}
+.wrap{max-width:900px;margin:0 auto;padding:18px 16px 70px}
+a{color:var(--acc)}.back{font-size:14px;text-decoration:none}
+h1{font:800 clamp(26px,3.6vw,36px)/1.08 "Bricolage Grotesque",sans-serif;margin:6px 0 4px}
+h2{font:800 20px "Bricolage Grotesque",sans-serif;margin:0 0 8px}
+.sub{color:var(--mut);margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px;animation:in .3s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.card{animation:none}}
+.steps{display:flex;gap:5px;margin:8px 0 14px}.steps span{flex:1;height:6px;border-radius:3px;background:var(--line)}.steps span.d{background:var(--acc)}.steps span.w{background:var(--red)}
+.who{display:flex;gap:12px;align-items:center}.av{width:48px;height:48px;border-radius:50%;background:var(--soft);border:2px solid var(--line);display:grid;place-items:center;font:800 16px "Bricolage Grotesque",sans-serif;flex:none}
+.say{background:var(--soft);border-left:4px solid var(--acc);border-radius:10px;padding:10px 14px;margin-top:10px}
+.acts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}@media(max-width:560px){.acts{grid-template-columns:minmax(0,1fr)}}
+.act{font:inherit;font-size:15.5px;text-align:left;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:10px 12px;min-height:48px;cursor:pointer}
+.act:hover:not(:disabled){border-color:var(--acc)}.act:disabled{opacity:.45;cursor:default}.act.on{background:var(--soft);color:var(--mut)}
+.res{border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:15.5px;margin-top:8px;animation:in .3s ease}.res b{display:block;font-size:13px;color:var(--mut)}
+.res.k{border-color:var(--teal);background:var(--ok)}
+.counter{font-size:14px;color:var(--mut)}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{font:inherit;text-align:left;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:11px 14px;cursor:pointer;min-height:50px;display:flex;gap:12px}
+.opt .k{font-weight:700;color:var(--mut);flex:none;width:18px}.opt:hover:not(:disabled){border-color:var(--acc)}.opt:disabled{cursor:default}
+.opt.right{border-color:var(--teal);background:var(--ok)}.opt.wrong{border-color:var(--red);background:var(--bad)}
+.fb{margin-top:12px;padding:12px 14px;border-radius:12px}.fb.ok{background:var(--ok)}.fb.no{background:var(--bad)}.fb b{display:block}
+.cons{margin-top:10px;padding:12px 14px;border-radius:12px;border-left:5px solid var(--red);background:var(--soft)}
+.cons .when{font-size:12px;font-weight:700;letter-spacing:.5px;color:var(--red)}
+.why{list-style:none;padding:0;margin:10px 0 0;display:flex;flex-direction:column;gap:5px;font-size:15px}.why li{padding:7px 10px;border-radius:9px;background:var(--soft)}.why li.r{background:var(--ok)}
+.recall{border:2px dashed var(--line);border-radius:12px;padding:14px;text-align:center;color:var(--mut)}
+.recall input{width:100%;font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);margin:10px 0}
+.btn{font:inherit;font-weight:700;border:0;background:var(--acc);color:#fff;border-radius:12px;padding:11px 18px;min-height:46px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.ghost{background:var(--soft);color:var(--ink);border:1px solid var(--line)}.btn:disabled{opacity:.4;cursor:default}
+.btn:focus-visible,.opt:focus-visible,.act:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-top:12px}
+.clues{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.clues span{font-size:14px;padding:4px 10px;border-radius:999px;background:var(--soft);border:1px solid var(--line)}.clues span.k{border-color:var(--teal);color:var(--teal);font-weight:700}
+.big{font:800 clamp(40px,7vw,60px)/1 "Bricolage Grotesque",sans-serif}
+.play{font:inherit;font-size:14px;margin-top:6px;border:1px solid var(--teal);color:var(--teal);background:var(--card);border-radius:999px;padding:5px 12px;cursor:pointer}
+kbd{font:600 12px ui-monospace,monospace;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 5px;background:var(--soft)}
+.note{font-size:13px;color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="./">← AKT practice</a>
+<div id="app"></div>
+</div>
+<script src="cases.js"></script>
+<script>
+{
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const L="ABCDE",GAPS=[0,1,3,7,14,30,60],DAY=864e5;
+let SET={recall:false};try{SET=Object.assign(SET,JSON.parse(localStorage.getItem("cgn-akt-settings"))||{})}catch(e){}
+const id=(location.hash||"").slice(1),C=CASES[id];
+if(!C){$("app").innerHTML=`<h1>Cases</h1>${Object.entries(CASES).map(([k,c])=>`<a class="card" style="display:block;text-decoration:none;color:inherit" href="#${k}"><b>${esc(c.title)}</b><div class="note">${esc(c.topic)} · about ${c.mins} minutes</div></a>`).join("")}`;window.onhashchange=()=>location.reload()}
+else run();
+function record(qid,ok){try{const K="cgn-v1",D=JSON.parse(localStorage.getItem(K)||"null")||{q:{},log:[],cases:{}},c=D.q[qid]||{box:0,due:0,n:0,ok:0};c.n++;if(ok){c.ok++;c.box=Math.min(6,c.box+1);c.due=Date.now()+GAPS[c.box]*DAY}else{c.box=0;c.due=Date.now()+6e5}D.q[qid]=c;D.log.push({t:Date.now(),theme:C.topic,ok,id:qid});localStorage.setItem(K,JSON.stringify(D))}catch(e){}}
+function saveCase(score){try{const K="cgn-v1",D=JSON.parse(localStorage.getItem(K)||"null")||{q:{},log:[],cases:{}};D.cases=D.cases||{};D.cases[id]={score,date:Date.now()};localStorage.setItem(K,JSON.stringify(D))}catch(e){}}
+function run(){window.onhashchange=()=>location.reload();document.title=C.title+" · AKT case";
+ const S={step:-1,res:[],seen:new Set(),found:[]};
+ const N=C.steps.length;
+ const bar=()=>`<div class="steps">${C.steps.map((x,i)=>`<span class="${S.res[i]===true?"d":S.res[i]===false?"w":""}"></span>`).join("")}</div>`;
+ const head=`<h1>${esc(C.title)}</h1><p class="sub">AKT case · ${esc(C.topic)} · about ${C.mins} minutes · ${N} decisions</p>`;
+ function intro(){$("app").innerHTML=head+bar()+`<div class="card"><div class="who"><div class="av">GP</div><div><b>${esc(C.who)}</b></div></div><div class="say">${esc(C.open)}</div>
+  <h2 style="margin-top:14px">Gather the key information</h2><p class="counter" style="margin-top:0">${esc(C.gather.prompt)} <b id="left">${C.gather.limit}</b> left.</p>
+  <div class="acts">${C.gather.items.map((it,i)=>`<button class="act" data-g="${i}">${esc(it[0])}</button>`).join("")}</div><div id="gr"></div>
+  <div class="row"><span class="note">Choose wisely: in the AKT, the stem only gives you what matters.</span><button class="btn" id="go" disabled>Decide →</button></div></div>`;
+  document.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{const i=+b.dataset.g;if(S.seen.has(i)||S.seen.size>=C.gather.limit)return;S.seen.add(i);b.classList.add("on");b.disabled=true;const it=C.gather.items[i];
+   $("gr").insertAdjacentHTML("beforeend",`<div class="res ${it[2]?"k":""}"><b>${esc(it[0])}</b>${esc(it[1])}${it[4]==="murmur"?`<br><button class="play" id="mur">▶ Hear the murmur</button>`:""}</div>`);if(it[4]==="murmur")$("mur").onclick=murmur;
+   S.found.push(it);$("left").textContent=C.gather.limit-S.seen.size;
+   if(S.seen.size>=C.gather.limit)document.querySelectorAll("[data-g]").forEach(x=>x.disabled=true);$("go").disabled=false});
+  $("go").onclick=()=>{S.step=0;decide()}}
+ function clueStrip(){const all=C.gather.items;return `<div class="clues">${S.found.map(it=>`<span class="${it[2]?"k":""}">${esc(it[3])}</span>`).join("")}${all.filter(it=>it[2]&&!S.found.includes(it)).map(it=>`<span title="You didn't ask">+ ${esc(it[3])}</span>`).join("")}</div><p class="note" style="margin:4px 0 0">Green: key clues you found. Others shown so you can carry on.</p>`}
+ function decide(revealed){const q=C.steps[S.step];const hidden=SET.recall&&!revealed;
+  $("app").innerHTML=head+bar()+`<div class="card"><div class="note">What you know</div>${clueStrip()}</div>
+  <div class="card"><div class="note">Decision ${S.step+1} of ${N}</div><h2 style="margin-top:4px">${esc(q.s)}</h2>
+  ${hidden?`<div class="recall"><b>What's your answer?</b> Think it through first.<input id="rin" placeholder="Optional: jot your answer" aria-label="Your answer"><button class="btn" id="rv">Show options</button><div class="note" style="margin-top:6px">or press <kbd>Space</kbd></div></div>`:
+  `<div class="opts">${q.o.map((o,k)=>`<button class="opt" data-k="${k}"><span class="k">${L[k]}</span><span>${esc(o)}</span></button>`).join("")}</div>`}
+  <div id="fb"></div></div>`;
+  if(hidden){$("rv").onclick=()=>decide(true);document.onkeydown=e=>{if(e.target.tagName==="INPUT"){if(e.key==="Enter")decide(true);return}if(e.key===" "||e.key==="Enter"){e.preventDefault();decide(true)}};return}
+  document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>answer(+b.dataset.k));
+  document.onkeydown=e=>{let n="ABCDE".indexOf(e.key.toUpperCase());if(n<0&&/^[1-5]$/.test(e.key))n=+e.key-1;if(n>=0&&n<q.o.length&&S.res[S.step]===undefined)answer(n);else if(e.key==="Enter"&&$("nx")){e.preventDefault();$("nx").click()}}}
+ function answer(k){const q=C.steps[S.step];if(S.res[S.step]!==undefined)return;const ok=k===q.a;S.res[S.step]=ok;record(`case-${id}#${S.step}`,ok);
+  document.querySelectorAll(".opt").forEach((b,i)=>{b.disabled=true;if(i===q.a)b.classList.add("right");else if(i===k)b.classList.add("wrong")});
+  const cons=!ok&&q.bad&&q.bad[k]?`<div class="cons"><div class="when">WHAT HAPPENED NEXT</div>${esc(q.bad[k])}</div><p class="note">Let's rewind: the case carries on as if you'd chosen ${L[q.a]}.</p>`:"";
+  $("fb").innerHTML=`<div class="fb ${ok?"ok":"no"}"><b>${ok?"Correct.":"Not quite: the answer is "+L[q.a]+"."}</b>${esc(q.e)}${ok&&q.good?`<p style="margin:8px 0 0"><i>${esc(q.good)}</i></p>`:""}</div>${cons}
+  <ul class="why">${q.o.map((o,i)=>i===q.a?`<li class="r"><b>${L[i]}. ${esc(o)}</b>: the answer.</li>`:`<li><b>${L[i]}. ${esc(o)}</b>: ${esc(q.why[i]||"")}</li>`).join("")}</ul>
+  <div class="row"><span></span><button class="btn" id="nx">${S.step<N-1?"Next decision →":"See your debrief"}</button></div>`;
+  document.querySelector(".steps").outerHTML=bar();
+  $("nx").onclick=()=>{if(S.step<N-1){S.step++;decide()}else debrief()}}
+ function debrief(){document.onkeydown=null;const right=S.res.filter(Boolean).length,keys=C.gather.items.filter(i=>i[2]),got=S.found.filter(i=>i[2]).length;saveCase(Math.round(right/N*100));
+  $("app").innerHTML=head+bar()+`<div class="card"><h2>Debrief</h2><div style="display:flex;gap:28px;flex-wrap:wrap;align-items:flex-end"><div><div class="big" style="color:${right===N?"var(--teal)":right>=N/2?"var(--amber)":"var(--red)"}">${right}/${N}</div><div class="note">decisions right</div></div><div><b style="font-size:24px">${got}/${keys.length}</b><div class="note">key clues gathered</div></div></div>
+  <h2 style="margin-top:16px">Take into the exam</h2><ul>${C.take.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>
+  <p class="note">These ${N} decisions are now in your spaced review, so they'll come back in Daily review.</p>
+  <div class="row"><span class="row" style="margin:0"><button class="btn ghost" onclick="location.reload()">Try again</button>${C.lesson?`<a class="btn ghost" href="${esc(C.lesson)}">Open the lesson</a>`:""}</span><a class="btn" href="./">Back to AKT practice</a></div></div>`}
+ intro()}
+function murmur(){try{const A=new (window.AudioContext||window.webkitAudioContext)(),beat=60/68,buf=A.createBuffer(1,A.sampleRate*0.5,A.sampleRate),d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+ for(let b=0;b<6;b++){const t=A.currentTime+0.1+b*beat;const th=(at,g,f)=>{const o=A.createOscillator(),gn=A.createGain();o.frequency.value=f;gn.gain.setValueAtTime(0,at);gn.gain.linearRampToValueAtTime(g,at+0.01);gn.gain.exponentialRampToValueAtTime(0.001,at+0.09);o.connect(gn).connect(A.destination);o.start(at);o.stop(at+0.1)};
+  th(t,0.9,55);th(t+0.36,0.25,70);const s=A.createBufferSource();s.buffer=buf;const bp=A.createBiquadFilter();bp.type="bandpass";bp.frequency.value=320;bp.Q.value=1.4;const g=A.createGain();g.gain.setValueAtTime(0,t+0.06);g.gain.linearRampToValueAtTime(0.55,t+0.2);g.gain.linearRampToValueAtTime(0,t+0.34);s.connect(bp).connect(g).connect(A.destination);s.start(t+0.06);s.stop(t+0.36)}}catch(e){}}
+}
+</script>
+</body>
+</html>

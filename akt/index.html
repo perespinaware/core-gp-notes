@@ -22,8 +22,8 @@ h2{font:800 21px "Bricolage Grotesque",sans-serif;margin:0 0 8px}
 .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
 .kpi b{display:block;font:800 clamp(24px,3.5vw,32px) "Bricolage Grotesque",sans-serif;line-height:1.1}
 .kpi span{font-size:14px;color:var(--mut)}
-.modes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
-@media(max-width:860px){.modes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.modes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:14px}
+@media(max-width:960px){.modes{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:700px){.modes{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:460px){.modes{grid-template-columns:minmax(0,1fr)}}
 .mode{font:inherit;text-align:left;background:var(--card);border:1px solid var(--line);border-top:5px solid var(--acc);border-radius:14px;padding:14px;cursor:pointer;color:var(--ink);display:flex;flex-direction:column;gap:4px;min-height:120px}
 .mode:hover{border-color:var(--acc)}
@@ -90,6 +90,7 @@ kbd{font:600 12px ui-monospace,monospace;border:1px solid var(--line);border-bot
 </div>
 <script src="../lessons.js"></script>
 <script src="bank-static.js"></script>
+<script src="cases.js"></script>
 <script>
 {
 const $=id=>document.getElementById(id);
@@ -129,6 +130,8 @@ async function buildBank(){const live=[];(typeof CATS!=="undefined"?CATS:[]).for
  TOPICS=got.filter(Boolean);
  const st={};(typeof STATIC_BANK!=="undefined"?STATIC_BANK:[]).forEach(q=>{(st[q.topic]=st[q.topic]||{key:"static/"+q.topic,name:q.topic,cat:q.cat,link:null,qs:[]}).qs.push({id:q.id,s:q.s,o:q.o,a:q.a,e:q.e})});
  TOPICS.push(...Object.values(st));
+ if(typeof CASES!=="undefined")Object.entries(CASES).forEach(([k,c])=>{let t=TOPICS.find(x=>x.name===c.topic);if(!t){t={key:"case/"+k,name:c.topic,cat:c.cat,link:c.lesson||null,qs:[]};TOPICS.push(t)}t.caseId=k;
+  c.steps.forEach((q,i)=>t.qs.push({id:`case-${k}#${i}`,s:q.solo||q.s,o:q.o,a:q.a,e:q.e}))});
  TOPICS.push({key:"calc",name:"Calculations (new numbers every time)",cat:"calc",link:null,gen:true,qs:Object.keys(GEN).map(k=>({id:"gen-"+k,gen:k}))});
  const order=["cardiology","dermatology","statistics","admin","calc"];TOPICS.sort((a,b)=>order.indexOf(a.cat)-order.indexOf(b.cat));
  BANK=TOPICS.flatMap(t=>t.qs.map(q=>Object.assign(q,{topic:t.name,cat:t.cat,link:t.link})))}
@@ -151,6 +154,7 @@ function home(){stopTimers();document.onkeydown=null;const d=load(),ts=topicStat
   <button class="mode r" id="m-daily"><b>Daily review</b><span>20 questions: overdue first, then your weakest topics, then new.</span></button>
   <button class="mode" id="m-quick"><b>Quick-fire</b><span>Pick topics below, then go. Instant feedback after each answer.</span></button>
   <button class="mode a" id="m-mock"><b>Mock exam</b><span>Timed, mixed, no feedback until the end. 1 minute per question.</span></button>
+  <a class="mode" style="border-top-color:#7b46c7;text-decoration:none" href="case.html"><b>Cases</b><span>Short patient stories: gather clues, decide, see what happens. ${typeof CASES!=="undefined"?Object.keys(CASES).length:0} so far.</span></a>
   <button class="mode t" id="m-calc"><b>Calculation drill</b><span>Endless stats, ABPI and postural BP with new numbers.</span></button>
  </div>
  <div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Settings</h2>${mis?`<button class="btn ghost" id="m-miss">Retry my mistakes (${mis})</button>`:""}</div>
@@ -158,7 +162,7 @@ function home(){stopTimers();document.onkeydown=null;const d=load(),ts=topicStat
  <div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Topics</h2><span class="note" id="selnote">Tick topics for Quick-fire, or press Practise on one.</span></div>
  <table class="tt"><thead><tr><th></th><th>Topic</th><th class="hm">Mastery (last 10)</th><th class="n">Done</th><th class="n hm">Due</th><th></th></tr></thead><tbody>
  ${TOPICS.map((t,i)=>{const s=ts[t.name],p=s.p,c=p===null?"var(--line)":p>=80?"var(--teal)":p>=60?"var(--amber)":"var(--red)";
-  return `<tr><td><input type="checkbox" data-sel="${i}" aria-label="Select ${esc(t.name)}" ${selTopics.has(i)?"checked":""} style="width:18px;height:18px"></td><td><span class="dot" style="background:${COLORS[t.cat]||"#888"}"></span>${esc(t.name)}${t.link?` <a href="${esc(t.link)}" class="note">lesson</a>`:""}<div class="note">${t.gen?"endless":t.qs.length+" questions"}</div></td>
+  return `<tr><td><input type="checkbox" data-sel="${i}" aria-label="Select ${esc(t.name)}" ${selTopics.has(i)?"checked":""} style="width:18px;height:18px"></td><td><span class="dot" style="background:${COLORS[t.cat]||"#888"}"></span>${esc(t.name)}${t.link?` <a href="${esc(t.link)}" class="note">lesson</a>`:""}${t.caseId?` <a href="case.html#${t.caseId}" class="note">case</a>`:""}<div class="note">${t.gen?"endless":t.qs.length+" questions"}</div></td>
   <td class="hm"><div class="row" style="flex-wrap:nowrap"><div class="mbar" style="flex:1"><div style="width:${p||0}%;background:${c}"></div></div><b style="color:${c};width:44px;text-align:right">${p===null?"–":p+"%"}</b></div></td><td class="n">${s.n}</td><td class="n hm">${s.due||""}</td><td class="n"><button class="go" data-go="${i}">Practise</button></td></tr>`}).join("")}
  </tbody></table></div>
  <p class="note">Progress is saved in this browser. Your lesson quizzes count towards it too. <a href="#" id="reset">Reset progress</a></p>`;
