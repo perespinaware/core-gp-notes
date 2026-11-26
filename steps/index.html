@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NICE in 5 Steps · Road to GP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<style>
+:root{--c:#1b6b5a;--ok:#0b8577;--bad:#b3263a;--warn:#c27a00}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin-bottom:16px}
+.card h2{font:800 22px/1.2 "Bricolage Grotesque",sans-serif;margin:0 0 10px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+.kpi b{display:block;font:800 26px "Bricolage Grotesque",sans-serif}.kpi span{color:var(--mut);font-size:14px}
+.btn{display:inline-block;background:var(--c);color:#fff;border:0;border-radius:12px;padding:12px 20px;font:inherit;font-weight:700;text-decoration:none;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn:focus-visible,.stp:focus-visible,.opt:focus-visible{outline:3px solid var(--c);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.box5{list-style:none;counter-reset:s;margin:0;padding:0}
+.box5 li{counter-increment:s;display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;align-items:start;padding:8px 0;border-top:1px solid var(--line)}
+.box5 li:first-child{border-top:0}
+.box5 li:before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-weight:700;font-size:14px}
+.box5 li.hid{color:var(--mut);font-style:italic}
+.topic{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.topic:first-of-type{border-top:0}
+.topic b{display:block}.topic small{color:var(--mut);font-size:13px}
+.lvl{display:flex;gap:3px}.lvl i{width:10px;height:10px;border-radius:3px;background:var(--line)}.lvl i.on{background:var(--ok)}
+.due{font-size:12px;font-weight:700;padding:3px 9px;border-radius:20px;background:color-mix(in srgb,var(--warn) 16%,var(--card));color:var(--warn);white-space:nowrap}
+.due.ok{background:color-mix(in srgb,var(--ok) 14%,var(--card));color:var(--ok)}
+details.ex{border-top:1px solid var(--line);padding-top:6px;grid-column:1/-1}
+details.ex summary{cursor:pointer;color:var(--mut);font-size:14px}
+.prog{height:8px;border-radius:4px;background:var(--line);overflow:hidden;margin-bottom:14px}.prog i{display:block;height:100%;background:var(--c);transition:width .3s}
+.phase{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--c)}
+.pile{display:grid;gap:8px;margin:12px 0}
+.stp{font:inherit;text-align:left;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:12px 14px;cursor:pointer;min-height:48px}
+.stp:hover{border-color:var(--c)}
+.stp.bad{animation:shake .35s;border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--card))}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.placed li{animation:pop .25s}
+@keyframes pop{from{opacity:0;transform:translateY(4px)}}
+.opt{font:inherit;text-align:left;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:12px 14px;cursor:pointer;min-height:48px;width:100%}
+.opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--card));font-weight:700}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--card))}
+.fb{border-radius:12px;padding:12px 14px;margin-top:12px;font-weight:700}
+.fb.ok{background:color-mix(in srgb,var(--ok) 12%,var(--card));color:var(--ok)}.fb.no{background:color-mix(in srgb,var(--bad) 10%,var(--card));color:var(--bad)}
+.src{font-size:13px;color:var(--mut)}
+.box5 li.nonum{grid-template-columns:minmax(0,1fr) auto}.box5 li.nonum:before{display:none}
+@media(prefers-reduced-motion:reduce){.stp.bad,.placed li{animation:none}}
+</style>
+</head>
+<body>
+<header class="band cat" style="--c:#1b6b5a"><div class="in">
+<a class="back" href="../">← Home</a>
+<h1>NICE in 5 Steps</h1>
+<p class="lead">The management of every topic, in five short steps. A quick test each day: put the steps in order, then recall the missing one.</p>
+</div></header>
+<main><div class="in" id="app"></div></main>
+<script src="data.js"></script>
+<script>
+{
+const $=id=>document.getElementById(id),DAY=864e5,K="cgn-steps",GAPS=[1,3,7,14,30,60],NEW_PER_DAY=3;
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const CATN={cardiology:"Cardiology",dermatology:"Dermatology",statistics:"Statistics",admin:"Admin"};
+const load=()=>{try{return JSON.parse(localStorage.getItem(K)||"null")||{t:{},days:{}}}catch(e){return {t:{},days:{}}}};
+const save=d=>{try{localStorage.setItem(K,JSON.stringify(d))}catch(e){}};
+const dkey=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const startOfDay=t=>{const d=new Date(t);d.setHours(0,0,0,0);return d.getTime()};
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const isDue=(r,now)=>!r||r.due<=now;
+function dueList(){const D=load(),now=Date.now(),end=startOfDay(now)+DAY;
+ const seen=STEPS.filter(s=>D.t[s.id]&&D.t[s.id].due<end).sort((a,b)=>D.t[a.id].due-D.t[b.id].due);
+ const today=dkey(new Date()),newToday=Object.values(D.t).filter(r=>r.first===today).length;
+ return [...seen,...STEPS.filter(s=>!D.t[s.id]).slice(0,Math.max(0,NEW_PER_DAY-newToday))]}
+function streak(D){let n=0,d=new Date();if(!D.days[dkey(d)])d=new Date(Date.now()-DAY);while(D.days[dkey(d)]){n++;d=new Date(d.getTime()-DAY)}return n}
+
+/* ---------- home ---------- */
+function home(){const D=load(),list=dueList(),today=D.days[dkey(new Date())]||0,end=startOfDay(Date.now())+DAY;
+ const learnt=STEPS.filter(s=>(D.t[s.id]||{}).box>=3).length;
+ const cats=[...new Set(STEPS.map(s=>s.cat))];
+ $("app").innerHTML=`<div class="kpis"><div class="kpi"><b>${list.length}</b><span>topics due today</span></div><div class="kpi"><b>${today}</b><span>tested today</span></div><div class="kpi"><b>${streak(D)}</b><span>day streak</span></div><div class="kpi"><b>${learnt} / ${STEPS.length}</b><span>topics secure (3+ passes in a row)</span></div></div>
+ <div class="card"><h2>Today's test</h2><p style="margin-top:0">${list.length?`${list.length} topic${list.length>1?"s":""}: ${esc(list.map(s=>s.topic).join(", "))}. About ${list.length} minute${list.length>1?"s":""}.`:"All done for today. Come back tomorrow, or practise any topic below."}</p>
+  <div class="row">${list.length?`<button class="btn" id="go">Start today's test</button>`:`<button class="btn" id="any">Practise 3 random topics</button>`}</div>
+  <p class="src" style="margin-bottom:0">Three new topics join each day. Pass both parts and a topic comes back after 1, 3, 7, 14, 30, then 60 days. Miss either and it comes back tomorrow. New topics join automatically as lessons go live.</p></div>
+ ${cats.map(c=>`<div class="card"><h2>${CATN[c]||c}</h2>${STEPS.filter(s=>s.cat===c).map(s=>{const r=D.t[s.id],box=r?r.box:0,due=!r?"New":r.due<end?"Due":`In ${Math.ceil((r.due-startOfDay(Date.now()))/DAY)} d`;
+  return `<div class="topic"><div><b>${esc(s.topic)}</b><small>${esc(s.src)}${r?` · ${r.ok}/${r.n} passed`:""}</small></div><div class="row" style="flex-wrap:nowrap"><span class="lvl" aria-label="Level ${box} of 6">${[1,2,3,4,5,6].map(k=>`<i class="${k<=box?"on":""}"></i>`).join("")}</span><span class="due ${due==="Due"||due==="New"?"":"ok"}">${due}</span></div>
+  <details class="ex"><summary>Show the 5 steps</summary><ol class="box5">${s.steps.map(t=>`<li><span>${esc(t)}</span></li>`).join("")}</ol>
+  <div class="row" style="margin:8px 0 4px"><button class="btn ghost" data-one="${s.id}">Test me on this</button><a class="btn ghost" href="${s.lesson}">Open the lesson</a>${s.url?`<a class="btn ghost" href="${s.url}" target="_blank" rel="noopener">${esc(s.src.split(" · ")[0])} ↗</a>`:""}</div></details></div>`}).join("")}</div>`).join("")}
+ <p class="note">Steps are summarised in our own words from the lessons, for revision only. Always check the current guidance.</p>`;
+ if($("go"))$("go").onclick=()=>run(list);if($("any"))$("any").onclick=()=>run(shuffle(STEPS).slice(0,3));
+ document.querySelectorAll("[data-one]").forEach(b=>b.onclick=()=>run([STEPS.find(s=>s.id===b.dataset.one)]))}
+
+/* ---------- test ---------- */
+let Q,qi,res;
+function run(list){Q=list;qi=0;res=[];order()}
+function bar(){return `<div class="prog"><i style="width:${(qi/Q.length)*100}%"></i></div><div class="row" style="justify-content:space-between"><span class="src">Topic ${qi+1} of ${Q.length}</span><a href="#" id="quit" class="src">Stop</a></div>`}
+function bindQuit(){$("quit").onclick=e=>{e.preventDefault();home()}}
+function order(){const s=Q[qi],pile=shuffle(s.steps.map((t,k)=>[t,k]));let next=0,miss=0;
+ const draw=()=>{$("app").innerHTML=`${bar()}<div class="card"><div class="phase">Part 1 of 2 · put them in order</div><h2>${esc(s.topic)}</h2><p style="margin-top:0">Tap the steps from first to last.</p>
+  <ol class="box5 placed">${s.steps.slice(0,next).map(t=>`<li><span>${esc(t)}</span></li>`).join("")}</ol>
+  <div class="pile">${pile.filter(([,k])=>k>=next).map(([t,k])=>`<button class="stp" data-k="${k}">${esc(t)}</button>`).join("")}</div>
+  ${next===5?`<div class="fb ${miss?"no":"ok"}">${miss?`${miss} wrong tap${miss>1?"s":""}. Read the order once more.`:"Perfect order."}</div><div class="row" style="margin-top:12px"><button class="btn" id="cont">Part 2 →</button></div>`:""}</div>`;
+  bindQuit();
+  document.querySelectorAll(".stp").forEach(b=>b.onclick=()=>{if(+b.dataset.k===next){next++;draw()}else{miss++;b.classList.remove("bad");void b.offsetWidth;b.classList.add("bad")}});
+  if($("cont")){$("cont").focus();$("cont").onclick=()=>recall(miss===0)}};
+ draw()}
+function recall(okOrder){const s=Q[qi],h=Math.floor(Math.random()*5);
+ const pool=[...shuffle(STEPS.filter(x=>x.id!==s.id&&x.cat===s.cat).flatMap(x=>x.steps.filter((t,k)=>Math.abs(k-h)<=1))),...shuffle(STEPS.filter(x=>x.id!==s.id).flatMap(x=>x.steps))];const opts=shuffle([s.steps[h],...pool.slice(0,3)]);
+ const draw=(pick)=>{const done=pick!==undefined,ok=done&&opts[pick]===s.steps[h];
+  $("app").innerHTML=`${bar()}<div class="card"><div class="phase">Part 2 of 2 · recall the missing step</div><h2>${esc(s.topic)}</h2>
+  <ol class="box5">${s.steps.map((t,k)=>`<li class="${k===h&&!done?"hid":""}"><span>${k===h&&!done?"Which step is missing?":esc(t)}</span></li>`).join("")}</ol>
+  <div class="pile">${opts.map((o,k)=>`<button class="opt ${done?(o===s.steps[h]?"right":k===pick?"wrong":""):""}" data-p="${k}" ${done?"disabled":""}>${esc(o)}</button>`).join("")}</div>
+  ${done?`<div class="fb ${ok&&okOrder?"ok":"no"}">${ok&&okOrder?"Passed: this topic comes back later.":ok?"Right step, but the order needs another look: back tomorrow.":"Not quite: back tomorrow."}</div>
+  <div class="row" style="margin-top:12px"><button class="btn" id="nx">${qi<Q.length-1?"Next topic →":"See today's result"}</button><a class="btn ghost" href="${s.lesson}">Open the lesson</a></div>`:""}</div>`;
+  bindQuit();
+  if(!done)document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{const p=+b.dataset.p;record(s,okOrder&&opts[p]===s.steps[h]);draw(p)});
+  else{$("nx").focus();$("nx").onclick=()=>{qi++;qi<Q.length?order():finish()}}};
+ draw()}
+function record(s,pass){const D=load(),r=D.t[s.id]||{box:0,due:0,n:0,ok:0,first:dkey(new Date())},now=Date.now();r.n++;
+ if(pass){r.ok++;r.box=Math.min(GAPS.length,r.box+1);r.due=startOfDay(now)+GAPS[r.box-1]*DAY}else{r.box=0;r.due=startOfDay(now)+DAY}
+ D.t[s.id]=r;const k=dkey(new Date());D.days[k]=(D.days[k]||0)+1;save(D);res.push([s,pass])}
+function finish(){const p=res.filter(x=>x[1]).length,D=load();
+ $("app").innerHTML=`<div class="card"><h2>${p} of ${res.length} passed</h2><p style="margin-top:0">${streak(D)}-day streak.</p>
+ <ol class="box5" style="counter-reset:none">${res.map(([s,ok])=>`<li style="grid-template-columns:minmax(0,1fr) auto;counter-increment:none"><span>${esc(s.topic)}</span><span class="due ${ok?"ok":""}">${ok?"Passed":"Tomorrow"}</span></li>`).join("").replace(/<li /g,'<li class="nonum" ')}</ol>
+ <div class="row" style="margin-top:12px"><button class="btn" id="back">Done</button></div></div>`;
+ $("back").onclick=home}
+home();
+}
+</script>
+<script src="/time.js" defer></script>
+</body>
+</html>
