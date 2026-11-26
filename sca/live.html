@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SCA Live: Uncontrolled hypertension · Core GP Notes</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* VOICE  calm, clinical, exam-room focus: you lead, the patient reacts
+   IDEA   a remote consultation window: the call, the clock, your notes
+   PICTURE the patient on a live video call, talking when he answers
+   COLOUR and TYPE  SCA purple #6d3fc0 on white; dark ink; Archivo titles, Atkinson body
+   LAYOUT call + transcript left, your notes and template right; stacks on phones */
+:root{color-scheme:light dark;--bg:light-dark(#f3f1f8,#110f18);--card:light-dark(#fff,#1b1825);--ink:light-dark(#1c1729,#ece8f5);--mut:light-dark(#5e5873,#a7a0bb);--line:light-dark(#e1dcec,#322b45);--soft:light-dark(#f6f4fb,#231f30);--pur:light-dark(#6d3fc0,#b08cf0);--red:light-dark(#b3263a,#ff7d8f);--teal:light-dark(#0b8577,#3cc7b3);--amber:light-dark(#a86400,#f1aa45);--ok:light-dark(#e3f4f0,#123630);--bad:light-dark(#fbe6e9,#3d1820)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif;overflow-x:clip}
+.wrap{max-width:1200px;margin:0 auto;padding:18px max(3vw,14px) 60px}
+h1{font:800 clamp(26px,3.4vw,38px)/1.08 Archivo,system-ui,sans-serif;margin:0 0 4px;text-wrap:balance}
+h2{font:800 21px Archivo,system-ui,sans-serif;margin:0 0 8px}
+.sub{color:var(--mut);margin:0 0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.btn{font:inherit;font-weight:700;border:0;background:var(--pur);color:#fff;border-radius:12px;padding:11px 18px;min-height:46px;cursor:pointer}
+.btn.ghost{background:var(--soft);color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:focus-visible,textarea:focus-visible,.mic:focus-visible{outline:3px solid var(--pur);outline-offset:2px}
+.g2{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:14px;align-items:start}
+@media(max-width:880px){.g2{grid-template-columns:minmax(0,1fr)}}
+dl{display:grid;grid-template-columns:120px minmax(0,1fr);gap:6px 12px;margin:0}dt{color:var(--mut);font-weight:700;font-size:15px}dd{margin:0}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:9px 11px;border:1px solid var(--line);border-radius:10px;margin-top:8px;cursor:pointer}
+.opt input{width:19px;height:19px;margin-top:3px;flex:none}
+.big{font:800 42px Archivo,sans-serif;color:var(--pur)}
+.call{position:relative;border-radius:16px;overflow:hidden;background:#15121f}
+.call svg{display:block;width:100%;height:auto}
+.hud{position:absolute;inset:10px 10px auto 10px;display:flex;justify-content:space-between;gap:8px;pointer-events:none}
+.pill{background:rgba(0,0,0,.6);color:#fff;border-radius:999px;padding:5px 12px;font-size:14px}
+.pill b{font:800 18px Archivo,sans-serif}.pill.low b{color:#ff9aa8}
+.cap{position:absolute;left:10px;right:10px;bottom:10px;background:rgba(0,0,0,.74);color:#fff;border-radius:12px;padding:9px 13px;font-size:16px;min-height:44px}
+.mood{display:flex;gap:8px;align-items:center;margin:10px 0 0;font-size:14px;color:var(--mut)}
+.mb{flex:1;height:10px;border-radius:5px;background:var(--soft);border:1px solid var(--line);overflow:hidden}.mb div{height:100%;transition:width .6s,background .6s}
+.say{display:flex;gap:8px;margin-top:12px;align-items:stretch}
+.mic{flex:none;width:58px;border-radius:14px;border:2px solid var(--pur);background:var(--card);color:var(--pur);cursor:pointer;display:grid;place-items:center}
+.mic.on{background:var(--red);border-color:var(--red);color:#fff;animation:pulse 1.2s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 8px color-mix(in srgb,var(--red) 25%,transparent)}}
+@media(prefers-reduced-motion:reduce){.mic.on{animation:none}.talk .mouth{animation:none!important}}
+textarea{flex:1;font:inherit;font-size:16px;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:var(--card);color:var(--ink);resize:vertical;min-height:58px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.tiny{font-size:13px;color:var(--mut)}
+.tr{margin-top:12px;max-height:340px;overflow:auto;display:flex;flex-direction:column;gap:6px}
+.ln{padding:8px 12px;border-radius:12px;font-size:15.5px;max-width:92%}
+.ln.dr{align-self:flex-end;background:color-mix(in srgb,var(--pur) 12%,var(--card));border:1px solid color-mix(in srgb,var(--pur) 30%,var(--line))}
+.ln.pt{background:var(--soft);border:1px solid var(--line)}
+.ln.sys{align-self:center;color:var(--mut);font-size:13px}
+.clues{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.clues li{padding:7px 10px;border-radius:10px;background:var(--soft);border-left:4px solid var(--teal);font-size:15px}
+.clues .none{border:0;background:none;color:var(--mut);font-style:italic}
+.tpl h3{font-size:14px;margin:12px 0 4px;color:var(--mut)}
+.tpl span{display:inline-block;font-size:13.5px;padding:4px 9px;border-radius:999px;border:1px solid var(--line);margin:0 4px 5px 0;color:var(--mut)}
+.tpl span.y{background:var(--ok);border-color:var(--teal);color:var(--teal);font-weight:700}
+.tpl span.x{background:var(--bad);border-color:var(--red);color:var(--red)}
+.hint{margin-top:10px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--amber) 14%,var(--card));font-size:15px}
+.dom{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0}
+@media(max-width:700px){.dom{grid-template-columns:minmax(0,1fr)}}
+.dm{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--soft)}
+.dm .n{font:800 40px Archivo,sans-serif;line-height:1}
+.dm ul{margin:8px 0 0;padding-left:18px;font-size:15px}.dm li.m{color:var(--red)}
+.bt{display:flex;flex-direction:column;gap:8px}
+.bt>div{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--card)}
+.bt .y{color:var(--red)}.bt .b{color:var(--teal);font-weight:700}
+.load{display:inline-block;width:16px;height:16px;border:3px solid var(--line);border-top-color:var(--pur);border-radius:50%;animation:sp 0.8s linear infinite;vertical-align:-3px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.talk .mouth{animation:tk .2s infinite alternate}.mouth{transform-box:fill-box;transform-origin:center}
+@keyframes tk{from{transform:scaleY(.3)}to{transform:scaleY(1.2)}}
+.hide{display:none!important}
+.warn{padding:10px 12px;border-radius:12px;background:var(--bad);color:var(--red);margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a href="./" style="font-size:14px;text-decoration:none;color:var(--pur)">← SCA cases</a>
+<h1>SCA Live: uncontrolled hypertension</h1>
+<p class="sub">You lead the consultation. Speak or type what you'd say; Mark answers in character. Video consultation · long-term conditions · 12 minutes.</p>
+<div id="app"></div>
+</div>
+<script>
+{
+/* ---------------- case ---------------- */
+const NOTES=[["Patient","Mark Hughes, 58, van delivery driver"],["Consultation","Video call, booked by the practice nurse"],["Problems","Hypertension (2021); low back pain (2023)"],["Repeats","Amlodipine 10 mg OD · ramipril 10 mg OD · indapamide 2.5 mg OD (not reissued for 2 months)"],["BP today","166/98 (nurse); last three readings 158–170 / 94–100"],["Bloods (6 mo)","eGFR 78, K⁺ 4.2, HbA1c 39"],["Nurse note","“BP still high on triple therapy, please review”"]];
+const BRIEF=`You are a trained, calibrated SCA role-player. You play MARK HUGHES, 58, a van delivery driver from the East Midlands, on a video call with a GP during your break, sitting in your van in the depot yard, alone.
+Speak like an ordinary working man: plain, short, informal British English. Usually 1–3 sentences. Never use medical jargon yourself. Never coach the doctor or volunteer information you haven't been asked for.
+OPENING (only if the doctor has not yet asked anything specific): "The nurse says my blood pressure's still high. I'm on three tablets, I don't get it."
+FACTS AND REVEAL RULES:
+- You stopped indapamide ("the water tablet") 2 months ago because you kept needing the toilet on your delivery round. Reveal ONLY if asked about adherence in an open, kind, non-judgemental way (e.g. normalising missed doses). If asked a closed or judgemental question like "Are you taking your tablets?", say "Yes, I take them" (slightly defensive). After a closed question, only reveal later if the doctor is clearly warm and picks up on it.
+- You take ibuprofen 400 mg most days for back pain, bought at the supermarket. Reveal ONLY if asked about other medicines, painkillers or over-the-counter things.
+- Ideas: "The tablets just don't work for me" or "it's stress from work". Share if asked what you think is causing it.
+- Concern: your dad had a stroke at 62 and you're 58. Mention it ONLY if asked what's worrying you or what concerns you, AND rapport is reasonable (mood 4 or more). Otherwise say "Not really, I just want it sorted."
+- Expectation: "I don't want yet another tablet." Share if asked what you hoped for. Soften if the doctor offers a practical fix for the toilet problem.
+- Background if asked: about 14 units of alcohol a week (few pints at the weekend), ex-smoker (stopped 10 years ago), lots of takeaways and meal deals on shift, no snoring complaints, home BP readings "sometimes, about 155 over 95", no headaches, visual change, chest pain, breathlessness, nosebleeds or ankle swelling. Works 7 till 6, five days. Married. No other medical history.
+REACTIONS: Warm up to empathy, listening and being thanked. Get confused by jargon ("Sorry, you've lost me"). Get irritated if lectured, blamed, rushed, or if more tablets are pushed without explanation. If the doctor explains clearly and solves your practical problem, become engaged and agree. If asked to repeat back the plan, do so accurately only for things that were clearly explained.
+Stay in character always. If the doctor says something unclear or not a question, respond naturally as Mark would.`;
+const TAGS={intro:"Introduction and identity",privacy:"Checked video, privacy",open:"Open question",empathy:"Empathy",ideas:"Ideas",concerns:"Concerns",expectations:"Expectations",red_flags:"Red flags",adherence_open:"Open adherence question",otc:"Other medicines / OTC",home_bp:"Home readings",lifestyle:"Lifestyle",psychosocial:"Work and life impact",summary:"Summary",signpost:"Signposting",explanation:"Explained diagnosis",link_ice:"Linked to his ICE",check_understanding:"Checked understanding",shared_decision:"Offered options",practical_fix:"Fixed the toilet problem",nsaid_plan:"Stopped or swapped ibuprofen",investigations:"Home BP, bloods, urine, ECG",target_next_step:"Target and next step",health_promotion:"Health promotion",safety_net:"Specific safety-net",follow_up:"Follow-up",teach_back:"Teach-back",closed_adherence:"Closed adherence question",jargon:"Jargon",lecture:"Lecturing or blaming",premature_drug:"Added a drug too soon",vague_safety_net:"Vague safety-net"};
+const BADTAGS=["closed_adherence","jargon","lecture","premature_drug","vague_safety_net"];
+const STAGES=[["Introduction",["intro","privacy","open"]],["Data gathering",["ideas","concerns","expectations","red_flags","adherence_open","otc","home_bp","lifestyle","psychosocial","summary"]],["Explaining the diagnosis",["signpost","explanation","link_ice","check_understanding"]],["Shared decision and health promotion",["shared_decision","practical_fix","nsaid_plan","investigations","target_next_step","health_promotion"]],["Safety netting and close",["safety_net","follow_up","teach_back"]]];
+const CLUES={stopped_indapamide:"Stopped indapamide 2 months ago: toilet on the round",ibuprofen:"Ibuprofen most days for back pain",dad_stroke:"Concern: dad had a stroke at 62",no_more_tablets:"Expectation: no more tablets",ideas_tablets:"Ideas: tablets don't work / stress",home_bp:"Home BP about 155/95",no_red_flags:"No red flag symptoms",lifestyle:"14 units/week, ex-smoker, takeaways"};
+const HINTS={intro:"Introduce yourself and check his identity.",privacy:"It's a video call: check he can hear you and can talk privately.",open:"Open the consultation with an open question.",ideas:"What does he think is causing it?",concerns:"Is something worrying him? Rapport matters here.",expectations:"What is he hoping for today?",red_flags:"Have you excluded symptoms of a hypertensive emergency?",adherence_open:"The notes show a gap in one repeat. How could you ask about that without judgement?",otc:"Anything else he takes, including from the chemist?",home_bp:"Does he check it at home?",lifestyle:"Alcohol, smoking, diet, salt?",summary:"Summarise back to him before moving on.",signpost:"Signpost that you're moving to your explanation.",explanation:"Explain what you think is going on, in plain words.",link_ice:"Link your explanation to his ideas, concern and expectation.",check_understanding:"Check how he feels about it.",shared_decision:"Offer options and invite him to choose.",practical_fix:"Can you solve the toilet problem rather than lecture?",nsaid_plan:"What about the ibuprofen?",investigations:"What tests or readings do you want?",target_next_step:"What's the target, and the next step if it stays high?",health_promotion:"Is there one lifestyle change he'd choose?",safety_net:"Safety-net: which symptoms, what to do, how fast?",follow_up:"When will you see him again?",teach_back:"Ask him to tell you the plan back."};
+const MODEL=[["dr","Hello, I'm Dr Pinaware, one of the GPs. Can I check your name and date of birth? And can you hear me OK, somewhere private?"],["pt","Mark Hughes, fourteenth of March sixty-eight. Yeah, I'm in the van, on my break."],["dr","Thanks, Mark. I can see the nurse checked your blood pressure. What's your understanding of why we're talking today?"],["pt","She says it's still high. I'm on three tablets, I don't get it."],["dr","That sounds frustrating. Have you had any thoughts yourself about why it's still high?"],["pt","I reckon the tablets just don't work for me. Or it's stress."],["dr","Lots of people find three tablets a day hard with a busy job. Are there any you miss, or any you've stopped?"],["pt","Well, the water tablet. I stopped it a couple of months back. Couldn't keep stopping for the loo on the round."],["dr","Thank you for telling me, that's really helpful. Do you take anything else, like painkillers from the chemist?"],["pt","Ibuprofen for my back. Most days, to be honest."],["dr","Is there anything in particular worrying you about your blood pressure?"],["pt","My dad had a stroke at sixty-two. I'm fifty-eight."],["dr","That must make this feel very close to home. What were you hoping we'd do today?"],["pt","Not more tablets, if I'm honest."],["dr","I think two things are pushing it up. The water tablet has stopped, so you've really been on two tablets, not three. And ibuprofen raises blood pressure. So we may be able to bring it down without adding anything new, which matters with your dad's history."],["pt","I didn't know ibuprofen did that."],["dr","The water tablet works for about four to six hours. If you took it as soon as you get up, it would mostly wear off before you're in the van. Would that work? And could we swap the ibuprofen for paracetamol or a gel?"],["pt","I'm up at five. Yeah, I could do that. Gel's fine."],["dr","Could you do home readings for a week, and have bloods, a urine test and a heart tracing? We're aiming for under 135 over 85 at home. If it's still high, the next step would be a low dose of spironolactone."],["pt","Fair enough."],["dr","If you get a severe headache, blurred vision, chest pain or breathlessness, call 999. If a home reading is 180 over 120 or more, ring us the same day. Let's review in two to three weeks. Can you tell me what you'll do over the next couple of weeks?"],["pt","Water tablet first thing, gel instead of ibuprofen, readings for a week, bloods, and 999 if I get a bad headache or chest pain."]];
+
+/* ---------------- state ---------------- */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const S={hist:[],tags:new Set(),bad:[],clues:new Set(),mood:3,t0:0,left:720,hints:0,live:true,over:false,busy:false};
+let timer=null,listening=false,speechOn=true;
+/* ---- connection to your cPanel connector ---- */
+const CONF={get ep(){try{return localStorage.getItem("sca-ep")||"https://peres.pinaware.com/sca-proxy.php"}catch(e){return "https://peres.pinaware.com/sca-proxy.php"}},get pass(){try{return localStorage.getItem("sca-pass")||""}catch(e){return ""}}};
+async function sample(prompt,opts){const mode=opts&&opts.modelTier==="complex"?"examiner":"patient";
+ let r;try{r=await fetch(CONF.ep,{method:"POST",headers:{"Content-Type":"application/json","X-SCA-Pass":CONF.pass},body:JSON.stringify({mode,prompt})})}catch(e){throw {code:"network"}}
+ const j=await r.json().catch(()=>({}));if(!r.ok)throw {code:r.status===429?"rate_limited":r.status===401?"not_granted":"error",message:j.error||""};return {text:j.text||""}}
+/* ---- speech in: browser speech recognition ---- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+const dict=SR?(()=>{let rec=null,cb={p:()=>{},f:()=>{},s:()=>{}},stopRes=null;
+ return {onPartial(f){cb.p=f},onFinal(f){cb.f=f},onState(f){cb.s=f},
+  start(){rec=new SR();rec.lang="en-GB";rec.continuous=true;rec.interimResults=true;
+   rec.onresult=e=>{let interim="";for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)cb.f({text:t.trim()});else interim+=t}cb.p({text:interim})};
+   rec.onstart=()=>cb.s({state:"listening"});rec.onend=()=>{cb.s({state:"idle"});if(stopRes){stopRes();stopRes=null}};
+   rec.onerror=e=>{cb.s({state:"idle",reason:e.error})};
+   return new Promise((res,rej)=>{try{rec.start();res()}catch(e){rej({code:"error"})}})},
+  stop(){return new Promise(res=>{if(!rec){res();return}stopRes=res;try{rec.stop()}catch(e){res()}setTimeout(res,1500)})}}})():null;
+/* ---- speech out: device voices ---- */
+let VOICES=[],vMark=null,vDoc=null;
+function loadVoices(){if(!("speechSynthesis" in window))return;VOICES=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));const rank=v=>(/natural|enhanced|premium|neural|siri/i.test(v.name)?10:0)+(/en-GB/i.test(v.lang)?3:0);VOICES.sort((a,b)=>rank(b)-rank(a));
+ const male=v=>/male|daniel|arthur|george|oliver|ryan|thomas|guy|brian|christopher|eric|james|alfie|noah/i.test(v.name)&&!/female/i.test(v.name);
+ try{const a=localStorage.getItem("sca-vm"),b=localStorage.getItem("sca-vd");vMark=VOICES.find(v=>v.name===a)||vMark;vDoc=VOICES.find(v=>v.name===b)||vDoc}catch(e){}
+ vMark=vMark||VOICES.find(male)||VOICES[0]||null;vDoc=vDoc||VOICES.find(v=>v!==vMark)||vMark;fillVoices()}
+if("speechSynthesis" in window){loadVoices();speechSynthesis.onvoiceschanged=loadVoices}
+function fillVoices(){[["vsel-m",()=>vMark],["vsel-d",()=>vDoc]].forEach(([id,g])=>{const s=$(id);if(!s)return;s.innerHTML=VOICES.length?VOICES.map((v,i)=>`<option value="${i}"${v===g()?" selected":""}>${esc(v.name.replace(/Microsoft |Google /,"").slice(0,30))}</option>`).join(""):"<option>No voices on this device</option>"})}
+function say1(text,v){return new Promise(res=>{if(!("speechSynthesis" in window)||!VOICES.length){setTimeout(res,Math.min(6000,text.length*50));return}const u=new SpeechSynthesisUtterance(text);u.voice=v;u.lang=(v&&v.lang)||"en-GB";u.pitch=v===vMark&&vMark===vDoc?0.8:1;let d=false;const f=()=>{if(!d){d=true;res()}};u.onend=f;u.onerror=f;setTimeout(f,30000);speechSynthesis.speak(u)})}
+let lineCb=null,stopped=false;
+const tts=("speechSynthesis" in window)?{speak(x,o){stopped=false;speechSynthesis.cancel();if(typeof x==="string")return say1(x,vMark);return (async()=>{for(const l of x){if(stopped)throw {code:"stopped"};lineCb&&lineCb({id:l.id});await say1(l.text,l.voice==="glassy"?vDoc:vMark)}})()},stop(){stopped=true;speechSynthesis.cancel()},onLine(f){lineCb=f}}:null;
+function capNote(){const n=$("cap-note");if(!n)return;const m=[];if(!CONF.pass)m.push("Set up the connection first (below).");if(!dict)m.push("Speaking isn't supported in this browser. Use Chrome, Edge or Safari, or type instead.");n.innerHTML=m.map(x=>`<div class="warn">${esc(x)}</div>`).join("")}
+
+/* ---------------- reading ---------------- */
+function reading(){let r=180;
+ $("app").innerHTML=`<div class="g2"><div class="card"><h2>Reading time</h2><p class="tiny" style="margin-top:0">3 minutes with the notes before the call connects. Plan your hypotheses.</p><dl>${NOTES.map(n=>`<dt>${esc(n[0])}</dt><dd>${esc(n[1])}</dd>`).join("")}</dl></div>
+ <div class="card"><div style="display:flex;justify-content:space-between;align-items:baseline"><h2>Get ready</h2><span class="big" id="rc">3:00</span></div>
+ <label class="opt"><input type="checkbox" id="live" checked><span><b>Practice mode</b>: show your consultation template ticking live, and allow hints. Untick for <b>exam mode</b>.</span></label>
+ <label class="opt"><input type="checkbox" id="voice" checked><span>Mark speaks his answers aloud</span></label>
+ <p class="tiny">How to talk: tap the microphone, say your line, tap again to send. Or type and press Enter. The 12-minute clock runs in real time.</p>
+ <details class="opt" style="display:block" ${CONF.pass?"":"open"}><summary><b>Connection and voices</b></summary>
+ <p class="tiny">Your passcode is the one in your sca-config.php file. It's saved in this browser only.</p>
+ <div class="row"><input id="pass" type="password" placeholder="Passcode" value="${esc(CONF.pass)}" style="flex:1;font:inherit;font-size:16px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)"><button class="btn ghost" id="test">Save and test</button></div>
+ <div class="row"><input id="ep" type="url" value="${esc(CONF.ep)}" aria-label="Connector address" style="flex:1;font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)"></div>
+ <div class="row tiny">Mark's voice <select id="vsel-m"></select> Doctor (model replay) <select id="vsel-d"></select> <button class="btn ghost" id="vtest" style="min-height:36px;padding:6px 12px">Hear Mark</button></div><div class="tiny" id="tres"></div></details>
+ <div id="cap-note"></div><button class="btn" id="go" style="width:100%;margin-top:8px">Connect the video call</button></div></div>`;
+ capNote();fillVoices();
+ $("vsel-m").onchange=e=>{vMark=VOICES[+e.target.value];try{localStorage.setItem("sca-vm",vMark.name)}catch(x){}};$("vsel-d").onchange=e=>{vDoc=VOICES[+e.target.value];try{localStorage.setItem("sca-vd",vDoc.name)}catch(x){}};
+ $("vtest").onclick=()=>tts&&tts.speak("The nurse says my blood pressure's still high. I'm on three tablets, I don't get it.");
+ $("test").onclick=async()=>{try{localStorage.setItem("sca-pass",$("pass").value.trim());localStorage.setItem("sca-ep",$("ep").value.trim())}catch(e){}$("tres").textContent="Testing…";
+  try{const r=await sample("Reply with just the word OK.",{modelTier:"quick"});$("tres").textContent=/ok/i.test(r.text)?"Connected. Claude is ready.":"Connected, but got an unexpected reply."}catch(e){$("tres").textContent=e.code==="not_granted"?"Wrong passcode.":e.code==="network"?"Can't reach the connector. Check the address and that the PHP file is uploaded.":"Error: "+(e.message||e.code)}capNote()};timer=setInterval(()=>{r--;$("rc").textContent=`${Math.floor(r/60)}:${String(r%60).padStart(2,"0")}`;if(r<=0)start()},1000);$("go").onclick=start}
+
+/* ---------------- consultation ---------------- */
+const AV=`<svg viewBox="0 0 640 340" id="av" role="img" aria-label="Mark on a video call in his van"><defs><linearGradient id="sk" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#9db4c9"/><stop offset="1" stop-color="#dbe3ea"/></linearGradient></defs><rect width="640" height="340" fill="#3a3e48"/><rect x="26" y="18" width="588" height="180" rx="18" fill="url(#sk)"/><rect x="26" y="140" width="588" height="58" fill="#8b949d"/><rect x="60" y="112" width="120" height="48" fill="#c9533d"/><rect x="430" y="120" width="140" height="40" fill="#e6e6e6"/><rect y="238" width="640" height="102" fill="#2a2e37"/><circle cx="560" cy="290" r="66" fill="none" stroke="#1d2027" stroke-width="16"/><path d="M190 340c0-68 50-104 130-104s130 36 130 104z" fill="#e36b1e"/><path d="M226 300h188" stroke="#d9d9d9" stroke-width="6"/><rect x="296" y="192" width="48" height="48" rx="14" fill="#d9a07b"/><ellipse cx="320" cy="145" rx="62" ry="72" fill="#e3ad88"/><path d="M258 126c0-48 30-66 62-66s62 18 62 66c-10-25-30-33-62-33s-52 8-62 33z" fill="#8b8f96"/><ellipse cx="260" cy="150" rx="9" ry="15" fill="#d9a07b"/><ellipse cx="380" cy="150" rx="9" ry="15" fill="#d9a07b"/><path id="bl" d="M285 124q14-8 26-2" stroke="#5d5f66" stroke-width="5" fill="none" stroke-linecap="round"/><path id="br" d="M329 122q12-6 26 2" stroke="#5d5f66" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="298" cy="144" r="5" fill="#222"/><circle cx="342" cy="144" r="5" fill="#222"/><path d="M320 146l-6 24h10" stroke="#c48e6c" stroke-width="3" fill="none"/><path id="lip" d="M298 188q22 4 44 0" stroke="#8c4a3c" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse class="mouth" cx="320" cy="190" rx="11" ry="4" fill="#6b2e28" opacity="0"/></svg>`;
+function start(){clearInterval(timer);S.live=$("live").checked;speechOn=$("voice").checked;
+ $("app").innerHTML=`<div class="g2"><div><div class="call">${AV}<div class="hud"><span class="pill">● Video · Mark</span><span class="pill" id="cp"><b id="clk">12:00</b> left</span></div><div class="cap" id="cap">Connected. Mark is waiting.</div></div>
+ <div class="mood">Mark: <div class="mb"><div id="mbar"></div></div><span id="mtx"></span></div>
+ <div class="say"><button class="mic" id="mic" aria-label="Speak"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button><textarea id="tx" placeholder="Say or type what you'd say to Mark…" aria-label="Your words"></textarea></div>
+ <div class="row"><button class="btn" id="send">Send</button><button class="btn ghost" id="hintb">Stuck? Hint</button><button class="btn ghost" id="end">End consultation</button><span class="tiny" id="st"></span></div>
+ <div id="hint"></div><div class="tr" id="tr"></div></div>
+ <div class="card"><h2>What you've found</h2><ul class="clues" id="clues"><li class="none">What Mark tells you collects here.</li></ul>
+ <div class="tpl ${S.live?"":"hide"}" id="tpl"></div><p class="tiny ${S.live?"hide":""}">Exam mode: your template and hints are hidden until the debrief.</p><div id="cap-note"></div></div></div>`;
+ capNote();if(!S.live)$("hintb").classList.add("hide");
+ $("send").onclick=send;$("tx").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}};$("mic").onclick=micToggle;$("end").onclick=finish;$("hintb").onclick=hint;
+ if(!dict)$("mic").classList.add("hide");if(!CONF.pass)sys("Not connected: go back and set your passcode.");
+ S.t0=Date.now();timer=setInterval(tick,250);mood();tpl();sys("Call connected")}
+function tick(){S.left=Math.max(0,720-Math.round((Date.now()-S.t0)/1000));const m=Math.floor(S.left/60),s=String(S.left%60).padStart(2,"0");if($("clk")){$("clk").textContent=`${m}:${s}`;$("cp").classList.toggle("low",S.left<=120)}if(S.left<=0&&!S.over){S.over=true;sys("Time's up. The call ends.");setTimeout(finish,1200)}}
+function sys(t){$("tr").insertAdjacentHTML("beforeend",`<div class="ln sys">${esc(t)}</div>`);$("tr").scrollTop=1e6}
+function line(who,t){$("tr").insertAdjacentHTML("beforeend",`<div class="ln ${who}">${esc(t)}</div>`);$("tr").scrollTop=1e6}
+function mood(){const m=Math.max(0,Math.min(8,S.mood)),b=$("mbar");if(!b)return;b.style.width=m/8*100+"%";b.style.background=m>=5?"var(--teal)":m>=3?"var(--amber)":"var(--red)";$("mtx").textContent=m>=6?"Engaged":m>=4?"Relaxed":m>=2?"Guarded":"Frustrated";
+ const lip=$("lip");if(lip){lip.setAttribute("d",m>=5?"M298 186q22 14 44 0":m>=3?"M298 190q22 4 44 0":"M298 194q22 -10 44 0");$("bl").setAttribute("d",m>=3?"M285 124q14-8 26-2":"M285 118q14 2 26 8");$("br").setAttribute("d",m>=3?"M329 122q12-6 26 2":"M329 126q12-6 26-8")}}
+function talking(on){const a=$("av");if(!a)return;a.classList.toggle("talk",on);a.querySelector(".mouth").setAttribute("opacity",on?"1":"0");$("lip").setAttribute("opacity",on?"0":"1")}
+function tpl(){if(!$("tpl"))return;$("tpl").innerHTML=STAGES.map(([n,ks])=>`<h3>${esc(n)}</h3>${ks.map(k=>`<span class="${S.tags.has(k)?"y":""}">${esc(TAGS[k])}</span>`).join("")}`).join("")+(S.bad.length?`<h3>Watch out</h3>${[...new Set(S.bad)].map(k=>`<span class="x">${esc(TAGS[k])}</span>`).join("")}`:"")}
+function clues(){const c=$("clues");if(!S.clues.size)return;c.innerHTML=[...S.clues].map(k=>`<li>${esc(CLUES[k]||k)}</li>`).join("")}
+function hint(){const miss=STAGES.flatMap(s=>s[1]).find(k=>!S.tags.has(k));S.hints++;$("hint").innerHTML=`<div class="hint"><b>Hint ${S.hints}:</b> ${esc(miss?HINTS[miss]||TAGS[miss]:"You've covered the template. Close well.")}</div>`}
+
+/* mic */
+function micToggle(){if(!dict)return;if(listening){dict.stop().catch(()=>{}).then(()=>{if($("tx").value.trim())send()});return}
+ try{if(tts)tts.stop()}catch(e){}
+ dict.onPartial(({text})=>{$("st").textContent="Hearing: "+text});
+ dict.onFinal(({text})=>{const t=$("tx");t.value=(t.value?t.value+" ":"")+text;$("st").textContent=""});
+ dict.onState(({state})=>{listening=state==="listening";$("mic").classList.toggle("on",listening);$("st").textContent=listening?"Listening… tap again to send":""});
+ dict.start().catch(e=>{$("st").textContent=e&&e.code==="not_granted"?"Microphone not allowed: type instead.":"Couldn't start the microphone."})}
+
+/* turn */
+function parse(t){const m=String(t).match(/\{[\s\S]*\}/);if(!m)throw new Error("no json");return JSON.parse(m[0])}
+async function send(){const t=$("tx").value.trim();if(!t||S.busy||S.over)return;if(!sample){capNote();return}
+ S.busy=true;$("send").disabled=true;$("tx").value="";line("dr",t);S.hist.push({who:"Doctor",t,at:720-S.left});$("cap").innerHTML=`<span class="load"></span> Mark is thinking…`;
+ const transcript=S.hist.map(h=>`${h.who}: ${h.t}`).join("\n");
+ const prompt=`${BRIEF}
+
+CURRENT MOOD (0 frustrated … 8 fully engaged): ${S.mood}
+CONSULTATION SO FAR:
+${transcript}
+
+Reply as Mark to the doctor's LAST line only. Then classify the doctor's LAST line.
+Return ONLY JSON:
+{"reply":"Mark's words","mood_change":-2..2,"tags":[zero or more of: ${Object.keys(TAGS).join(", ")}],"clues":[zero or more of: ${Object.keys(CLUES).join(", ")} — only facts Mark has now actually revealed in this reply]}
+Tag only what the doctor's last line genuinely did. "closed_adherence" for a closed or judgemental adherence question. "jargon" for unexplained medical terms.`;
+ try{const r=await sample(prompt,{modelTier:"quick",cache:false});const j=parse(r.text);
+  S.mood=Math.max(0,Math.min(8,S.mood+(+j.mood_change||0)));(j.tags||[]).forEach(k=>{if(BADTAGS.includes(k))S.bad.push(k);else if(TAGS[k])S.tags.add(k)});(j.clues||[]).forEach(k=>CLUES[k]&&S.clues.add(k));
+  const rep=String(j.reply||"…");S.hist.push({who:"Mark",t:rep,at:720-S.left});line("pt",rep);$("cap").textContent="Mark: "+rep;mood();tpl();clues();
+  if(speechOn&&tts){talking(true);await tts.speak(rep,{voice:"rounded"}).catch(()=>{});talking(false)}else{talking(true);setTimeout(()=>talking(false),Math.min(5000,rep.length*55))}
+ }catch(e){const msg=e&&e.code==="rate_limited"?"Mark needs a moment (rate limited). Try again shortly.":e&&e.code==="not_granted"?"Wrong passcode: check Connection settings.":"Mark didn't catch that. Try again.";sys(msg);$("cap").textContent=msg}
+ S.busy=false;$("send").disabled=false}
+
+/* ---------------- debrief ---------------- */
+async function finish(){if(S.done)return;S.done=true;S.over=true;clearInterval(timer);try{tts&&tts.stop()}catch(e){};try{listening&&dict.stop()}catch(e){}
+ const used=720-S.left;$("app").innerHTML=`<div class="card"><h2>Debrief</h2><p><span class="load"></span> The examiner is marking your consultation…</p></div>`;
+ if(!S.hist.length){$("app").innerHTML=`<div class="card"><h2>No consultation to mark</h2><button class="btn" onclick="location.reload()">Start again</button></div>`;return}
+ const transcript=S.hist.map(h=>`[${Math.floor(h.at/60)}:${String(h.at%60).padStart(2,"0")}] ${h.who}: ${h.t}`).join("\n");
+ const prompt=`You are an experienced, fair but demanding MRCGP SCA examiner. Mark this 12-minute video consultation using the three SCA domains, each scored 0 (clear fail), 1 (fail), 2 (pass) or 3 (clear pass). Base marks only on what the doctor actually said.
+CASE: Mark Hughes, 58, van driver, BP 166/98 on amlodipine, ramipril, indapamide (not reissued 2 months). Hidden: stopped indapamide (toilet on round); ibuprofen most days; dad's stroke at 62; doesn't want more tablets.
+WHAT EARNS MARKS:
+Data gathering and diagnosis: spotting the indapamide gap; open non-judgemental adherence question; asking about OTC drugs (finds ibuprofen); red flags for hypertensive emergency; home readings, alcohol, salt; working diagnosis of non-adherence + NSAID rather than resistant hypertension.
+Clinical management (weighted more heavily): not adding a fourth drug yet; restart indapamide with a practical fix (take early); stop or swap NSAID; home BP, U&E, urine ACR, ECG; target under 135/85 home and NICE step 4 (spironolactone if K+ ≤4.5) if still high; specific safety-net (999 symptoms; 180/120 same day); follow-up 2–3 weeks.
+Relating to others: rapport and identity/privacy checks on video; ideas, concerns, expectations; thanking for disclosure without blame; linking explanation to dad's stroke and "no more tablets"; shared decision; plain language; teach-back.
+Common errors: closed "Are you taking your tablets?"; missing ibuprofen; lecturing; adding spironolactone now; jargon; vague safety-net.
+Time used: ${Math.floor(used/60)} min ${used%60} s of 12. Hints used: ${S.hints}.
+TRANSCRIPT:
+${transcript}
+
+Return ONLY JSON:
+{"DG":{"score":0-3,"did":["..."],"missed":["..."]},"CM":{"score":0-3,"did":["..."],"missed":["..."]},"RTO":{"score":0-3,"did":["..."],"missed":["..."]},"better":[{"yours":"exact doctor line from transcript","better":"a stronger phrasing","why":"short reason"}],"top_tip":"one sentence"}
+Give 2–4 "better" items, choosing the doctor's weakest lines. Keep each list item under 15 words.`;
+ let j=null;try{const r=await sample(prompt,{modelTier:"complex",cache:false});j=parse(r.text)}catch(e){}
+ try{const h=JSON.parse(localStorage.getItem("sca-live-htn")||"[]");if(j)h.push({d:Date.now(),s:[j.DG.score,j.CM.score,j.RTO.score]});localStorage.setItem("sca-live-htn",JSON.stringify(h.slice(-20)));S.prev=h}catch(e){}
+ const GL=["Clear fail","Fail","Pass","Clear pass"],GC=["var(--red)","var(--red)","var(--amber)","var(--teal)"];
+ const dm=(k,n)=>{const d=j&&j[k];if(!d)return"";const v=Math.max(0,Math.min(3,+d.score||0));return `<div class="dm"><b style="color:${GC[v]}">${n}</b><div class="n" style="color:${GC[v]}">${v}<span style="font-size:18px">/3</span></div><b>${GL[v]}</b><ul>${(d.did||[]).map(x=>`<li>${esc(x)}</li>`).join("")}${(d.missed||[]).map(x=>`<li class="m">Missed: ${esc(x)}</li>`).join("")}</ul></div>`};
+ const tplDone=STAGES.map(([n,ks])=>`<h3>${esc(n)}</h3>${ks.map(k=>`<span class="${S.tags.has(k)?"y":"x"}">${S.tags.has(k)?"✓":"✗"} ${esc(TAGS[k])}</span>`).join("")}`).join("");
+ $("app").innerHTML=`<div class="card"><h2>Debrief</h2><p class="tiny" style="margin-top:0">Time used ${Math.floor(used/60)}:${String(used%60).padStart(2,"0")} of 12:00 · Mark ended the call: ${esc($("mtx")?$("mtx").textContent:"")} · Hints: ${S.hints}${S.prev&&S.prev.length>1?` · Attempt ${S.prev.length}`:""}</p>
+ ${j?`<div class="dom">${dm("DG","Data gathering and diagnosis")}${dm("CM","Clinical management")}${dm("RTO","Relating to others")}</div>${j.top_tip?`<div class="hint"><b>Top tip:</b> ${esc(j.top_tip)}</div>`:""}
+ <h2 style="margin-top:16px">Say it better</h2><div class="bt">${(j.better||[]).map(b=>`<div><div class="y">You: “${esc(b.yours)}”</div><div class="b">Better: “${esc(b.better)}”</div><div class="tiny">${esc(b.why)}</div></div>`).join("")}</div>`:`<div class="warn">The examiner couldn't mark this time. Your template and transcript are below.</div>`}
+ <h2 style="margin-top:16px">Your template</h2><div class="tpl">${tplDone}</div>
+ <p class="tiny">Marks are an AI examiner's training estimate, not RCGP marks. In the real SCA, clinical management carries more weight.</p>
+ <div class="row"><button class="btn ghost" onclick="location.reload()">Try again</button><button class="btn" id="model">▶ Hear a model consultation</button><span class="tiny" id="mst"></span></div>
+ <details style="margin-top:14px"><summary>Your full transcript</summary><div class="tr" style="max-height:none">${S.hist.map(h=>`<div class="ln ${h.who==="Doctor"?"dr":"pt"}">${esc(h.t)}</div>`).join("")}</div></details>
+ <div class="tr hide" id="mtr" style="max-height:none"></div></div>`;
+ $("model").onclick=playModel}
+async function playModel(){const box=$("mtr");box.classList.remove("hide");box.innerHTML=MODEL.map(([w,t],i)=>`<div class="ln ${w}" id="m${i}">${esc(t)}</div>`).join("");
+ if(!tts){$("mst").textContent="Voice isn't available here: read the model below.";return}
+ try{tts.onLine(({id})=>{document.querySelectorAll("#mtr .ln").forEach(x=>x.style.outline="");const el=$(id);if(el){el.style.outline="3px solid var(--pur)";el.scrollIntoView({block:"nearest",behavior:"smooth"})}});
+  await tts.speak(MODEL.map(([w,t],i)=>({text:t,voice:w==="dr"?"glassy":"rounded",id:"m"+i})))}catch(e){$("mst").textContent="Playback stopped."}}
+
+reading();
+}
+</script>
+</body>
+</html>
