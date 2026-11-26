@@ -65,6 +65,9 @@ tr.click{cursor:pointer}tr.click:hover td{background:var(--soft)}
 .note{font-size:13px;color:var(--mut)}
 .pass{display:inline-block;min-width:34px;text-align:center;font-size:12px;font-weight:700;padding:3px 6px;border-radius:7px;border:1px solid var(--line);color:var(--mut);background:var(--soft)}
 .pass.d{background:var(--ok);border-color:var(--teal);color:var(--teal)}.pass.p{border-color:var(--amber);color:var(--amber)}
+.conf{display:flex;gap:3px;align-items:center}.conf i{width:12px;height:12px;border-radius:3px;background:var(--soft);border:1px solid var(--line)}
+.conf i.on.l1,.conf i.on.l2{background:var(--red);border-color:var(--red)}.conf i.on.l3{background:var(--amber);border-color:var(--amber)}.conf i.on.l4,.conf i.on.l5{background:var(--teal);border-color:var(--teal)}
+.conf b{margin-left:6px;font-size:15px}
 .yb{font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;margin-left:6px;white-space:nowrap}
 .y2{background:var(--bad);color:var(--red)}.y1{background:color-mix(in srgb,var(--amber) 15%,var(--card));color:var(--amber)}.y0{background:var(--soft);color:var(--mut)}
 .hide{display:none!important}
@@ -177,17 +180,26 @@ function passOf(c,k){const m=c[3],weeks=m["p"+k]||[];
  const all=[...ws,...(k===1||streamOnly?items:[])].map(x=>x||"Not started");
  if(!all.length)return "–";
  if(all.every(x=>x==="Done"))return "Done";if(all.some(x=>x==="Done"||x==="In progress"))return "Part";return "Not started"}
+function guideConf(i){const c=CURRIC[i],m=c[3],themes=new Set(GUIDE_TOPICS[i+1]||[]);
+ const L=practice.log.filter(x=>themes.has(x.theme)).slice(-30);let q=L.length,k=L.filter(x=>x.ok).length;
+ const wks=[...(m.p1||[]),...(m.p2||[]),...(m.p3||[]),...(m.p4||[])];let oq=0,oc=0,ms=[],ret=0;
+ wks.forEach(n=>{const w=S.weeks[n];if(!w)return;oq+=+w.oq||0;oc+=+w.oc||0;const mm=w.m||[];if(mm.some(Boolean)){ms.push(mastery(n));if(mm[3]==="Yes")ret++}});
+ q+=oq;k+=oc;
+ if(q>=10){const a=k/q;let lv=a>=.85?5:a>=.75?4:a>=.65?3:a>=.5?2:1;if(lv===5&&!ret&&q<40)lv=4;return {lv,why:`${q} questions, ${Math.round(a*100)}% correct${lv===4&&a>=.85?" (5 needs retention or 40+ questions)":""}`}}
+ if(ms.length){const avg=ms.reduce((s,x)=>s+x,0)/ms.length;return {lv:Math.max(1,Math.min(3,1+Math.round(avg*2))),why:`From your mastery ratings; ${q?q+" questions so far, ":""}answer 10+ questions for a full score`}}
+ if(q)return {lv:null,why:`${q} question${q>1?"s":""} so far: needs 10`};return {lv:null,why:"No questions yet"}}
 function curric(){const P=["First pass","Depth","Consolidation","Exam revision"];let tot=0,got=0;
  const rows=CURRIC.map((c,i)=>{const ps=[1,2,3,4].map(k=>passOf(c,k));ps.forEach(p=>{if(p!=="–"){tot++;got+=p==="Done"?1:p==="Part"?0.5:0}});
   const m=c[3],wk=[...(m.p1||[])].map(n=>`<a href="#week-${n}">${n}</a>`).join(", ");
   return `<tr><td class="n">${i+1}</td><td><b>${esc(c[1])}</b><span class="yb y${c[2]}">${["Lower yield","Flagged","Flagged often"][c[2]]}</span><div class="note">${esc(c[0])} · ${wk?"Phase 1 week "+wk:m.stats?"Statistics stream":"Admin stream"}${m.note?" · "+esc(m.note):""}</div></td>${ps.map(p=>`<td class="n"><span class="pass ${p==="Done"?"d":p==="Part"?"p":""}">${p==="Not started"?"–":p==="–"?"n/a":p}</span></td>`).join("")}
-  <td class="hm"><select data-conf="${i}" aria-label="Confidence">${["","1","2","3","4","5"].map(v=>`<option ${((S.conf||{})[i]||"")===v?"selected":""} value="${v}">${v||"–"}</option>`).join("")}</select></td></tr>`}).join("");
+  ${(()=>{const g=guideConf(i);return `<td class="hm"><div class="conf" title="${esc(g.why)}">${[1,2,3,4,5].map(d=>`<i class="${g.lv&&d<=g.lv?"on l"+g.lv:""}"></i>`).join("")}<b>${g.lv||"–"}</b></div><div class="note">${esc(g.why)}</div></td>`})()}</tr>`}).join("");
  const pc=tot?got/tot:0,first=CURRIC.filter(c=>passOf(c,1)==="Done").length;
- $("app").innerHTML=`<div class="kpis"><div class="kpi"><b>${pct(pc)}</b><span>curriculum completion, all passes</span></div><div class="kpi"><b>${first}/32</b><span>topic guides: first pass done</span></div><div class="kpi"><b>${CURRIC.filter(c=>[1,2,3,4].every(k=>["Done","–"].includes(passOf(c,k)))).length}/32</b><span>all four passes complete</span></div><div class="kpi"><b>${CURRIC.filter(c=>c[2]===2).length}</b><span>guides flagged often by the RCGP</span></div></div>
+ $("app").innerHTML=`<div class="kpis"><div class="kpi"><b>${pct(pc)}</b><span>curriculum completion, all passes</span></div><div class="kpi"><b>${first}/32</b><span>topic guides: first pass done</span></div><div class="kpi"><b>${CURRIC.filter(c=>[1,2,3,4].every(k=>["Done","–"].includes(passOf(c,k)))).length}/32</b><span>all four passes complete</span></div><div class="kpi"><b>${(()=>{const v=CURRIC.map((c,i)=>guideConf(i).lv).filter(Boolean);return v.length?(v.reduce((a,b)=>a+b,0)/v.length).toFixed(1)+" /5":"–"})()}</b><span>average confidence (${CURRIC.map((c,i)=>guideConf(i).lv).filter(Boolean).length} guides rated)</span></div></div>
  <div class="card"><h2>RCGP curriculum: 32 topic guides</h2><p class="note" style="margin-top:0">Every guide is covered by the programme. The passes fill in automatically from the weeks and streams mapped to each guide: Done when all of them are done, Part when some are started. The high-yield order decides when you study each guide, not whether you do.</p>
- <div class="scroll"><table><thead><tr><th class="n">#</th><th>Topic guide</th>${P.map((p,k)=>`<th class="n">${k+1}. ${p}</th>`).join("")}<th class="hm">Confidence</th></tr></thead><tbody>${rows}</tbody></table></div>
+ <div class="scroll"><table><thead><tr><th class="n">#</th><th>Topic guide</th>${P.map((p,k)=>`<th class="n">${k+1}. ${p}</th>`).join("")}<th class="hm">Confidence (automatic)</th></tr></thead><tbody>${rows}</tbody></table></div>
+ <p class="note"><b>Confidence</b> fills in from your performance: your last 30 answers in AKT practice, lesson quizzes and cases for that guide, plus questions you log from other banks in its weeks. 1 = under 50% correct, 2 = 50–64%, 3 = 65–74%, 4 = 75–84%, 5 = 85% or more with retention confirmed or 40+ questions. With fewer than 10 questions it uses your mastery ratings, up to 3.</p>
  <p class="note">Phase 2 has no separate pass for the professional guides covered only by the statistics or admin streams; they're revisited in Phases 3 and 4 (set those on the Statistics and Admin tabs).</p></div>`;
- document.querySelectorAll("[data-conf]").forEach(s=>s.onchange=()=>{S.conf=S.conf||{};S.conf[s.dataset.conf]=s.value;save()})}
+}
 
 /* ---------- streams ---------- */
 function stream(kind){const L=kind==="stats"?STATS:ADMIN,st=S[kind],title=kind==="stats"?"Statistics and evidence":"Admin and management";

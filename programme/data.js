@@ -172,3 +172,9 @@ const CURRIC=[
  ["Clinical","Sexual health",2,{p1:[9],p2:[32],p3:[51],p4:[62]}],
  ["Clinical","Smoking, alcohol and substance misuse",1,{p1:[11],p2:[33],p3:[49],p4:[60]}],
  ["Clinical","Urgent and unscheduled care",1,{p1:[23],p2:[41],p3:[56],p4:[65]}]];
+/* AKT practice topics that count towards each topic guide's confidence (by guide number, 1-based).
+   New lessons are matched automatically by their category (see CAT_GUIDE). */
+const GUIDE_TOPICS={3:["Sensitivity and specificity","Positive and negative predictive value","Calculations (new numbers every time)"],5:["The GP contract and QOF"],
+ 8:["Heart failure","QRISK, lipids and statins","Atrial fibrillation"],12:["QRISK, lipids and statins","Atrial fibrillation","Bradycardia and heart block","Tachyarrhythmias","Acute coronary syndrome and myocardial infarction","Cardiac arrest and CPR","Heart failure","Heart valve disease","Cardiomyopathy","Syncope and collapse","Peripheral arterial disease"],
+ 32:["Acute coronary syndrome and myocardial infarction","Cardiac arrest and CPR","Syncope and collapse"]};
+const CAT_GUIDE={cardiology:12,dermatology:13,statistics:3,admin:5};
