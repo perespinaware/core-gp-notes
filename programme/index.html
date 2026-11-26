@@ -63,6 +63,10 @@ tr.click{cursor:pointer}tr.click:hover td{background:var(--soft)}
 .t1d,.t2d,.t3d{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
 .t1d{background:var(--red)}.t2d{background:var(--amber)}.t3d{background:var(--line)}
 .note{font-size:13px;color:var(--mut)}
+.pass{display:inline-block;min-width:34px;text-align:center;font-size:12px;font-weight:700;padding:3px 6px;border-radius:7px;border:1px solid var(--line);color:var(--mut);background:var(--soft)}
+.pass.d{background:var(--ok);border-color:var(--teal);color:var(--teal)}.pass.p{border-color:var(--amber);color:var(--amber)}
+.yb{font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;margin-left:6px;white-space:nowrap}
+.y2{background:var(--bad);color:var(--red)}.y1{background:color-mix(in srgb,var(--amber) 15%,var(--card));color:var(--amber)}.y0{background:var(--soft);color:var(--mut)}
 .hide{display:none!important}
 @media(max-width:600px){.hm{display:none}}
 </style>
@@ -97,11 +101,11 @@ const pct=x=>x===null||isNaN(x)?"–":Math.round(x*100)+"%";
 const mscore=v=>v==="Yes"?1:v==="Partial"?0.5:0;
 const mastery=n=>{const m=W(n).m||[];return m.reduce((s,v)=>s+mscore(v),0)/4};
 const statusTag=s=>`<span class="tag ${s==="Done"?"done":s==="In progress"?"prog":""}">${esc(s||"Not started")}</span>`;
-const TABS=[["week","This week"],["dash","Dashboard"],["plan","Programme"],["stats","Statistics"],["admin","Admin"],["errors","Error log"],["mocks","Mocks"],["settings","Settings"]];
+const TABS=[["week","This week"],["dash","Dashboard"],["plan","Programme"],["curric","Curriculum"],["stats","Statistics"],["admin","Admin"],["errors","Error log"],["mocks","Mocks"],["settings","Settings"]];
 let view=null;
 function route(){const h=(location.hash||"#week").slice(1);const [t,arg]=h.split("-");const tab=TABS.find(x=>x[0]===t)?t:"week";
  $("nav").innerHTML=TABS.map(([k,l])=>`<a href="#${k}" class="${k===tab?"on":""}">${l}</a>`).join("");
- ({week:()=>weekView(+arg||curWeek()||1),dash,plan,stats:()=>stream("stats"),admin:()=>stream("admin"),errors,mocks,settings})[tab]();window.scrollTo({top:0})}
+ ({week:()=>weekView(+arg||curWeek()||1),dash,plan,curric,stats:()=>stream("stats"),admin:()=>stream("admin"),errors,mocks,settings})[tab]();window.scrollTo({top:0})}
 window.onhashchange=route;
 
 /* ---------- this week ---------- */
@@ -151,7 +155,7 @@ function dash(){const cw=curWeek(),done=Object.entries(S.weeks).filter(([k,v])=>
  <tr><td><b>Total</b></td><td class="n"><b>${all.wd}/69</b></td><td class="n"><b>${all.qd} / ${all.qt}</b></td><td class="n"><b>${all.qd?pct(all.qc/all.qd):"–"}</b></td><td class="n"><b>${all.h}</b></td></tr></tbody></table></div>
  <p class="note">Accuracy target: ${pct(S.target)}. Question totals include AKT practice (automatic) and other banks you enter each week.</p></div>
  <div class="card"><h2>The four mastery measures</h2>${MEAS.map((m,k)=>`<div class="row" style="justify-content:space-between;margin-bottom:8px;flex-wrap:nowrap"><span style="flex:1">${m}</span><div class="mbar" style="width:40%"><div style="width:${ms[k]*100}%;background:var(--acc)"></div></div><b style="width:52px;text-align:right">${pct(ms[k])}</b></div>`).join("")}<p class="note">Yes counts 1, Partial counts ½, across all 69 weeks.</p></div>
- <div class="kpis"><div class="kpi"><b>${sd}/${STATS.length}</b><span>statistics topics done</span></div><div class="kpi"><b>${ad}/${ADMIN.length}</b><span>admin topics done</span></div><div class="kpi"><b>${openErr}</b><span>errors still open</span></div><div class="kpi"><b>${mk.length?pct(mk.reduce((s,m)=>s+m.c/m.q,0)/mk.length):"–"}</b><span>average mock score (${mk.length})</span></div></div>`}
+ <div class="kpis"><div class="kpi"><b>${sd}/${STATS.length}</b><span>statistics topics done</span></div><div class="kpi"><b>${ad}/${ADMIN.length}</b><span>admin topics done</span></div><div class="kpi"><b>${openErr}</b><span>errors still open</span></div><div class="kpi"><b>${CURRIC.filter(c=>passOf(c,1)==="Done").length}/32</b><span><a href="#curric">topic guides: first pass</a></span></div><div class="kpi"><b>${mk.length?pct(mk.reduce((s,m)=>s+m.c/m.q,0)/mk.length):"–"}</b><span>average mock score (${mk.length})</span></div></div>`}
 
 /* ---------- programme ---------- */
 function plan(){const cw=curWeek();let html="";
@@ -161,6 +165,29 @@ function plan(){const cw=curWeek();let html="";
  $("app").innerHTML=`<div class="card"><h2>All 69 weeks</h2><p class="note" style="margin-top:0">Phase 1 is ordered high-yield first: weeks 1–2 kept as you started them, then prescribing safety, children, neurology and the other most-flagged areas. Tap a week to open it.</p>
  <div class="scroll"><table><thead><tr><th class="n">Wk</th><th>Focus</th><th>Status</th><th class="n hm">Questions</th><th class="hm">Mastery</th></tr></thead><tbody>${html}</tbody></table></div></div>`;
  document.querySelectorAll("[data-w]").forEach(r=>r.onclick=()=>location.hash="#week-"+r.dataset.w)}
+
+
+/* ---------- curriculum ---------- */
+function passOf(c,k){const m=c[3],weeks=m["p"+k]||[];
+ const ws=weeks.map(n=>W(n).status||"Not started");
+ let items=[];if(m.stats==="all")items=STATS.map(([n])=>k===1||k===2?S.stats[n]:S.stats[n+"|"+k]);
+ else if(m.admin)items=m.admin.map(n=>k===1||k===2?S.admin[n]:S.admin[n+"|"+k]);
+ const streamOnly=!weeks.length&&items.length;
+ if(k===2&&streamOnly)return "–";
+ const all=[...ws,...(k===1||streamOnly?items:[])].map(x=>x||"Not started");
+ if(!all.length)return "–";
+ if(all.every(x=>x==="Done"))return "Done";if(all.some(x=>x==="Done"||x==="In progress"))return "Part";return "Not started"}
+function curric(){const P=["First pass","Depth","Consolidation","Exam revision"];let tot=0,got=0;
+ const rows=CURRIC.map((c,i)=>{const ps=[1,2,3,4].map(k=>passOf(c,k));ps.forEach(p=>{if(p!=="–"){tot++;got+=p==="Done"?1:p==="Part"?0.5:0}});
+  const m=c[3],wk=[...(m.p1||[])].map(n=>`<a href="#week-${n}">${n}</a>`).join(", ");
+  return `<tr><td class="n">${i+1}</td><td><b>${esc(c[1])}</b><span class="yb y${c[2]}">${["Lower yield","Flagged","Flagged often"][c[2]]}</span><div class="note">${esc(c[0])} · ${wk?"Phase 1 week "+wk:m.stats?"Statistics stream":"Admin stream"}${m.note?" · "+esc(m.note):""}</div></td>${ps.map(p=>`<td class="n"><span class="pass ${p==="Done"?"d":p==="Part"?"p":""}">${p==="Not started"?"–":p==="–"?"n/a":p}</span></td>`).join("")}
+  <td class="hm"><select data-conf="${i}" aria-label="Confidence">${["","1","2","3","4","5"].map(v=>`<option ${((S.conf||{})[i]||"")===v?"selected":""} value="${v}">${v||"–"}</option>`).join("")}</select></td></tr>`}).join("");
+ const pc=tot?got/tot:0,first=CURRIC.filter(c=>passOf(c,1)==="Done").length;
+ $("app").innerHTML=`<div class="kpis"><div class="kpi"><b>${pct(pc)}</b><span>curriculum completion, all passes</span></div><div class="kpi"><b>${first}/32</b><span>topic guides: first pass done</span></div><div class="kpi"><b>${CURRIC.filter(c=>[1,2,3,4].every(k=>["Done","–"].includes(passOf(c,k)))).length}/32</b><span>all four passes complete</span></div><div class="kpi"><b>${CURRIC.filter(c=>c[2]===2).length}</b><span>guides flagged often by the RCGP</span></div></div>
+ <div class="card"><h2>RCGP curriculum: 32 topic guides</h2><p class="note" style="margin-top:0">Every guide is covered by the programme. The passes fill in automatically from the weeks and streams mapped to each guide: Done when all of them are done, Part when some are started. The high-yield order decides when you study each guide, not whether you do.</p>
+ <div class="scroll"><table><thead><tr><th class="n">#</th><th>Topic guide</th>${P.map((p,k)=>`<th class="n">${k+1}. ${p}</th>`).join("")}<th class="hm">Confidence</th></tr></thead><tbody>${rows}</tbody></table></div>
+ <p class="note">Phase 2 has no separate pass for the professional guides covered only by the statistics or admin streams; they're revisited in Phases 3 and 4 (set those on the Statistics and Admin tabs).</p></div>`;
+ document.querySelectorAll("[data-conf]").forEach(s=>s.onchange=()=>{S.conf=S.conf||{};S.conf[s.dataset.conf]=s.value;save()})}
 
 /* ---------- streams ---------- */
 function stream(kind){const L=kind==="stats"?STATS:ADMIN,st=S[kind],title=kind==="stats"?"Statistics and evidence":"Admin and management";
