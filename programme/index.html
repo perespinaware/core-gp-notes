@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AKT Programme · Core GP Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#eef1f3,#0f1519);--card:light-dark(#fff,#172128);--ink:light-dark(#16212a,#e8eef0);--mut:light-dark(#576470,#9aabb4);--line:light-dark(#dde3e7,#2a3a44);--soft:light-dark(#f4f6f7,#1c2a33);--acc:light-dark(#0b5f86,#5cc1ec);--red:light-dark(#b3263a,#ff7385);--teal:light-dark(#0b8577,#3cc7b3);--amber:light-dark(#b86e00,#f1aa45);--ok:light-dark(#e3f4f0,#123630);--bad:light-dark(#fbe6e9,#3d1820)}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif;overflow-x:clip}
+.wrap{max-width:1100px;margin:0 auto;padding:18px 16px 70px}
+a{color:var(--acc)}.back{font-size:14px;text-decoration:none}
+h1{font:800 clamp(28px,4vw,42px)/1.05 "Bricolage Grotesque",sans-serif;margin:6px 0 4px}
+h2{font:800 22px "Bricolage Grotesque",sans-serif;margin:0 0 10px}
+h3{font:800 17px "Bricolage Grotesque",sans-serif;margin:14px 0 6px}
+.sub{color:var(--mut);margin:0 0 14px;max-width:780px}
+.nav{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 16px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}
+.nav a{font-size:15px;font-weight:700;text-decoration:none;padding:7px 13px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.nav a.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+@media(max-width:760px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.kpi b{display:block;font:800 clamp(24px,3.5vw,32px) "Bricolage Grotesque",sans-serif;line-height:1.1}
+.kpi span{font-size:14px;color:var(--mut)}
+.wk-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start}
+.wk-head h2{margin:0}
+.wk-head .row{flex-wrap:nowrap}.wk-head select{width:auto}.wk-head .btn{padding:8px 14px}
+.tag{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;border:1px solid var(--line);background:var(--soft);color:var(--mut);white-space:nowrap}
+.tag.done{background:var(--ok);border-color:var(--teal);color:var(--teal)}.tag.prog{border-color:var(--amber);color:var(--amber)}
+.cols{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:14px}
+@media(max-width:860px){.cols{grid-template-columns:minmax(0,1fr)}}
+.tier-h{display:flex;align-items:center;gap:8px;font-weight:800;margin:14px 0 6px}
+.tier-h i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.items{list-style:none;margin:0;padding:0}
+.items label{display:flex;gap:10px;align-items:flex-start;padding:6px 8px;border-radius:9px;cursor:pointer;font-size:15.5px}
+.items label:hover{background:var(--soft)}
+.items input{width:19px;height:19px;flex:none;margin-top:2px}
+.items input:checked+span{color:var(--mut);text-decoration:line-through}
+details.ift summary{cursor:pointer;font-weight:800;margin:14px 0 6px;color:var(--mut)}
+.field{display:grid;grid-template-columns:minmax(0,1fr) 130px;gap:8px;align-items:center;margin-bottom:8px;font-size:15px}
+select,input[type=number],input[type=date],input[type=text],textarea{font:inherit;font-size:16px;padding:7px 9px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink);width:100%}
+textarea{min-height:70px;resize:vertical}
+.btn{font:inherit;font-weight:700;border:0;background:var(--acc);color:#fff;border-radius:12px;padding:10px 16px;min-height:44px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.ghost{background:var(--soft);color:var(--ink);border:1px solid var(--line)}
+.btn:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.auto{background:var(--soft);border-radius:12px;padding:10px 12px;font-size:15px;margin-bottom:10px}
+.auto b{font-size:20px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{text-align:left;font-size:13px;color:var(--mut);padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+td.n,th.n{text-align:right;white-space:nowrap}
+tr.cur td{background:color-mix(in srgb,var(--acc) 9%,var(--card))}
+tr.click{cursor:pointer}tr.click:hover td{background:var(--soft)}
+.scroll{overflow-x:auto}
+.ph{font-size:13px;font-weight:700;color:var(--mut);padding:12px 8px 4px;border-bottom:2px solid var(--line)}
+.mbar{height:8px;background:var(--soft);border-radius:4px;overflow:hidden;border:1px solid var(--line);min-width:60px}.mbar div{height:100%}
+.stream td:first-child{width:36px;color:var(--mut)}
+.t1d,.t2d,.t3d{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.t1d{background:var(--red)}.t2d{background:var(--amber)}.t3d{background:var(--line)}
+.note{font-size:13px;color:var(--mut)}
+.hide{display:none!important}
+@media(max-width:600px){.hm{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="../">← Core GP Notes</a>
+<h1>AKT Programme</h1>
+<p class="sub">Your 69-week plan, rebuilt high-yield first: areas the RCGP flags most come earliest, and every week starts with the must-know items. Questions you answer in AKT practice count automatically.</p>
+<nav class="nav" id="nav"></nav>
+<div id="app"></div>
+</div>
+<script src="data.js"></script>
+<script>
+{
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const KEY="cgn-programme",DAY=864e5;
+let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S){S={start:PROG.start,exam:PROG.exam,target:PROG.target,weeks:JSON.parse(JSON.stringify(SEED.weeks)),stats:{...SEED.stats},admin:{...SEED.admin},errors:[],mocks:[]}}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};save();
+let practice={log:[],mocks:[]};try{const d=JSON.parse(localStorage.getItem("cgn-v1"));if(d)practice={log:d.log||[],mocks:d.mocks||[]}}catch(e){}
+const MEAS=["Coverage: studied","Understanding: can explain","Application: questions right","Retention: still right weeks later"];
+const wkStart=n=>new Date(new Date(S.start+"T00:00:00").getTime()+(n-1)*7*DAY);
+const fmt=d=>d.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"});
+const curWeek=()=>{const n=Math.floor((Date.now()-new Date(S.start+"T00:00:00"))/7/DAY)+1;return Math.max(0,Math.min(69,n))};
+const W=n=>S.weeks[n]||(S.weeks[n]={});
+const info=n=>{if(n<=26){const w=WEEKS[n-1];return {f:w.f,q:w.q,must:w.must,then:w.then,ift:w.ift,phase:1}}const l=LATER.find(x=>x[0]===n);return {f:l[1],q:l[2],must:[],then:[],ift:[],phase:n<=43?2:n<=56?3:4}};
+const auto=n=>{const a=wkStart(n).getTime(),b=a+7*DAY,L=practice.log.filter(x=>x.t>=a&&x.t<b);return {q:L.length,c:L.filter(x=>x.ok).length}};
+const qs=n=>{const a=auto(n),w=W(n);return {q:a.q+(+w.oq||0),c:a.c+(+w.oc||0),a}};
+const pct=x=>x===null||isNaN(x)?"–":Math.round(x*100)+"%";
+const mscore=v=>v==="Yes"?1:v==="Partial"?0.5:0;
+const mastery=n=>{const m=W(n).m||[];return m.reduce((s,v)=>s+mscore(v),0)/4};
+const statusTag=s=>`<span class="tag ${s==="Done"?"done":s==="In progress"?"prog":""}">${esc(s||"Not started")}</span>`;
+const TABS=[["week","This week"],["dash","Dashboard"],["plan","Programme"],["stats","Statistics"],["admin","Admin"],["errors","Error log"],["mocks","Mocks"],["settings","Settings"]];
+let view=null;
+function route(){const h=(location.hash||"#week").slice(1);const [t,arg]=h.split("-");const tab=TABS.find(x=>x[0]===t)?t:"week";
+ $("nav").innerHTML=TABS.map(([k,l])=>`<a href="#${k}" class="${k===tab?"on":""}">${l}</a>`).join("");
+ ({week:()=>weekView(+arg||curWeek()||1),dash,plan,stats:()=>stream("stats"),admin:()=>stream("admin"),errors,mocks,settings})[tab]();window.scrollTo({top:0})}
+window.onhashchange=route;
+
+/* ---------- this week ---------- */
+function nextStream(kind){const L=kind==="stats"?STATS:ADMIN,st=S[kind];return L.find(([n])=>st[n]!=="Done")}
+function weekView(n){const i=info(n),w=W(n),q=qs(n),cw=curWeek();
+ const sec=(title,col,list,key)=>list.length?`<div class="tier-h"><i style="background:${col}"></i>${title}</div><ul class="items">${list.map((t,k)=>`<li><label><input type="checkbox" data-t="${key}${k}" ${(w.ticks||{})[key+k]?"checked":""}><span>${esc(t)}</span></label></li>`).join("")}</ul>`:"";
+ const st=nextStream("stats"),ad=nextStream("admin");
+ $("app").innerHTML=`<div class="card"><div class="wk-head"><div><div class="note">Week ${n} of 69 · Phase ${i.phase}: ${esc(PHASES[i.phase-1].name)} · from ${fmt(wkStart(n))}${n===cw?" · this week":""}</div><h2>${esc(i.f)}</h2></div>
+ <div class="row"><a class="btn ghost" href="#week-${Math.max(1,n-1)}">←</a><select id="status" aria-label="Status">${["Not started","In progress","Done"].map(s=>`<option ${(w.status||"Not started")===s?"selected":""}>${s}</option>`).join("")}</select><a class="btn ghost" href="#week-${Math.min(69,n+1)}">→</a></div></div>
+ ${n>26?`<p class="note">${esc(PHASES[i.phase-1].note)} Use the must-know lists from Phase 1 weeks and your error log.</p>`:""}
+ <div class="cols"><div>
+  ${sec("Must know: study first","var(--red)",i.must,"m")}${sec("Then","var(--amber)",i.then,"t")}
+  ${i.ift.length?`<details class="ift"><summary>Only if time (${i.ift.length})</summary>${sec("Lower yield","var(--line)",i.ift,"i")}</details>`:""}
+  ${n<=26?`<p class="note">★★ flagged repeatedly and ★ flagged by RCGP AKT examiners.</p>`:""}
+ </div><div>
+  <div class="auto">Questions this week: <b>${q.q}</b> of ${i.q} · accuracy <b style="color:${q.q?(q.c/q.q>=S.target?"var(--teal)":"var(--red)"):"inherit"}">${q.q?pct(q.c/q.q):"–"}</b><div class="note">${q.a.q} from AKT practice (automatic) + ${+w.oq||0} from other banks</div></div>
+  <div class="field"><label for="oq">Other question banks: done</label><input id="oq" type="number" min="0" value="${w.oq??""}"></div>
+  <div class="field"><label for="oc">Other question banks: correct</label><input id="oc" type="number" min="0" value="${w.oc??""}"></div>
+  <div class="field"><label for="hours">Hours studied</label><input id="hours" type="number" min="0" step="0.5" value="${w.hours??""}"></div>
+  <h3>The four mastery measures</h3>
+  ${MEAS.map((m,k)=>`<div class="field"><label for="m${k}">${m}</label><select id="m${k}">${["","Partial","Yes"].map(v=>`<option value="${v}" ${(w.m||[])[k]===v?"selected":""}>${v||"–"}</option>`).join("")}</select></div>`).join("")}
+  <h3>Weekly streams (1 hour each)</h3>
+  <div class="field"><label for="sst">Statistics: ${esc(st?st[0]:"all done")}</label><select id="sst">${["","Partial","Yes"].map(v=>`<option value="${v}" ${w.stats===v?"selected":""}>${v||"–"}</option>`).join("")}</select></div>
+  <div class="field"><label for="ast">Admin: ${esc(ad?ad[0]:"all done")}</label><select id="ast">${["","Partial","Yes"].map(v=>`<option value="${v}" ${w.admin===v?"selected":""}>${v||"–"}</option>`).join("")}</select></div>
+  <label class="note" for="wnotes">Notes</label><textarea id="wnotes">${esc(w.notes||"")}</textarea>
+  <div class="row" style="margin-top:10px"><a class="btn" href="../akt/">Practise in AKT practice</a><a class="btn ghost" href="../blueprint/">Blueprint</a></div>
+ </div></div></div>`;
+ const up=()=>{w.status=$("status").value;w.oq=$("oq").value;w.oc=$("oc").value;w.hours=$("hours").value;w.m=[0,1,2,3].map(k=>$("m"+k).value);w.stats=$("sst").value;w.admin=$("ast").value;w.notes=$("wnotes").value;
+  if(w.stats==="Yes"&&st&&S.stats[st[0]]!=="Done"){S.stats[st[0]]="Done"}if(w.admin==="Yes"&&ad&&S.admin[ad[0]]!=="Done"){S.admin[ad[0]]="Done"}save()};
+ ["status","oq","oc","hours","m0","m1","m2","m3","sst","ast","wnotes"].forEach(id=>$(id).onchange=()=>{up();if(["status","oq","oc","sst","ast"].includes(id))weekView(n)});
+ document.querySelectorAll("[data-t]").forEach(c=>c.onchange=()=>{w.ticks=w.ticks||{};w.ticks[c.dataset.t]=c.checked;
+  const total=i.must.length+i.then.length,done=Object.entries(w.ticks).filter(([k,v])=>v&&(k[0]==="m"||k[0]==="t")).length;if(done&&(!w.status||w.status==="Not started"))w.status="In progress";
+  if(i.must.every((x,k)=>w.ticks["m"+k])&&!(w.m||[])[0]){w.m=w.m||["","","",""];w.m[0]=i.then.every((x,k)=>w.ticks["t"+k])?"Yes":"Partial"}save();if(!$("status").value||$("status").value!==w.status)weekView(n)})}
+
+/* ---------- dashboard ---------- */
+function dash(){const cw=curWeek(),done=Object.entries(S.weeks).filter(([k,v])=>v.status==="Done").length;
+ const behind=Math.max(0,(cw-1)-Object.entries(S.weeks).filter(([k,v])=>+k<cw&&v.status==="Done").length);
+ const weeksLeft=Math.max(0,Math.ceil((new Date(S.exam+"T00:00:00")-Date.now())/7/DAY));
+ const rows=PHASES.map(p=>{let wd=0,qt=0,qd=0,qc=0,h=0;for(let n=p.weeks[0];n<=p.weeks[1];n++){const w=W(n),q=qs(n);if(w.status==="Done")wd++;qt+=info(n).q;qd+=q.q;qc+=q.c;h+=+w.hours||0}return {p,wd,tot:p.weeks[1]-p.weeks[0]+1,qt,qd,qc,h}});
+ const all=rows.reduce((a,r)=>({wd:a.wd+r.wd,tot:a.tot+r.tot,qt:a.qt+r.qt,qd:a.qd+r.qd,qc:a.qc+r.qc,h:a.h+r.h}),{wd:0,tot:0,qt:0,qd:0,qc:0,h:0});
+ const ms=[0,1,2,3].map(k=>{let s=0;for(let n=1;n<=69;n++)s+=mscore((W(n).m||[])[k]);return s/69});
+ const sd=STATS.filter(([n])=>S.stats[n]==="Done").length,ad=ADMIN.filter(([n])=>S.admin[n]==="Done").length;
+ const openErr=S.errors.filter(e=>e.status!=="Resolved").length,mk=allMocks();
+ $("app").innerHTML=`<div class="kpis"><div class="kpi"><b>${cw||"–"}</b><span>current week of 69</span></div><div class="kpi"><b>${weeksLeft}</b><span>weeks until the exam</span></div><div class="kpi"><b>${pct(all.wd/69)}</b><span>${all.wd} weeks done</span></div><div class="kpi"><b style="color:${behind?"var(--red)":"var(--teal)"}">${behind?behind+" behind":"On track"}</b><span>schedule</span></div></div>
+ <div class="card"><h2>Progress by phase</h2><div class="scroll"><table><thead><tr><th>Phase</th><th class="n">Weeks done</th><th class="n">Questions</th><th class="n">Accuracy</th><th class="n">Hours</th></tr></thead><tbody>
+ ${rows.map(r=>`<tr><td><b>${r.p.n}. ${esc(r.p.name)}</b><div class="note">Weeks ${r.p.weeks[0]}–${r.p.weeks[1]}</div></td><td class="n">${r.wd}/${r.tot}</td><td class="n">${r.qd} / ${r.qt}</td><td class="n" style="color:${r.qd?(r.qc/r.qd>=S.target?"var(--teal)":"var(--red)"):""}">${r.qd?pct(r.qc/r.qd):"–"}</td><td class="n">${r.h}</td></tr>`).join("")}
+ <tr><td><b>Total</b></td><td class="n"><b>${all.wd}/69</b></td><td class="n"><b>${all.qd} / ${all.qt}</b></td><td class="n"><b>${all.qd?pct(all.qc/all.qd):"–"}</b></td><td class="n"><b>${all.h}</b></td></tr></tbody></table></div>
+ <p class="note">Accuracy target: ${pct(S.target)}. Question totals include AKT practice (automatic) and other banks you enter each week.</p></div>
+ <div class="card"><h2>The four mastery measures</h2>${MEAS.map((m,k)=>`<div class="row" style="justify-content:space-between;margin-bottom:8px;flex-wrap:nowrap"><span style="flex:1">${m}</span><div class="mbar" style="width:40%"><div style="width:${ms[k]*100}%;background:var(--acc)"></div></div><b style="width:52px;text-align:right">${pct(ms[k])}</b></div>`).join("")}<p class="note">Yes counts 1, Partial counts ½, across all 69 weeks.</p></div>
+ <div class="kpis"><div class="kpi"><b>${sd}/${STATS.length}</b><span>statistics topics done</span></div><div class="kpi"><b>${ad}/${ADMIN.length}</b><span>admin topics done</span></div><div class="kpi"><b>${openErr}</b><span>errors still open</span></div><div class="kpi"><b>${mk.length?pct(mk.reduce((s,m)=>s+m.c/m.q,0)/mk.length):"–"}</b><span>average mock score (${mk.length})</span></div></div>`}
+
+/* ---------- programme ---------- */
+function plan(){const cw=curWeek();let html="";
+ PHASES.forEach(p=>{html+=`<tr><td colspan="5" class="ph">Phase ${p.n}: ${esc(p.name)} · weeks ${p.weeks[0]}–${p.weeks[1]}<div class="note" style="font-weight:400">${esc(p.note)}</div></td></tr>`;
+  for(let n=p.weeks[0];n<=p.weeks[1];n++){const i=info(n),w=W(n),q=qs(n),ms=mastery(n);
+   html+=`<tr class="click ${n===cw?"cur":""}" data-w="${n}"><td class="n">${n}</td><td><b>${esc(i.f)}</b><div class="note">${fmt(wkStart(n))}${i.must.length?` · ${i.must.length} must-know`:""}</div></td><td>${statusTag(w.status)}</td><td class="n hm">${q.q}/${i.q}</td><td class="n hm"><div class="mbar"><div style="width:${ms*100}%;background:var(--teal)"></div></div></td></tr>`}});
+ $("app").innerHTML=`<div class="card"><h2>All 69 weeks</h2><p class="note" style="margin-top:0">Phase 1 is ordered high-yield first: weeks 1–2 kept as you started them, then prescribing safety, children, neurology and the other most-flagged areas. Tap a week to open it.</p>
+ <div class="scroll"><table><thead><tr><th class="n">Wk</th><th>Focus</th><th>Status</th><th class="n hm">Questions</th><th class="hm">Mastery</th></tr></thead><tbody>${html}</tbody></table></div></div>`;
+ document.querySelectorAll("[data-w]").forEach(r=>r.onclick=()=>location.hash="#week-"+r.dataset.w)}
+
+/* ---------- streams ---------- */
+function stream(kind){const L=kind==="stats"?STATS:ADMIN,st=S[kind],title=kind==="stats"?"Statistics and evidence":"Admin and management";
+ $("app").innerHTML=`<div class="card"><h2>${title}</h2><p class="note" style="margin-top:0">One hour a week, highest-yield first (red = tier 1). This is about 10% of the AKT. Revisit each topic in Phases 3 and 4.</p>
+ <div class="scroll"><table class="stream"><thead><tr><th>#</th><th>Topic</th><th>Status</th><th class="hm">Phase 3</th><th class="hm">Phase 4</th></tr></thead><tbody>
+ ${L.map(([n,t],k)=>{const r3=st[n+"|3"]||"",r4=st[n+"|4"]||"";return `<tr><td>${k+1}</td><td><i class="t${t}d"></i>${esc(n)}</td><td><select data-s="${esc(n)}">${["Not started","In progress","Done"].map(s=>`<option ${(st[n]||"Not started")===s?"selected":""}>${s}</option>`).join("")}</select></td>
+ <td class="hm"><select data-s="${esc(n)}|3">${["","Done"].map(s=>`<option value="${s}" ${r3===s?"selected":""}>${s||"–"}</option>`).join("")}</select></td><td class="hm"><select data-s="${esc(n)}|4">${["","Done"].map(s=>`<option value="${s}" ${r4===s?"selected":""}>${s||"–"}</option>`).join("")}</select></td></tr>`}).join("")}
+ </tbody></table></div>${kind==="stats"?`<p class="note">Calculation practice with new numbers every time is in <a href="../akt/">AKT practice → Calculation drill</a>.</p>`:""}</div>`;
+ document.querySelectorAll("[data-s]").forEach(s=>s.onchange=()=>{st[s.dataset.s]=s.value;save()})}
+
+/* ---------- errors ---------- */
+function errors(){let mis=0;try{const last={};practice.log.forEach(x=>{if(x.id)last[x.id]=x.ok});mis=Object.values(last).filter(v=>v===false).length}catch(e){}
+ const types=["Knowledge gap","Missed clinical clue","Confused two options","Missed referral threshold","Misread question","Calculation error"];
+ $("app").innerHTML=`<div class="card"><h2>Error log</h2><p class="note" style="margin-top:0">One entry per question you got wrong or guessed, especially from other question banks. Review twice, then mark it resolved.${mis?` AKT practice is already tracking <b>${mis}</b> question${mis>1?"s":""} you last got wrong: <a href="../akt/">retry them there</a>.`:""}</p>
+ <div class="cols"><div><div class="field" style="grid-template-columns:1fr"><input id="e-topic" type="text" placeholder="Topic (e.g. Depression)"></div>
+ <div class="field" style="grid-template-columns:1fr 1fr"><input id="e-src" type="text" placeholder="Source (e.g. Passmedicine)"><select id="e-type">${types.map(t=>`<option>${t}</option>`).join("")}</select></div>
+ <textarea id="e-wrong" placeholder="What I got wrong"></textarea><textarea id="e-learn" placeholder="Correct answer and learning point" style="margin-top:8px"></textarea>
+ <div class="row" style="margin-top:8px"><button class="btn" id="e-add">Add to error log</button></div></div>
+ <div><h3 style="margin-top:0">By error type</h3>${types.map(t=>{const c=S.errors.filter(e=>e.type===t).length;return `<div class="row" style="justify-content:space-between;flex-wrap:nowrap"><span>${t}</span><b>${c}</b></div>`}).join("")}</div></div></div>
+ <div class="card"><div class="scroll"><table><thead><tr><th>Date</th><th>Topic and learning point</th><th class="hm">Type</th><th>Reviews</th><th></th></tr></thead><tbody>
+ ${S.errors.length?S.errors.map((e,k)=>`<tr><td>${esc(e.d)}<div class="note">Wk ${e.wk}</div></td><td><b>${esc(e.topic)}</b>${e.src?` <span class="note">· ${esc(e.src)}</span>`:""}<div class="note">${esc(e.wrong)}</div><div>${esc(e.learn)}</div></td><td class="hm">${esc(e.type)}</td>
+ <td><label class="row note"><input type="checkbox" data-r="${k}|1" ${e.r1?"checked":""}> 1st</label><label class="row note"><input type="checkbox" data-r="${k}|2" ${e.r2?"checked":""}> 2nd</label></td><td>${e.status==="Resolved"?`<span class="tag done">Resolved</span>`:`<button class="btn ghost" data-res="${k}" style="min-height:34px;padding:4px 10px">Resolve</button>`}</td></tr>`).reverse().join(""):`<tr><td colspan="5" class="note">No errors logged yet.</td></tr>`}
+ </tbody></table></div></div>`;
+ $("e-add").onclick=()=>{const t=$("e-topic").value.trim();if(!t)return;S.errors.push({d:new Date().toLocaleDateString("en-GB"),wk:curWeek(),topic:t,src:$("e-src").value.trim(),type:$("e-type").value,wrong:$("e-wrong").value.trim(),learn:$("e-learn").value.trim(),r1:false,r2:false,status:"Open"});save();errors()};
+ document.querySelectorAll("[data-r]").forEach(c=>c.onchange=()=>{const [k,r]=c.dataset.r.split("|");S.errors[k]["r"+r]=c.checked;save()});
+ document.querySelectorAll("[data-res]").forEach(b=>b.onclick=()=>{S.errors[+b.dataset.res].status="Resolved";save();errors()})}
+
+/* ---------- mocks ---------- */
+function allMocks(){return [...(practice.mocks||[]).filter(m=>m.q>=40).map(m=>({d:new Date(m.t).toLocaleDateString("en-GB"),q:m.q,c:m.c,mins:m.mins,src:"AKT practice"})),...S.mocks]}
+function mocks(){const mk=allMocks();
+ $("app").innerHTML=`<div class="card"><h2>Mock exams</h2><p class="note" style="margin-top:0">The real AKT is 160 questions in 160 minutes. The plan: at least 3 full mocks in weeks 67–69. Mocks of 40+ questions in AKT practice appear here automatically; add others below.</p>
+ <div class="row"><input id="k-q" type="number" placeholder="Questions" style="width:130px"><input id="k-c" type="number" placeholder="Correct" style="width:120px"><input id="k-m" type="number" placeholder="Minutes" style="width:120px"><input id="k-w" type="text" placeholder="Weakest areas" style="flex:1;min-width:180px"><button class="btn" id="k-add">Add mock</button></div></div>
+ <div class="card"><div class="scroll"><table><thead><tr><th>Date</th><th class="n">Score</th><th class="n">Questions</th><th class="n hm">Min per question</th><th>Weakest areas / source</th></tr></thead><tbody>
+ ${mk.length?mk.map(m=>`<tr><td>${esc(m.d)}</td><td class="n" style="color:${m.c/m.q>=S.target?"var(--teal)":"var(--red)"}"><b>${pct(m.c/m.q)}</b></td><td class="n">${m.c}/${m.q}</td><td class="n hm">${m.mins?(m.mins/m.q).toFixed(2):"–"}</td><td>${esc(m.weak||m.src||"")}</td></tr>`).join(""):`<tr><td colspan="5" class="note">No mocks yet.</td></tr>`}</tbody></table></div></div>`;
+ $("k-add").onclick=()=>{const q=+$("k-q").value,c=+$("k-c").value;if(!q||c>q)return;S.mocks.push({d:new Date().toLocaleDateString("en-GB"),q,c,mins:+$("k-m").value||null,weak:$("k-w").value.trim()});save();mocks()}}
+
+/* ---------- settings ---------- */
+function settings(){$("app").innerHTML=`<div class="card"><h2>Settings</h2>
+ <div class="field"><label for="s-start">Week 1 start date (a Monday)</label><input id="s-start" type="date" value="${esc(S.start)}"></div>
+ <div class="field"><label for="s-exam">AKT exam date</label><input id="s-exam" type="date" value="${esc(S.exam)}"></div>
+ <div class="field"><label for="s-target">Accuracy target (%)</label><input id="s-target" type="number" min="50" max="100" value="${Math.round(S.target*100)}"></div>
+ <p class="note">Your booked exam date is a placeholder (1 April 2028) until you enter the real one.</p></div>
+ <div class="card"><h2>Back up and move devices</h2><p class="note" style="margin-top:0">Progress is saved in this browser. Download a backup now and then, and load it on another device to carry on there.</p>
+ <div class="row"><button class="btn" id="exp">Download backup</button><label class="btn ghost" for="imp">Load a backup</label><input id="imp" type="file" accept=".json" class="hide"></div><p class="note" id="imsg"></p></div>`;
+ $("s-start").onchange=e=>{S.start=e.target.value;save()};$("s-exam").onchange=e=>{S.exam=e.target.value;save()};$("s-target").onchange=e=>{S.target=Math.min(1,Math.max(.5,+e.target.value/100));save()};
+ $("exp").onclick=()=>{let p={};try{p=JSON.parse(localStorage.getItem("cgn-v1"))||{}}catch(e){}const blob=new Blob([JSON.stringify({programme:S,practice:p,saved:new Date().toISOString()},null,1)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="core-gp-notes-backup-"+new Date().toISOString().slice(0,10)+".json";a.click()};
+ $("imp").onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{const j=JSON.parse(t);if(j.programme){S=j.programme;save()}if(j.practice&&j.practice.log)localStorage.setItem("cgn-v1",JSON.stringify(j.practice));$("imsg").textContent="Backup loaded.";setTimeout(()=>location.reload(),600)}).catch(()=>$("imsg").textContent="That file isn't a Core GP Notes backup.")}}
+route();
+}
+</script>
+</body>
+</html>

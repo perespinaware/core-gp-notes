@@ -233,7 +233,7 @@ function mockSetup(){const pool=BANK.filter(q=>!q.gen).length;
  <p class="note">You have ${pool} questions so far${pool<160?", so the full 160-question mock unlocks as you add topics":""}.</p><button class="btn ghost" id="hm">Back</button></div>`;
  document.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>start("Mock exam",shuffle(BANK.filter(q=>!q.gen)).slice(0,+b.dataset.n),{mock:true}));$("hm").onclick=home}
 function mockTick(){const left=Math.max(0,Math.round((S.end-Date.now())/1000)),el=$("mclk");if(el){el.textContent=`${Math.floor(left/60)}:${String(left%60).padStart(2,"0")}`;el.style.color=left<300?"var(--red)":""}if(left<=0)finishMock()}
-function finishMock(){stopTimers();S.qs.forEach((q,i)=>{if(S.ans[i]!==undefined)record(q,S.ans[i]===q.a,0)});S.mock=false;const unanswered=S.qs.length-S.ans.filter(a=>a!==undefined).length;
+function finishMock(){stopTimers();S.qs.forEach((q,i)=>{if(S.ans[i]!==undefined)record(q,S.ans[i]===q.a,0)});try{const d=load();d.mocks=d.mocks||[];d.mocks.push({t:Date.now(),q:S.qs.length,c:S.qs.filter((q,i)=>S.ans[i]===q.a).length,mins:Math.round((Date.now()-S.t0)/60000)});save(d)}catch(e){}S.mock=false;const unanswered=S.qs.length-S.ans.filter(a=>a!==undefined).length;
  S.ans=S.qs.map((q,i)=>S.ans[i]===undefined?-1:S.ans[i]);results();if(unanswered)$("app").insertAdjacentHTML("afterbegin",`<p class="note">${unanswered} unanswered question${unanswered>1?"s":""} counted as wrong.</p>`)}
 
 buildBank().then(home).catch(()=>{$("app").innerHTML=`<p>Couldn't load the questions. Please refresh.</p>`});
