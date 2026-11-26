@@ -63,7 +63,7 @@
 <main><div class="in">
 
  <section class="sec" aria-labelledby="s1">
-  <div class="sec-h"><span class="num">1</span><h2 id="s1">Plan</h2><p>What to study this week, and how ready you are</p></div>
+  <div class="sec-h"><span class="num">1</span><h2 id="s1">Plan</h2><p>What to study this week, how ready you are, and your portfolio</p></div>
   <div class="tiles" id="plan"></div>
  </section>
 
@@ -82,6 +82,7 @@
 </div></main>
 <script src="lessons.js"></script>
 <script src="programme/data.js"></script>
+<script src="wpba/data.js"></script>
 <script>
 {
 const $=id=>document.getElementById(id),DAY=864e5;
@@ -114,7 +115,11 @@ $("stats").innerHTML=`<div class="stat"><b>${due}</b><span>questions due for rev
 const pStart=new Date((prog.start||PROG.start)+"T00:00:00"),cw=Math.max(0,Math.min(69,Math.floor((nowT-pStart)/7/DAY)+1));
 const wkTitle=cw<1?"Starts "+fmt(pStart):cw<=26?WEEKS[cw-1].f:(LATER.find(x=>x[0]===cw)||[0,""])[1];
 $("plan").innerHTML=`<a class="tile" style="--c:#b3263a" href="programme/"><h3>AKT Programme</h3><p>Your 69-week plan, high-yield first, with progress that fills itself in</p><span class="live">${cw?`Week ${cw}: ${esc(wkTitle)}`:esc(wkTitle)} →</span></a>
- <a class="tile" style="--c:#16212a" href="blueprint/"><h3>Blueprint</h3><p>The high-yield map for the AKT and SCA, with your coverage and readiness</p><span class="live">Road to 70% →</span></a>`;
+ <a class="tile" style="--c:#16212a" href="blueprint/"><h3>Blueprint</h3><p>The high-yield map for the AKT and SCA, with your coverage and readiness</p><span class="live">Road to 70% →</span></a>
+ ${(()=>{const w=wpbaStatus(),col=w.urgent?"#b3263a":w.behind.length?"#c27a00":"#3d6b45";
+  const line=w.urgent?`ARCP in ${w.arcp} days · ${w.missing.length} not yet met`:!w.updated?"Add your ESR and ARCP dates":w.behind.length?`Behind on ${w.behind.map(r=>WPBA_SHORT[r.k]).join(", ")}`:w.stale?"Due a refresh from FourteenFish":`On pace for ST${w.y.st}`;
+  const next=[w.esr!==null&&w.esr>=0?`ESR in ${w.esr<=60?w.esr+" days":Math.round(w.esr/7)+" weeks"}`:"",w.arcp!==null&&w.arcp>=0?`ARCP in ${w.arcp<=60?w.arcp+" days":Math.round(w.arcp/7)+" weeks"}`:""].filter(Boolean).join(" · ");
+  return `<a class="tile" style="--c:${col}" href="wpba/"><h3>WPBA at a glance</h3><p>${next?esc(next)+" · ":""}${w.rows.filter(r=>r.met).length} of ${w.rows.length} ST${w.y.st} minimums met. FourteenFish stays your official record</p><span class="live">${esc(line)} →</span></a>`})()}`;
 
 /* ---------- 2 study areas ---------- */
 $("shelf").innerHTML=CATS.filter(c=>c.id!=="sca").map(c=>{const n=c.lessons.length,l=c.lessons.filter(x=>x[2]).length;
