@@ -12,3 +12,5 @@ const CATS=[
   ["Uncontrolled hypertension: guided version","Choose your lines · video · long-term conditions","uncontrolled-hypertension.html"]]},
  {id:"admin",name:"Admin and Management",c:"#b86e00",src:"Core Admin and Management for the GP AKT",lessons:[
   ["The GP contract and QOF","NHS England contract 2026/27 · QOF","gp-contract-qof.html"]]}];
+/* PDF guides hosted in /guides/ (file name, pages). Add one here when a guide is uploaded. */
+const PDFS={cardiology:["Core_Cardiology_for_the_GP_AKT.pdf",134],statistics:["Core_Statistics_for_the_GP_AKT.pdf",19],admin:["Core_Admin_and_Management_for_the_GP_AKT.pdf",11]};

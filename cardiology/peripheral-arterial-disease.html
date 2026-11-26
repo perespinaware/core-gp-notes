@@ -152,6 +152,12 @@ input[type=range]{width:100%;accent-color:var(--c);height:32px}
 .sbtn button.wrong{background:var(--stopbg);border-color:var(--red);color:var(--red)}
 .sfb{font-size:15px;margin-top:6px}.sfb.ok{color:var(--teal)}.sfb.no{color:var(--red)}
 @media(max-width:820px){.scn{grid-template-columns:minmax(0,1fr)}}
+.exitbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;padding-top:16px;border-top:1px solid var(--line,#dfe3e6)}
+.exitbar a{font:inherit;font-weight:700;text-decoration:none;border-radius:12px;padding:11px 18px}
+.exitbar .exit{background:var(--c,#16212a);color:#fff}
+.exitbar .exit2{border:1px solid var(--line,#dfe3e6);color:inherit}
+.exitbar a:hover{text-decoration:underline}
+.exitbar.now{box-shadow:none}
 </style>
 </head>
 <body>
@@ -288,7 +294,7 @@ let si=0,bi=-1,playing=false,timer=null;
 $("rail").innerHTML=CH.map((c,k)=>`<button data-ch="${k}" style="--c:${C[k]}">${c}</button>`).join("");
 $("rail").querySelectorAll("button").forEach(b=>b.onclick=()=>{const k=S.findIndex(s=>s.ch===+b.dataset.ch);go(k,true)});
 function render(){const s=S[si];document.documentElement.style.setProperty("--c",C[s.ch]);$("player").style.setProperty("--c",C[s.ch]);
- stage.innerHTML=`<span class="tag">${s.tag}</span><h2>${s.h}</h2>`+s.html();if(s.init)s.init();
+ stage.innerHTML=`<span class="tag">${s.tag}</span><h2>${s.h}</h2>`+s.html();if(s.init)s.init();if(si===S.length-1)stage.insertAdjacentHTML("beforeend",`<div class="exitbar r" data-i="${Math.max(0,...s.b.map(x=>x[0]))}"><a class="exit" href="./">Exit lesson ✓</a><a class="exit2" href="../guides/Core_Cardiology_for_the_GP_AKT.pdf" target="_blank" rel="noopener">Open the PDF guide</a><a class="exit2" href="../akt/">Practise questions</a></div>`);
  $("rail").querySelectorAll("button").forEach(b=>b.classList.toggle("on",+b.dataset.ch===s.ch));
  $("prog").style.width=((si+1)/S.length*100)+"%";$("next").classList.remove("pulse")}
 function reveal(i){stage.querySelectorAll(".r").forEach(e=>{const d=+e.dataset.i;e.classList.toggle("in",d<=i);e.classList.toggle("now",d===i&&d>0)})}

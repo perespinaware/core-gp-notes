@@ -38,3 +38,9 @@ a.row:focus-visible{outline:3px solid var(--c);outline-offset:-3px}
 .note{color:var(--mut);font-size:14px;max-width:70ch;margin-top:22px}
 @media(prefers-reduced-motion:reduce){.spine{transition:none}}
 @media(max-width:480px){.row{grid-template-columns:36px minmax(0,1fr)}.row .st{grid-column:2;justify-self:start}.spine{min-height:150px}}
+.pdfbtn{display:inline-flex;gap:10px;align-items:baseline;margin-top:16px;background:#fff;color:var(--c,#16212a);font-weight:700;text-decoration:none;border-radius:12px;padding:10px 16px}
+.pdfbtn small{font-weight:400;opacity:.75}
+.pdfbtn:hover{text-decoration:underline}
+.pdfs{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px;font-size:15px}
+.pdfs a{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:6px 14px;text-decoration:none;font-weight:700}
+.pdfs a:hover{border-color:var(--ink)}

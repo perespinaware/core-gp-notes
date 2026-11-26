@@ -76,6 +76,7 @@
  <section class="sec" aria-labelledby="s2">
   <div class="sec-h"><span class="num">3</span><h2 id="s2">Study areas</h2><p>Narrated, interactive lessons from your topic guides</p></div>
   <nav class="shelf" id="shelf" aria-label="Study areas"></nav>
+  <div class="pdfs" id="pdfs"></div>
  </section>
 
  <p class="note">For exam revision only, based on NICE and other UK guidance at the time of writing. Not clinical advice. Your progress stays in this browser.</p>
@@ -125,6 +126,7 @@ $("plan").innerHTML=`<a class="tile" style="--c:#b3263a" href="programme/"><h3>A
 $("shelf").innerHTML=CATS.filter(c=>c.id!=="sca").map(c=>{const n=c.lessons.length,l=c.lessons.filter(x=>x[2]).length;
  return `<a class="spine" style="--c:${c.c}" href="${c.id}/"><div><h2>${esc(c.name)}</h2><p>${esc(c.src)}</p></div><span>${n} topic${n>1?"s":""} · ${l} live</span></a>`}).join("");
 
+$("pdfs").innerHTML=`<span class="note" style="margin:0">PDF guides:</span>`+CATS.filter(c=>PDFS[c.id]).map(c=>`<a href="guides/${PDFS[c.id][0]}" target="_blank" rel="noopener">${esc(c.name)} · ${PDFS[c.id][1]} pages</a>`).join("");
 /* ---------- 3 questions and practice ---------- */
 const sca=CATS.find(c=>c.id==="sca"),nCase=typeof CASES==="undefined"?null:Object.keys(CASES).length;
 $("practice").innerHTML=`<a class="tile" style="--c:#0b5f86" href="akt/"><h3>AKT practice</h3><p>Free, fast questions: daily review, quick-fire, calculation drill and timed mocks</p><span class="live">${due?`${due} due for review →`:"Start practising →"}</span></a>
