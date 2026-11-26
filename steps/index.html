@@ -47,6 +47,13 @@ details.ex summary{cursor:pointer;color:var(--mut);font-size:14px}
 .fb{border-radius:12px;padding:12px 14px;margin-top:12px;font-weight:700}
 .fb.ok{background:color-mix(in srgb,var(--ok) 12%,var(--card));color:var(--ok)}.fb.no{background:color-mix(in srgb,var(--bad) 10%,var(--card));color:var(--bad)}
 .src{font-size:13px;color:var(--mut)}
+.chip{font:inherit;font-size:14px;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:6px 14px;cursor:pointer}
+.chip small{color:var(--mut);font-weight:400}.chip.on{background:var(--c);border-color:var(--c);color:#fff}.chip.on small{color:#fff}
+.hit{border-top:1px solid var(--line)}.hit:first-of-type{border-top:0}
+.hitb{all:unset;box-sizing:border-box;width:100%;display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 0;cursor:pointer}
+.hitb:focus-visible{outline:3px solid var(--c);outline-offset:2px}.hitb b{display:block}.hitb small{color:var(--mut);font-size:13px}
+.hit.open .hitb b{color:var(--c)}
+mark{background:color-mix(in srgb,#f2c94c 45%,transparent);color:inherit;border-radius:3px;padding:0 1px}
 .box5 li.nonum{grid-template-columns:minmax(0,1fr) auto}.box5 li.nonum:before{display:none}
 @media(prefers-reduced-motion:reduce){.stp.bad,.placed li{animation:none}}
 </style>
@@ -55,13 +62,13 @@ details.ex summary{cursor:pointer;color:var(--mut);font-size:14px}
 <header class="band cat" style="--c:#1b6b5a"><div class="in">
 <a class="back" href="../">← Home</a>
 <h1>NICE in 5 Steps</h1>
-<p class="lead">The management of every topic, in five short steps. A quick test each day: put the steps in order, then recall the missing one.</p>
+<p class="lead">A searchable library of management steps, five per topic, with a quick test every day: put the steps in order, then recall the missing one.</p>
 </div></header>
 <main><div class="in" id="app"></div></main>
 <script src="data.js"></script>
 <script>
 {
-const $=id=>document.getElementById(id),DAY=864e5,K="cgn-steps",GAPS=[1,3,7,14,30,60],NEW_PER_DAY=3;
+const $=id=>document.getElementById(id),DAY=864e5,K="cgn-steps";
 const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 const CATN={cardiology:"Cardiology",dermatology:"Dermatology",statistics:"Statistics",admin:"Admin"};
 const load=()=>{try{return JSON.parse(localStorage.getItem(K)||"null")||{t:{},days:{}}}catch(e){return {t:{},days:{}}}};
@@ -70,26 +77,43 @@ const dkey=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+Str
 const startOfDay=t=>{const d=new Date(t);d.setHours(0,0,0,0);return d.getTime()};
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const isDue=(r,now)=>!r||r.due<=now;
-function dueList(){const D=load(),now=Date.now(),end=startOfDay(now)+DAY;
- const seen=STEPS.filter(s=>D.t[s.id]&&D.t[s.id].due<end).sort((a,b)=>D.t[a.id].due-D.t[b.id].due);
- const today=dkey(new Date()),newToday=Object.values(D.t).filter(r=>r.first===today).length;
- return [...seen,...STEPS.filter(s=>!D.t[s.id]).slice(0,Math.max(0,NEW_PER_DAY-newToday))]}
+function dueList(){/* one topic a day: last missed first, then untried, then the longest since tested */
+ const D=load();if((D.days[dkey(new Date())]||0)>0)return [];
+ const rank=x=>{const r=D.t[x.id];return !r?[1,0]:r.box===0?[0,r.last||0]:[2,r.last||0]};
+ return [STEPS.slice().sort((a,b)=>{const p=rank(a),q=rank(b);return p[0]-q[0]||p[1]-q[1]})[0]].filter(Boolean)}
 function streak(D){let n=0,d=new Date();if(!D.days[dkey(d)])d=new Date(Date.now()-DAY);while(D.days[dkey(d)]){n++;d=new Date(d.getTime()-DAY)}return n}
 
-/* ---------- home ---------- */
-function home(){const D=load(),list=dueList(),today=D.days[dkey(new Date())]||0,end=startOfDay(Date.now())+DAY;
- const learnt=STEPS.filter(s=>(D.t[s.id]||{}).box>=3).length;
- const cats=[...new Set(STEPS.map(s=>s.cat))];
- $("app").innerHTML=`<div class="kpis"><div class="kpi"><b>${list.length}</b><span>topics due today</span></div><div class="kpi"><b>${today}</b><span>tested today</span></div><div class="kpi"><b>${streak(D)}</b><span>day streak</span></div><div class="kpi"><b>${learnt} / ${STEPS.length}</b><span>topics secure (3+ passes in a row)</span></div></div>
- <div class="card"><h2>Today's test</h2><p style="margin-top:0">${list.length?`${list.length} topic${list.length>1?"s":""}: ${esc(list.map(s=>s.topic).join(", "))}. About ${list.length} minute${list.length>1?"s":""}.`:"All done for today. Come back tomorrow, or practise any topic below."}</p>
-  <div class="row">${list.length?`<button class="btn" id="go">Start today's test</button>`:`<button class="btn" id="any">Practise 3 random topics</button>`}</div>
-  <p class="src" style="margin-bottom:0">Three new topics join each day. Pass both parts and a topic comes back after 1, 3, 7, 14, 30, then 60 days. Miss either and it comes back tomorrow. New topics join automatically as lessons go live.</p></div>
- ${cats.map(c=>`<div class="card"><h2>${CATN[c]||c}</h2>${STEPS.filter(s=>s.cat===c).map(s=>{const r=D.t[s.id],box=r?r.box:0,due=!r?"New":r.due<end?"Due":`In ${Math.ceil((r.due-startOfDay(Date.now()))/DAY)} d`;
-  return `<div class="topic"><div><b>${esc(s.topic)}</b><small>${esc(s.src)}${r?` · ${r.ok}/${r.n} passed`:""}</small></div><div class="row" style="flex-wrap:nowrap"><span class="lvl" aria-label="Level ${box} of 6">${[1,2,3,4,5,6].map(k=>`<i class="${k<=box?"on":""}"></i>`).join("")}</span><span class="due ${due==="Due"||due==="New"?"":"ok"}">${due}</span></div>
-  <details class="ex"><summary>Show the 5 steps</summary><ol class="box5">${s.steps.map(t=>`<li><span>${esc(t)}</span></li>`).join("")}</ol>
-  <div class="row" style="margin:8px 0 4px"><button class="btn ghost" data-one="${s.id}">Test me on this</button><a class="btn ghost" href="${s.lesson}">Open the lesson</a>${s.url?`<a class="btn ghost" href="${s.url}" target="_blank" rel="noopener">${esc(s.src.split(" · ")[0])} ↗</a>`:""}</div></details></div>`}).join("")}</div>`).join("")}
+/* ---------- home: today's test + searchable library ---------- */
+let LQ="",LC="",OPEN=null;
+const norm=t=>String(t).toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[₂]/g,"2");
+function home(){const D=load(),list=dueList(),today=D.days[dkey(new Date())]||0;
+ const learnt=STEPS.filter(s=>(D.t[s.id]||{}).box>=3).length,cats=[...new Set(STEPS.map(s=>s.cat))];
+ $("app").innerHTML=`<div class="kpis"><div class="kpi"><b>${list.length?"1":"✓"}</b><span>${list.length?"topic due today":"today's topic done"}</span></div><div class="kpi"><b>${today}</b><span>tested today</span></div><div class="kpi"><b>${streak(D)}</b><span>day streak</span></div><div class="kpi"><b>${STEPS.filter(x=>D.t[x.id]).length} / ${STEPS.length}</b><span>topics tested so far</span></div></div>
+ <div class="card"><h2>Today's test</h2><p style="margin-top:0">${list.length?`Today: <b>${esc(list[0].topic)}</b>. About a minute.`:"Done for today. Come back tomorrow, or test yourself on any topic in the library."}</p>
+  <div class="row">${list.length?`<button class="btn" id="go">Start today's test</button>`:`<button class="btn ghost" id="any">Practise 3 random topics</button>`}</div>
+  <p class="src" style="margin-bottom:0">One topic a day. A topic you miss comes back first; then ones you haven't tried; then the one you tested longest ago.</p></div>
+ <div class="card"><h2>Library</h2>
+  <label class="src" for="lq">Search by topic, drug, test or keyword</label>
+  <input id="lq" type="search" placeholder="e.g. apixaban, Wells, PEST, eczema" value="${esc(LQ)}" autocomplete="off" style="width:100%;font:inherit;font-size:17px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);margin:6px 0 10px">
+  <div class="row" role="group" aria-label="Area">${[["","All"],...cats.map(c=>[c,CATN[c]||c])].map(([c,l])=>`<button class="chip ${LC===c?"on":""}" data-c="${c}">${esc(l)} <small>${c?STEPS.filter(s=>s.cat===c).length:STEPS.length}</small></button>`).join("")}</div>
+  <div id="res" aria-live="polite"></div></div>
  <p class="note">Steps are summarised in our own words from the lessons, for revision only. Always check the current guidance.</p>`;
  if($("go"))$("go").onclick=()=>run(list);if($("any"))$("any").onclick=()=>run(shuffle(STEPS).slice(0,3));
+ $("lq").oninput=e=>{LQ=e.target.value;OPEN=null;results()};
+ document.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{LC=b.dataset.c;OPEN=null;document.querySelectorAll("[data-c]").forEach(x=>x.classList.toggle("on",x.dataset.c===LC));results()});
+ results()}
+function results(){const D=load(),q=norm(LQ).trim(),words=q.split(/\s+/).filter(Boolean),end=startOfDay(Date.now())+DAY;
+ const hay=s=>norm([s.topic,s.src,s.kw||"",CATN[s.cat]||"",...s.steps].join(" "));
+ let L=STEPS.filter(s=>(!LC||s.cat===LC)&&words.every(w=>hay(s).includes(w)));
+ if(!q&&!LC){$("res").innerHTML=`<p class="src" style="margin:12px 0 0">Type to search, or choose an area to browse.</p>`;return}
+ if(!L.length){$("res").innerHTML=`<p class="src" style="margin:12px 0 0">No topics match “${esc(LQ)}”.</p>`;return}
+ const mark=t=>{let h=esc(t);words.forEach(w=>{if(w.length>1)h=h.replace(new RegExp("("+w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","ig"),"<mark>$1</mark>")});return h};
+ if(L.length===1)OPEN=L[0].id;
+ $("res").innerHTML=`<p class="src" style="margin:12px 0 4px">${L.length} topic${L.length>1?"s":""}</p>`+L.map(s=>{const r=D.t[s.id],open=OPEN===s.id,due=!r?"New":r.due<end?"Due":"Done today";
+  return `<div class="hit ${open?"open":""}"><button class="hitb" data-o="${s.id}" aria-expanded="${open}"><span><b>${mark(s.topic)}</b><small>${esc(CATN[s.cat]||s.cat)} · ${esc(s.src)}</small></span><span class="row" style="flex-wrap:nowrap"><span class="lvl" aria-label="${r?r.box:0} passes in a row">${[1,2,3,4,5,6].map(k=>`<i class="${r&&k<=r.box?"on":""}"></i>`).join("")}</span><span class="due ${due==="Done today"?"ok":""}">${due}</span></span></button>
+  ${open?`<ol class="box5" style="margin-top:6px">${s.steps.map(t=>`<li><span>${mark(t)}</span></li>`).join("")}</ol>
+  <div class="row" style="margin:8px 0 6px"><button class="btn ghost" data-one="${s.id}">Test me on this</button><a class="btn ghost" href="${s.lesson}">Open the lesson</a>${s.url?`<a class="btn ghost" href="${s.url}" target="_blank" rel="noopener">${esc(s.src.split(" · ")[0])} ↗</a>`:""}</div>`:""}</div>`}).join("");
+ document.querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>{OPEN=OPEN===b.dataset.o?null:b.dataset.o;results()});
  document.querySelectorAll("[data-one]").forEach(b=>b.onclick=()=>run([STEPS.find(s=>s.id===b.dataset.one)]))}
 
 /* ---------- test ---------- */
@@ -112,18 +136,18 @@ function recall(okOrder){const s=Q[qi],h=Math.floor(Math.random()*5);
   $("app").innerHTML=`${bar()}<div class="card"><div class="phase">Part 2 of 2 · recall the missing step</div><h2>${esc(s.topic)}</h2>
   <ol class="box5">${s.steps.map((t,k)=>`<li class="${k===h&&!done?"hid":""}"><span>${k===h&&!done?"Which step is missing?":esc(t)}</span></li>`).join("")}</ol>
   <div class="pile">${opts.map((o,k)=>`<button class="opt ${done?(o===s.steps[h]?"right":k===pick?"wrong":""):""}" data-p="${k}" ${done?"disabled":""}>${esc(o)}</button>`).join("")}</div>
-  ${done?`<div class="fb ${ok&&okOrder?"ok":"no"}">${ok&&okOrder?"Passed: this topic comes back later.":ok?"Right step, but the order needs another look: back tomorrow.":"Not quite: back tomorrow."}</div>
+  ${done?`<div class="fb ${ok&&okOrder?"ok":"no"}">${ok&&okOrder?"Passed: see you tomorrow.":ok?"Right step, but the order needs another look.":"Not quite: read the steps again."}</div>
   <div class="row" style="margin-top:12px"><button class="btn" id="nx">${qi<Q.length-1?"Next topic →":"See today's result"}</button><a class="btn ghost" href="${s.lesson}">Open the lesson</a></div>`:""}</div>`;
   bindQuit();
   if(!done)document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{const p=+b.dataset.p;record(s,okOrder&&opts[p]===s.steps[h]);draw(p)});
   else{$("nx").focus();$("nx").onclick=()=>{qi++;qi<Q.length?order():finish()}}};
  draw()}
-function record(s,pass){const D=load(),r=D.t[s.id]||{box:0,due:0,n:0,ok:0,first:dkey(new Date())},now=Date.now();r.n++;
- if(pass){r.ok++;r.box=Math.min(GAPS.length,r.box+1);r.due=startOfDay(now)+GAPS[r.box-1]*DAY}else{r.box=0;r.due=startOfDay(now)+DAY}
+function record(s,pass){const D=load(),r=D.t[s.id]||{box:0,due:0,n:0,ok:0,first:dkey(new Date())},now=Date.now();r.n++;r.last=now;
+ if(pass){r.ok++;r.box=Math.min(6,r.box+1)}else{r.box=0}r.due=startOfDay(now)+DAY;/* every topic comes back daily */
  D.t[s.id]=r;const k=dkey(new Date());D.days[k]=(D.days[k]||0)+1;save(D);res.push([s,pass])}
 function finish(){const p=res.filter(x=>x[1]).length,D=load();
  $("app").innerHTML=`<div class="card"><h2>${p} of ${res.length} passed</h2><p style="margin-top:0">${streak(D)}-day streak.</p>
- <ol class="box5" style="counter-reset:none">${res.map(([s,ok])=>`<li style="grid-template-columns:minmax(0,1fr) auto;counter-increment:none"><span>${esc(s.topic)}</span><span class="due ${ok?"ok":""}">${ok?"Passed":"Tomorrow"}</span></li>`).join("").replace(/<li /g,'<li class="nonum" ')}</ol>
+ <ol class="box5" style="counter-reset:none">${res.map(([s,ok])=>`<li style="grid-template-columns:minmax(0,1fr) auto;counter-increment:none"><span>${esc(s.topic)}</span><span class="due ${ok?"ok":""}">${ok?"Passed":"Missed"}</span></li>`).join("").replace(/<li /g,'<li class="nonum" ')}</ol>
  <div class="row" style="margin-top:12px"><button class="btn" id="back">Done</button></div></div>`;
  $("back").onclick=home}
 home();

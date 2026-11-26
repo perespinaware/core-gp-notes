@@ -131,9 +131,9 @@ $("pdfs").innerHTML=`<span class="note" style="margin:0">PDF guides:</span>`+CAT
 /* ---------- 3 questions and practice ---------- */
 const sca=CATS.find(c=>c.id==="sca"),nCase=typeof CASES==="undefined"?null:Object.keys(CASES).length;
 $("practice").innerHTML=`<a class="tile" style="--c:#0b5f86" href="akt/"><h3>AKT practice</h3><p>Free, fast questions: daily review, quick-fire, calculation drill and timed mocks</p><span class="live">${due?`${due} due for review →`:"Start practising →"}</span></a>
- ${(()=>{let D={t:{}};try{D=JSON.parse(localStorage.getItem("cgn-steps")||"null")||D}catch(e){}const end=new Date();end.setHours(24,0,0,0);
-  const td=new Date(),tk=td.getFullYear()+"-"+String(td.getMonth()+1).padStart(2,"0")+"-"+String(td.getDate()).padStart(2,"0"),seen=STEPS.filter(x=>D.t[x.id]&&D.t[x.id].due<end.getTime()).length,fresh=STEPS.filter(x=>!D.t[x.id]).length,newToday=Object.values(D.t).filter(r=>r.first===tk).length,n=seen+Math.min(fresh,Math.max(0,3-newToday));
-  return `<a class="tile" style="--c:#1b6b5a" href="steps/"><h3>NICE in 5 Steps</h3><p>The management of every topic in five short steps, tested daily: order them, then recall the missing one</p><span class="live">${n?n+" topic"+(n>1?"s":"")+" due today →":"All done today ✓"}</span></a>`})()}
+ ${(()=>{let D={t:{},days:{}};try{D=JSON.parse(localStorage.getItem("cgn-steps")||"null")||D}catch(e){}
+  const td=new Date(),tk=td.getFullYear()+"-"+String(td.getMonth()+1).padStart(2,"0")+"-"+String(td.getDate()).padStart(2,"0"),n=((D.days||{})[tk]||0)>0?0:1;
+  return `<a class="tile" style="--c:#1b6b5a" href="steps/"><h3>NICE in 5 Steps</h3><p>A searchable library of management steps, five per topic, tested every day</p><span class="live">${n?"Today's topic is waiting →":"Today's topic done ✓"}</span></a>`})()}
  <a class="tile" style="--c:#0b8577" href="akt/case.html"><h3>AKT cases</h3><p>Case-led reasoning: gather the history, then decide step by step</p><span class="live">Open a case →</span></a>
  <a class="tile" style="--c:#7b46c7" href="sca/live.html"><h3>SCA Live</h3><p>A spoken 12-minute consultation: you lead, Claude plays the patient and the examiner</p><span class="live">Start a consultation →</span></a>
  <a class="tile" style="--c:#5b3a9a" href="sca/"><h3>SCA cases</h3><p>${esc(sca?sca.src:"Guided SCA scenarios mapped to the clinical experience groups")}</p><span class="live">${sca?sca.lessons.filter(x=>x[2]).length+" live":""} →</span></a>`;
