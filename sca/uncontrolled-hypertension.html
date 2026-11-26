@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SCA simulator: Uncontrolled hypertension · Core GP Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+/* SCA consultation simulator: one engine, cases as data */
+:root{color-scheme:light dark;--bg:light-dark(#efedf4,#121019);--stage:light-dark(#fff,#1c1826);--ink:light-dark(#1d1830,#ece9f4);--mut:light-dark(#5f5973,#a59fb8);--line:light-dark(#e0dcea,#332c45);--soft:light-dark(#f5f3f9,#241f31);--pur:light-dark(#7b46c7,#b08cf0);--red:light-dark(#b3263a,#ff7385);--teal:light-dark(#0b8577,#3cc7b3);--amber:light-dark(#b86e00,#f1aa45);--blue:light-dark(#2f66d0,#79a2f2);--okbg:light-dark(#e3f4f0,#123630);--stopbg:light-dark(#fbe6e9,#3d1820);--midbg:light-dark(#fdf1de,#3a2a10)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:16px 16px 60px}
+a{color:var(--pur)}.back{font-size:14px;text-decoration:none}
+h1{font:800 clamp(24px,3.2vw,34px)/1.1 "Bricolage Grotesque",sans-serif;margin:6px 0 2px}
+.sub{color:var(--mut);margin:0 0 12px;font-size:15px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tg{font:600 11px "IBM Plex Mono",monospace;letter-spacing:1px;padding:4px 9px;border-radius:5px;background:var(--soft);color:var(--mut);border:1px solid var(--line)}
+.tg.p{background:var(--pur);color:#fff;border-color:var(--pur)}
+.btn{font:inherit;font-weight:700;border:0;background:var(--pur);color:#fff;border-radius:12px;padding:11px 18px;min-height:46px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.ghost{background:var(--soft);color:var(--ink);border:1px solid var(--line)}
+.btn.red{background:var(--red)}
+.btn:disabled{opacity:.4;cursor:default}
+.panel{background:var(--stage);border:1px solid var(--line);border-radius:16px;padding:16px}
+.panel h2{font:800 21px "Bricolage Grotesque",sans-serif;margin:0 0 8px}
+/* reading */
+.read{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}
+@media(max-width:860px){.read{grid-template-columns:minmax(0,1fr)}}
+.notes dl{display:grid;grid-template-columns:110px minmax(0,1fr);gap:6px 12px;margin:0}
+.notes dt{color:var(--mut);font-size:14px;font-weight:700}.notes dd{margin:0}
+.hyp label{display:flex;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;margin-bottom:6px;cursor:pointer;font-size:15px}
+.hyp input{width:19px;height:19px;flex:none;margin-top:3px}
+.rclock{font:800 40px "Bricolage Grotesque",sans-serif;color:var(--pur)}
+/* consult */
+.con{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:14px;align-items:start}
+@media(max-width:900px){.con{grid-template-columns:minmax(0,1fr)}}
+.call{background:#141221;border-radius:16px;overflow:hidden;position:relative;color:#fff}
+.call svg.scene{display:block;width:100%;height:auto}
+.hud{position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:flex-start;padding:10px 12px;gap:8px;pointer-events:none}
+.pill{background:rgba(0,0,0,.55);border-radius:999px;padding:5px 12px;font-size:14px;backdrop-filter:blur(3px)}
+.pill b{font:800 18px "Bricolage Grotesque",sans-serif}
+.pill.low b{color:#ff9aa8}
+.cap{position:absolute;left:10px;right:10px;bottom:10px;background:rgba(0,0,0,.72);border-radius:12px;padding:9px 13px;font-size:16px;min-height:44px;display:flex;gap:8px;align-items:flex-start}
+.cap .who{font:600 11px "IBM Plex Mono",monospace;letter-spacing:1px;color:#c8b6ef;flex:none;margin-top:4px}
+.cap .who.pt{color:#8fe3d4}
+.mood{display:flex;align-items:center;gap:8px;margin:10px 0 4px;font-size:14px;color:var(--mut)}
+.mbar{flex:1;height:10px;background:var(--soft);border-radius:5px;overflow:hidden;border:1px solid var(--line)}.mbar div{height:100%;transition:width .5s,background .5s}
+.ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px;font-size:14px;color:var(--mut)}
+.ctl select{font:inherit;font-size:14px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--stage);color:var(--ink);max-width:180px}
+.trans{margin-top:12px;max-height:300px;overflow:auto;display:flex;flex-direction:column;gap:6px;padding-right:4px}
+.ln{padding:7px 11px;border-radius:12px;font-size:15px;max-width:92%;animation:in .3s ease}
+.ln.dr{background:color-mix(in srgb,var(--pur) 12%,var(--stage));align-self:flex-end;border:1px solid color-mix(in srgb,var(--pur) 30%,var(--line))}
+.ln.pt{background:var(--soft);border:1px solid var(--line)}
+.ln.sys{align-self:center;font-size:13px;color:var(--mut);background:none}
+@keyframes in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.stages{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.stages span{font-size:13px;padding:5px 10px;border-radius:999px;background:var(--soft);color:var(--mut);border:1px solid var(--line)}
+.stages span.on{background:var(--pur);color:#fff;border-color:var(--pur);font-weight:700}
+.stages span.done{color:var(--teal);border-color:var(--teal);background:var(--okbg)}
+.sh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.sh small{color:var(--mut)}
+.chs{display:flex;flex-direction:column;gap:7px;margin-top:8px}
+.ch{font:inherit;font-size:15.5px;text-align:left;border:1px solid var(--line);background:var(--stage);color:var(--ink);border-radius:12px;padding:10px 13px;cursor:pointer;display:flex;justify-content:space-between;gap:10px;align-items:center;min-height:48px}
+.ch:hover:not(:disabled){border-color:var(--pur)}
+.ch:disabled{opacity:.45;cursor:default}
+.ch.used{background:var(--soft);color:var(--mut)}
+.ch .s{font:600 11px "IBM Plex Mono",monospace;color:var(--mut);flex:none}
+.nextst{margin-top:12px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}
+.hint{font-size:14px;color:var(--mut)}
+/* debrief */
+.dom{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0}
+@media(max-width:640px){.dom{grid-template-columns:minmax(0,1fr)}}
+.dm{border-radius:14px;padding:14px;border:1px solid var(--line);background:var(--soft)}
+.dm b{font:800 36px "Bricolage Grotesque",sans-serif;display:block;line-height:1}
+.dm .g{font-weight:700}
+.dm ul{margin:8px 0 0;padding-left:18px;font-size:14.5px}
+.dm li.m{color:var(--red)}
+.tick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+@media(max-width:640px){.tick{grid-template-columns:minmax(0,1fr)}}
+.tick div{padding:7px 10px;border-radius:10px;font-size:15px}
+.tick .y{background:var(--okbg)}.tick .n{background:var(--stopbg)}
+.anno{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.anno div{padding:8px 11px;border-radius:10px;font-size:15px;border-left:4px solid var(--line);background:var(--soft)}
+.anno .good{border-left-color:var(--teal)}.anno .poor{border-left-color:var(--red)}.anno .low{border-left-color:var(--amber)}
+.anno small{display:block;color:var(--mut)}
+.note{font-size:13px;color:var(--mut)}
+.hide{display:none!important}
+#avatar .mouth{transition:d .1s}
+.talk .mouth{animation:talk .22s infinite alternate}
+@keyframes talk{from{transform:scaleY(.3)}to{transform:scaleY(1.2)}}
+.mouth{transform-box:fill-box;transform-origin:center}
+.wave rect{animation:wave .5s infinite alternate;transform-box:fill-box;transform-origin:center}
+.wave.still rect{animation:none;transform:scaleY(.2)}
+@keyframes wave{from{transform:scaleY(.2)}to{transform:scaleY(1)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="./">← SCA cases</a>
+<h1 id="title"></h1>
+<p class="sub" id="subt"></p>
+<div class="tags" id="tags"></div>
+<div id="app"></div>
+</div>
+<script>
+/* ================= CASE DATA ================= */
+const CASE={
+ title:"Uncontrolled hypertension on three medicines",
+ mode:"video", ceg:"People with long-term conditions, including cancer and disability", topic:"Cardiovascular",
+ patient:{name:"Mark Hughes",age:58,short:"Mark",job:"Van delivery driver",setting:"On his break, sitting in his van in the depot yard"},
+ notes:[["Patient","Mark Hughes, 58, van delivery driver"],["Consultation","Video call, booked by the practice nurse"],["Problems","Hypertension (2021); low back pain (2023)"],["Repeats","Amlodipine 10 mg OD · ramipril 10 mg OD · indapamide 2.5 mg OD (<b>not reissued for 2 months</b>)"],["BP today","166/98 (nurse); last three readings 158–170 / 94–100"],["Bloods (6 mo)","eGFR 78, K⁺ 4.2, HbA1c 39"],["Nurse note","“BP still high on triple therapy, please review”"]],
+ hyps:["Non-adherence (the indapamide gap)","Drugs raising BP: NSAIDs, decongestants","White-coat effect","Lifestyle: alcohol, salt, weight, sleep apnoea","Secondary cause","True resistant hypertension (NICE step 4)"],
+ hypOut:[st=>st.flags.adherence?["Confirmed","He stopped indapamide 2 months ago"]:["Not explored","The repeat gap was the key clue"],
+  st=>st.flags.nsaid?["Confirmed","Ibuprofen most days"]:["Missed","He takes ibuprofen most days"],
+  st=>st.used.home?["Unlikely","Home readings about 155/95 are also high"]:["Not explored","Ask about home readings"],
+  st=>(st.flags.salt||st.flags.osa||st.used.alc)?["Contributing",[st.flags.salt&&"takeaways",st.flags.osa&&"snoring",st.used.alc&&"14 units"].filter(Boolean).join(", ")]:["Not explored","Salt, alcohol and sleep apnoea all matter"],
+  st=>st.used.tests?["Screening arranged","Bloods, urine ACR and ECG"]:["Not addressed","U&E, urine ACR and ECG screen for it"],
+  st=>(st.flags.adherence||st.flags.nsaid)?["Not yet","He isn't on optimal triple therapy, so it isn't truly resistant"]:["Can't tell","Causes not yet excluded"]],
+ stages:[
+ {id:"intro",name:"Introduction",goal:"Set up the call, introduce yourself and open with an open question.",ch:[
+  {id:"id",t:"Hello, I'm Dr Pinaware, one of the GPs. Can I check your name and date of birth?",r:"Mark Hughes. Fourteenth of March, sixty-eight.",s:10,RTO:1,tag:"good",fb:"Identity check and introduction."},
+  {id:"setup",t:"Can you see and hear me clearly? And are you somewhere you can talk privately?",r:"Yeah, I can hear you. I'm in the van in the yard, it's my break. No one else here.",s:12,RTO:1,tag:"good",fb:"Checks the video link and privacy: essential in remote consultations."},
+  {id:"name",t:"How would you like me to call you?",r:"Mark's fine.",s:5,RTO:0.5,tag:"good"},
+  {id:"open",t:"I can see the nurse checked your blood pressure. What's your understanding of why we're talking today?",r:"She said it's still high. I don't get it. I'm on three tablets.",s:15,RTO:1,DG:1,tag:"good",fb:"Open question that lets him set the agenda."},
+  {id:"golden",t:"That sounds frustrating. Tell me a bit more about how it's been.",need:["open"],r:"Every time I come in, it's high. I take the tablets, I do what I'm told. Well, mostly.",s:16,RTO:1,DG:0.5,tag:"good",fb:"Empathy, then space to talk. He gives a cue: “mostly”.",clue:"Cue: “I take the tablets… mostly”"},
+  {id:"jump",t:"Your reading was 166 over 98, which is too high. I think we need to add another tablet.",r:"Another one? I'm already rattling with the ones I've got.",s:12,mood:-2,CM:-1,tag:"poor",fb:"Jumps to management before understanding the problem."}
+ ]},
+ {id:"dg",name:"Data gathering",goal:"Explore ideas, concerns and expectations; test your hypotheses; rule out red flags.",ch:[
+  {id:"ideas",t:"Have you had any thoughts yourself about why it's still high?",r:"I reckon the tablets just don't work for me. Or it's stress. Work's mad at the moment.",s:13,RTO:1,tag:"good",fb:"Ideas explored.",clue:"Ideas: “tablets don't work”, stress"},
+  {id:"red",t:"Have you had any headaches, blurred vision, chest pain, breathlessness, nosebleeds or ankle swelling?",r:"No, none of that. I feel fine. That's the annoying thing.",s:15,DG:1,tag:"good",fb:"Red flags for hypertensive emergency and target-organ damage.",clue:"No red flag symptoms"},
+  {id:"closed",t:"Are you taking your tablets?",r:"Yes.",s:4,mood:-1,tag:"poor",fb:"A closed question invites “yes”. It also feels like an accusation.",flag:"closedAsked"},
+  {id:"adh",t:"Lots of people find three tablets a day hard with a busy job. Are there any you miss, or any you've stopped?",s:16,DG:2,RTO:1,tag:"good",fb:"Normalised, non-judgemental adherence question.",
+   r:st=>(st.flags.closedAsked&&st.mood<5)?"Mostly I take them. Mostly.":"Well… the water tablet. I stopped it about two months ago. I'm in the van all day and I couldn't keep stopping for the loo.",
+   clueFn:st=>(st.flags.closedAsked&&st.mood<5)?null:"Stopped indapamide 2 months ago: toilet stops in the van",
+   flagFn:st=>(st.flags.closedAsked&&st.mood<5)?{}:{adherence:1}},
+  {id:"adh2",t:"You said “mostly”. It's really common to stop one. Is there one you've had trouble with?",needFn:st=>st.flags.closedAsked&&!st.flags.adherence&&st.used.adh,r:"Alright. The water tablet. I stopped it a couple of months ago. Couldn't keep stopping for the loo in the van.",s:12,DG:1.5,RTO:0.5,tag:"good",fb:"Recovered well by picking up his cue.",clue:"Stopped indapamide 2 months ago: toilet stops in the van",flags:{adherence:1}},
+  {id:"thanks",t:"Thank you for telling me. That's really helpful, and it sounds like a very practical problem.",needFn:st=>st.flags.adherence,r:"Yeah. I didn't want to say, to be honest.",s:8,RTO:1.5,mood:1,tag:"good",fb:"Thanks him for disclosing, without blame."},
+  {id:"otc",t:"Do you take anything else? Painkillers from the chemist, cold remedies, supplements?",r:"Ibuprofen for my back. Most days, to be honest.",s:13,DG:2,tag:"good",fb:"Finds the NSAID: a common cause of uncontrolled BP.",clue:"Ibuprofen most days for back pain",flags:{nsaid:1}},
+  {id:"home",t:"Do you check your blood pressure at home?",r:"Sometimes. Usually about 155 over 95.",s:10,DG:1,tag:"good",clue:"Home BP about 155/95"},
+  {id:"alc",t:"How much alcohol do you drink in a week? And do you smoke?",r:"A few pints at the weekend. Maybe fourteen units. I gave up smoking ten years ago.",s:14,DG:1,tag:"good",clue:"About 14 units/week; ex-smoker"},
+  {id:"salt",t:"What's your diet like? Takeaways, salty food?",r:"Meal deals at lunch and a takeaway most nights, if I'm honest. Long days.",s:12,DG:0.5,tag:"good",clue:"Takeaways most nights (salt)",flags:{salt:1}},
+  {id:"osa",t:"Does anyone say you snore, or stop breathing at night?",r:"My wife says I snore like a train. Don't know about stopping breathing. I'm knackered most days.",s:13,DG:1,tag:"good",fb:"Sleep apnoea causes resistant hypertension, and he drives for a living.",clue:"Loud snoring, daytime tiredness",flags:{osa:1}},
+  {id:"conc",t:"Is there anything in particular that's been worrying you about your blood pressure?",s:13,RTO:2,tag:"good",
+   r:st=>st.mood>=4?"My dad had a stroke at sixty-two. I'm fifty-eight. It's been on my mind.":"Not really. I just want it sorted.",
+   clueFn:st=>st.mood>=4?"Concern: dad had a stroke at 62":null,flagFn:st=>st.mood>=4?{concern:1}:{},
+   tagFn:st=>st.mood>=4?"good":"low",fbFn:st=>st.mood>=4?"Hidden concern found.":"He didn't feel comfortable enough to share it. Rapport was too low."},
+  {id:"emp",t:"That must make this feel very close to home. Thank you for sharing that.",needFn:st=>st.flags.concern,r:"Yeah. He was fit and all. Nobody saw it coming.",s:9,RTO:1.5,mood:1,tag:"good",fb:"Empathy for the concern."},
+  {id:"exp",t:"What were you hoping we'd do today?",r:"Not more tablets, if I'm honest.",s:9,RTO:1,tag:"good",clue:"Expectation: no more tablets",flags:{expect:1}},
+  {id:"psy",t:"How is work affecting things day to day?",r:"Seven till six, five days a week. Not much time for anything else.",s:11,RTO:0.5,DG:0.5,tag:"good",clue:"Long shifts in the van"},
+  {id:"sum",t:st=>"Just to check I've got this right: "+summary(st)+" Is that fair?",needFn:st=>st.flags.adherence||st.flags.nsaid,r:"Yeah, that's fair.",s:22,DG:1,RTO:1,tag:"good",fb:"Summarising shows you've listened and checks accuracy.",flags:{summary:1}},
+  {id:"ops",t:"Have you had any operations?",r:"Knee keyhole, years back.",s:7,tag:"low",fb:"Low yield for this problem."},
+  {id:"fhdm",t:"Any family history of diabetes?",r:"Not that I know of.",s:6,tag:"low",fb:"Low yield; his HbA1c is already normal."}
+ ]},
+ {id:"ex",name:"Explaining the diagnosis",goal:"Signpost, share your working diagnosis in plain words, and link it to his ideas and concerns.",ch:[
+  {id:"sign",t:"I think I've got a good picture now. Can I share what I think is going on?",r:"Go on.",s:8,RTO:1,tag:"good",fb:"Signposting the change of stage."},
+  {id:"dx",t:st=>diagText(st),r:st=>(st.flags.adherence||st.flags.nsaid)?"Oh. I didn't know ibuprofen did that."+(st.flags.adherence?" And I suppose the water tablet was doing something after all.":""):"Right. So what now?",s:40,
+   CMFn:st=>(st.flags.adherence?1.5:0)+(st.flags.nsaid?1.5:0),tagFn:st=>(st.flags.adherence||st.flags.nsaid)?"good":"poor",
+   fbFn:st=>(st.flags.adherence&&st.flags.nsaid)?"Correct working diagnosis, in plain language.":(st.flags.adherence||st.flags.nsaid)?"Partly right: you missed one of the two causes.":"You hadn't found the causes, so the diagnosis is wrong.",flags:{explained:1}},
+  {id:"jarg",t:"You've got resistant hypertension. You've failed step 3 of the NICE algorithm, so I'll add spironolactone.",r:"Failed? Spiro-what? I don't follow.",s:12,mood:-2,CM:-1,tag:"poor",fb:"Jargon, blame (“failed”), and the wrong diagnosis: it isn't truly resistant."},
+  {id:"link",t:st=>"You said you'd rather not have more tablets. The good news is we may not need any. "+(st.flags.concern?"And with your dad, getting this to target is the biggest thing we can do to cut your stroke risk.":"And getting this to target is the biggest thing we can do to cut your risk of stroke and heart attack."),needFn:st=>st.flags.expect||st.flags.concern,r:st=>st.flags.concern?"That'd be good. I don't want to end up like him.":"That'd be good.",s:22,RTOFn:st=>st.flags.concern?2.5:1.5,mood:1,tag:"good",fb:"Links the explanation to his expectations and concerns.",flags:{linkICE:1}},
+  {id:"chk",t:"Does that make sense? How do you feel about it?",r:"Makes sense. Bit annoyed at myself, really.",s:10,RTO:1,tag:"good",fb:"Checks understanding and reaction.",flags:{checked:1}}
+ ]},
+ {id:"sdm",name:"Shared decision and health promotion",goal:"Offer options, solve his practical problems, agree the plan, and support one lifestyle change.",ch:[
+  {id:"inv",t:"There are a few things we could do. Shall we go through them together?",r:"Yeah, go on.",s:7,RTO:1,tag:"good",fb:"Invites him into the decision."},
+  {id:"loo",t:"The water tablet works for about four to six hours. If you took it as soon as you get up, most of the effect would be over before you're in the van. Would that work with your shifts?",needFn:st=>st.flags.adherence,r:"I'm up at five. Yeah, I could do that.",s:28,CM:2,RTO:1,tag:"good",fb:"Solves the practical barrier rather than lecturing.",flags:{indap:1}},
+  {id:"lect",t:"You really need to take all your tablets as prescribed, otherwise you risk a stroke.",r:"I know, I know.",s:9,mood:-2,tag:"poor",fb:"Lecturing about adherence damages rapport and doesn't solve the problem."},
+  {id:"nsaid",t:"Could we swap the ibuprofen tablets for paracetamol, or ibuprofen gel on your back? The gel has much less effect on blood pressure.",needFn:st=>st.flags.nsaid,r:"Gel I can do. The back's not that bad most days.",s:20,CM:2,tag:"good",fb:"Removes a cause of high BP and protects his kidneys.",flags:{nsaidswap:1}},
+  {id:"hbpm",t:"Could you do home readings for a week? Two in the morning and two in the evening, sitting down.",r:"Yeah, I've got the machine.",s:16,CM:1,tag:"good",fb:"Confirms the true BP (NICE NG136).",flags:{hbpm:1}},
+  {id:"tests",t:"I'd like a blood test for your kidneys and salts, a urine test for protein, and a heart tracing.",r:"Fine. Can I do them early, before work?",s:18,CM:1,tag:"good",fb:"Target-organ damage and secondary-cause screen.",flags:{tests:1}},
+  {id:"step4",t:"We're aiming for under 135 over 85 on your home machine. If it's still above that once you're back on all three and off the ibuprofen, the next step is a low dose of spironolactone, if your potassium is OK.",r:"Right. So we try this first, and then see.",s:28,CM:1.5,tag:"good",fb:"States the target and the NICE step 4 plan.",flags:{step4:1}},
+  {id:"spnow",t:"Let's start spironolactone today as well, to be on the safe side.",r:"I said I didn't want more tablets…",s:10,mood:-2,CM:-2,tag:"poor",fb:"Not indicated yet: he isn't on optimal triple therapy, and it ignores his expectations."},
+  {id:"hp",t:"Is there one thing on the lifestyle side you'd feel able to work on? Salt and alcohol make the biggest difference.",r:st=>st.flags.salt?"I could cut the takeaways down. Maybe twice a week.":"I could cut back on the beer, I suppose.",s:20,CM:1,RTO:1,tag:"good",fb:"Health promotion he chooses himself.",flags:{hp:1}},
+  {id:"sleep",t:"Your snoring and tiredness could be sleep apnoea, which raises blood pressure and can affect driving. Shall we do a short questionnaire and think about a sleep study?",needFn:st=>st.flags.osa,r:"The wife'll be pleased. Yeah, go on.",s:22,CM:1,tag:"good",fb:"Picks up sleep apnoea: relevant to BP and to a professional driver.",flags:{osaPlan:1}},
+  {id:"agree",t:"What feels right for you? … So we've agreed on a plan together.",r:"Yeah. That's a plan.",s:18,RTO:1,tag:"good",fb:"Shared decision confirmed.",flags:{agree:1}}
+ ]},
+ {id:"close",name:"Safety netting and close",goal:"Specific safety-net, follow-up, check understanding, and close warmly.",ch:[
+  {id:"sn",t:"If you get a severe headache, blurred vision, chest pain or breathlessness, call 999. If a home reading is 180 over 120 or higher but you feel well, ring us the same day.",r:"OK. 180 over 120. Got it.",s:24,CM:2,tag:"good",fb:"Specific, actionable safety-netting.",flags:{sn:1}},
+  {id:"vague",t:"Come back if you're worried.",r:"Right.",s:4,tag:"poor",fb:"Vague safety-netting doesn't earn marks."},
+  {id:"fu",t:"Let's book a review in two to three weeks, with your home readings and blood results.",r:"I'll book it online.",s:12,CM:1,tag:"good",fb:"Clear follow-up.",flags:{fu:1}},
+  {id:"tb",t:"Just so I know I've explained it clearly, what will you be doing over the next couple of weeks?",r:st=>teachBack(st),s:25,RTO:1.5,tag:"good",fb:"Teach-back checks understanding.",flags:{tb:1}},
+  {id:"else",t:"Is there anything else you wanted to ask?",r:"No, that's sorted me out. Thanks, doc.",s:7,RTO:0.5,tag:"good"},
+  {id:"warm",t:"Thanks for being so open about the water tablet. It's made a real difference to how we can sort this out.",needFn:st=>st.flags.adherence,r:"Cheers. I feel better about it now.",s:9,RTO:1,mood:1,tag:"good",fb:"Warm close that reinforces the disclosure."}
+ ]}],
+ checklist:[["Introduction and identity check","id"],["Checked the video link and privacy","setup"],["Open question to start","open"],["Explored ideas","ideas"],["Found his hidden concern","f:concern"],["Explored expectations","exp"],["Red flags","red"],["Non-judgemental adherence question","f:adherence"],["Asked about over-the-counter drugs","otc"],["Summarised","sum"],["Signposted","sign"],["Explained in plain language","f:explained"],["Linked explanation to his ICE","link"],["Solved the toilet problem","loo"],["Swapped the ibuprofen","nsaid"],["Home BP, bloods, urine, ECG","f:hbpm"],["Target and next step","step4"],["Health promotion","hp"],["Specific safety-net","sn"],["Follow-up arranged","fu"],["Teach-back","tb"]],
+ model:["id","setup","open","golden","ideas","red","adh","thanks","otc","home","osa","conc","emp","exp","sum","sign","dx","link","chk","inv","loo","nsaid","hbpm","tests","step4","hp","sleep","agree","sn","fu","tb","warm"],
+ maxDG:10.5,maxCM:15,maxRTO:20
+};
+function summary(st){const b=[];if(st.flags.adherence)b.push("you stopped the water tablet because of the van");if(st.flags.nsaid)b.push("you're taking ibuprofen most days for your back");if(st.flags.concern)b.push("with your dad's stroke, you're worried");if(st.flags.expect)b.push("you'd rather not add another tablet");return b.join(", ").replace(/, ([^,]*)$/," and $1")+"."}
+function diagText(st){if(!(st.flags.adherence||st.flags.nsaid))return "It may be that your blood pressure is just resistant to the tablets you're on.";let t="Your blood pressure isn't high because the tablets don't work. ";if(st.flags.adherence)t+="The water tablet has stopped, so you've really been on two tablets, not three. ";if(st.flags.nsaid)t+="And ibuprofen raises blood pressure and works against your ramipril. Taken every day, it can also strain the kidneys.";return t.trim()}
+function teachBack(st){const b=[];if(st.flags.indap)b.push("water tablet first thing");if(st.flags.nsaidswap)b.push("gel instead of the ibuprofen");if(st.flags.hbpm)b.push("readings morning and evening for a week");if(st.flags.tests)b.push("bloods and the urine test");if(st.flags.sn)b.push("999 if I get a bad headache or chest pain");return b.length?"So: "+b.join(", ")+". Then come back and see you.":"Erm… keep taking the tablets? I'm not sure, to be honest."}
+
+/* ================= ENGINE ================= */
+const $=id=>document.getElementById(id);
+const st={phase:"read",left:720,stage:0,used:{},flags:{},mood:3,DG:0,CM:0,RTO:0,log:[],busy:false};
+const val=(v,s)=>typeof v==="function"?v(s):v;
+const words=x=>String(x).replace(/<[^>]+>/g,'').split(/\s+/).filter(Boolean).length;
+const secs=(c,s)=>Math.round((words(val(c.t,s))+words(val(c.r,s)))/2.0+4);
+let voices=[],vDr=null,vPt=null,speechOn=true,rate=1;
+function loadVoices(){voices=(speechSynthesis.getVoices()||[]).filter(v=>/^en/i.test(v.lang));const rank=v=>(/natural|enhanced|premium|neural|siri/i.test(v.name)?10:0)+(/en-GB/i.test(v.lang)?3:0);voices.sort((a,b)=>rank(b)-rank(a));
+ const male=v=>/male|daniel|arthur|george|oliver|ryan|thomas|guy|brian|christopher|eric|james/i.test(v.name)&&!/female/i.test(v.name);
+ vDr=vDr||voices.find(male)||voices[0]||null;vPt=vPt||voices.find(v=>v!==vDr&&male(v))||voices.find(v=>v!==vDr)||vDr;fillVoiceSel()}
+if("speechSynthesis" in window){loadVoices();speechSynthesis.onvoiceschanged=loadVoices}
+function fillVoiceSel(){["vdr","vpt"].forEach(id=>{const s=$(id);if(!s)return;const cur=id==="vdr"?vDr:vPt;s.innerHTML=voices.length?voices.map((v,i)=>`<option value="${i}"${v===cur?" selected":""}>${v.name.replace(/Microsoft |Google /,"").slice(0,28)}</option>`).join(""):"<option>No voices on this device</option>"})}
+function speak(text,who){return new Promise(res=>{const plain=text.replace(/<[^>]+>/g,"");const fallback=()=>setTimeout(res,Math.min(9000,600+plain.length*45/rate));
+ if(!speechOn||!("speechSynthesis" in window)||!voices.length){fallback();return}
+ const u=new SpeechSynthesisUtterance(plain);u.voice=who==="pt"?vPt:vDr;u.lang=(u.voice&&u.voice.lang)||"en-GB";u.rate=rate;u.pitch=who==="pt"&&vPt===vDr?0.8:1;
+ let done=false;const fin=()=>{if(!done){done=true;res()}};u.onend=fin;u.onerror=fin;setTimeout(fin,25000);speechSynthesis.cancel();speechSynthesis.speak(u)})}
+
+function header(){$("title").textContent=CASE.title;$("subt").textContent=`SCA consultation simulator · ${CASE.patient.name}, ${CASE.patient.age}`;
+ $("tags").innerHTML=`<span class="tg p">${CASE.mode==="video"?"VIDEO CONSULTATION":"TELEPHONE CONSULTATION"}</span><span class="tg">${CASE.ceg.toUpperCase()}</span><span class="tg">${CASE.topic.toUpperCase()}</span><span class="tg">12 MINUTES</span>`}
+
+/* ---------- reading time ---------- */
+let rTimer=null;
+function reading(){st.phase="read";let r=180;
+ $("app").innerHTML=`<div class="read"><div class="panel notes"><h2>Reading time</h2><p class="hint" style="margin-top:0">In the exam you get 3 minutes with the notes before the call connects.</p><dl>${CASE.notes.map(n=>`<dt>${n[0]}</dt><dd>${n[1]}</dd>`).join("")}</dl></div>
+ <div class="panel"><div class="sh"><h2 style="margin:0">Your hypotheses</h2><span class="rclock" id="rc">3:00</span></div><p class="hint">Tick the ones you'll test. The debrief compares them with what you found.</p><div class="hyp">${CASE.hyps.map((h,i)=>`<label><input type="checkbox" data-h="${i}"> ${h}</label>`).join("")}</div>
+ <div class="ctl" style="margin:12px 0"><label><input type="checkbox" id="son" checked> Voices on</label> · Speed <select id="rate"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select></div>
+ <button class="btn" id="go" style="width:100%">Start the ${CASE.mode} consultation</button><p class="note">Tip: Microsoft Edge, and iPhone or Mac with an Enhanced voice downloaded, give the most natural voices.</p></div></div>`;
+ document.querySelectorAll("[data-h]").forEach(c=>c.onchange=()=>{st.hyp=st.hyp||{};st.hyp[c.dataset.h]=c.checked});
+ rTimer=setInterval(()=>{r--;$("rc").textContent=`${Math.floor(r/60)}:${String(r%60).padStart(2,"0")}`;if(r<=0)start()},1000);
+ $("son").onchange=e=>speechOn=e.target.checked;$("rate").onchange=e=>rate=+e.target.value;$("go").onclick=start}
+
+/* ---------- consultation ---------- */
+function sceneSVG(){if(CASE.mode==="phone")return `<svg class="scene" viewBox="0 0 640 360"><rect width="640" height="360" fill="#1a1730"/><circle cx="320" cy="140" r="54" fill="#2c2748"/><path d="M298 118c6-6 14-2 16 6l3 10c1 5-1 9-5 11 4 10 12 18 22 22 2-4 6-6 11-5l10 3c8 2 12 10 6 16-12 12-34 6-52-12s-24-40-11-51z" fill="#8fe3d4"/><g class="wave still" id="wave" fill="#8fe3d4">${[0,1,2,3,4,5,6,7,8].map(i=>`<rect x="${250+i*16}" y="220" width="8" height="40" rx="4" style="animation-delay:${i*60}ms"/>`).join("")}</g><text x="320" y="300" text-anchor="middle" fill="#cfc8e6" font-size="18" font-family="sans-serif">${CASE.patient.name} · audio only</text></svg>`;
+ return `<svg class="scene" viewBox="0 0 640 360" id="avatar"><defs><linearGradient id="sky" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#9fb7cc"/><stop offset="1" stop-color="#d9e2ea"/></linearGradient></defs>
+ <rect width="640" height="360" fill="#3b3f4a"/><rect x="30" y="20" width="580" height="190" rx="18" fill="url(#sky)"/><rect x="30" y="150" width="580" height="60" fill="#8a949e"/><rect x="60" y="120" width="120" height="50" fill="#c9533d"/><rect x="420" y="128" width="150" height="42" fill="#e5e5e5"/>
+ <rect x="0" y="250" width="640" height="110" fill="#2b2f38"/><circle cx="560" cy="300" r="70" fill="none" stroke="#1d2027" stroke-width="18"/>
+ <path d="M190 360c0-70 50-110 130-110s130 40 130 110z" fill="#2f5ea8"/><path d="M290 250l30 40 30-40z" fill="#f2c94c"/>
+ <rect x="296" y="200" width="48" height="50" rx="14" fill="#d9a07b"/>
+ <ellipse cx="320" cy="150" rx="62" ry="74" fill="#e3ad88"/><path d="M258 130c0-50 30-68 62-68s62 18 62 68c-10-26-30-34-62-34s-52 8-62 34z" fill="#8b8f96"/>
+ <ellipse cx="260" cy="155" rx="9" ry="15" fill="#d9a07b"/><ellipse cx="380" cy="155" rx="9" ry="15" fill="#d9a07b"/>
+ <path id="brL" d="M285 128q14-8 26-2" stroke="#5d5f66" stroke-width="5" fill="none" stroke-linecap="round"/><path id="brR" d="M329 126q12-6 26 2" stroke="#5d5f66" stroke-width="5" fill="none" stroke-linecap="round"/>
+ <circle cx="298" cy="148" r="5" fill="#2a2a2a"/><circle cx="342" cy="148" r="5" fill="#2a2a2a"/><path d="M320 150l-6 24h10" stroke="#c48e6c" stroke-width="3" fill="none"/>
+ <path id="lip" d="M298 192q22 10 44 0" stroke="#8c4a3c" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse class="mouth" cx="320" cy="194" rx="11" ry="4" fill="#6b2e28" opacity="0"/></svg>`}
+function setMood(){const m=Math.max(0,Math.min(8,st.mood)),p=m/8*100;const bar=$("mb");if(bar){bar.style.width=p+"%";bar.style.background=m>=5?"var(--teal)":m>=3?"var(--amber)":"var(--red)"}
+ $("mt")&&($("mt").textContent=m>=6?"Engaged and open":m>=4?"Relaxed":m>=2?"Guarded":"Frustrated");
+ const lip=$("lip"),bl=$("brL"),br=$("brR");if(!lip)return;
+ lip.setAttribute("d",m>=5?"M298 190q22 14 44 0":m>=3?"M298 194q22 4 44 0":"M298 198q22 -10 44 0");
+ bl.setAttribute("d",m>=3?"M285 128q14-8 26-2":"M285 122q14 2 26 8");br.setAttribute("d",m>=3?"M329 126q12-6 26 2":"M329 130q12-6 26-8")}
+function talking(on){const a=$("avatar");if(a){a.classList.toggle("talk",on);a.querySelector(".mouth").setAttribute("opacity",on?"1":"0");$("lip").setAttribute("opacity",on?"0":"1")}const w=$("wave");if(w)w.classList.toggle("still",!on)}
+function start(){clearInterval(rTimer);st.phase="con";
+ $("app").innerHTML=`<div class="con"><div><div class="call">${sceneSVG()}<div class="hud"><span class="pill">● ${CASE.mode==="video"?"Video":"Phone"} · ${CASE.patient.short}</span><span class="pill" id="clockp"><b id="clk">12:00</b> left</span></div><div class="cap" id="cap"><span class="who">CONNECTED</span><span>${CASE.patient.setting}.</span></div></div>
+ <div class="mood">Patient: <div class="mbar"><div id="mb"></div></div><span id="mt"></span></div>
+ <div class="ctl"><label><input type="checkbox" id="son2" ${speechOn?"checked":""}> Voices</label> Doctor <select id="vdr"></select> Patient <select id="vpt"></select></div>
+ <div class="trans" id="tr"></div></div>
+ <div class="panel"><div class="stages" id="stg"></div><div class="sh"><h2 id="sn" style="margin:0"></h2><small id="sg"></small></div><div class="chs" id="chs"></div>
+ <div class="nextst"><span class="hint" id="hint"></span><span><button class="btn ghost" id="end">End consultation</button> <button class="btn" id="nx">Next stage →</button></span></div></div></div>`;
+ fillVoiceSel();$("vdr").onchange=e=>vDr=voices[+e.target.value];$("vpt").onchange=e=>vPt=voices[+e.target.value];$("son2").onchange=e=>{speechOn=e.target.checked;if(!speechOn)speechSynthesis&&speechSynthesis.cancel()};
+ $("nx").onclick=()=>{if(st.busy)return;if(st.stage<CASE.stages.length-1){st.stage++;sys(`Moved to: ${CASE.stages[st.stage].name}`);renderStage()}else finish()};$("end").onclick=()=>{if(!st.busy)finish()};
+ setMood();clock();renderStage()}
+function clock(){const m=Math.floor(st.left/60),s=String(st.left%60).padStart(2,"0");$("clk").textContent=`${m}:${s}`;$("clockp").classList.toggle("low",st.left<=120)}
+function sys(t){$("tr").insertAdjacentHTML("beforeend",`<div class="ln sys">${t}</div>`);$("tr").scrollTop=1e6}
+function available(c){if(c.need&&!c.need.every(n=>st.used[n]))return false;if(c.needFn&&!c.needFn(st))return false;return true}
+function renderStage(){const S=CASE.stages[st.stage];
+ $("stg").innerHTML=CASE.stages.map((s,i)=>`<span class="${i===st.stage?"on":i<st.stage?"done":""}">${i+1} ${s.name}</span>`).join("");
+ $("sn").textContent=S.name;$("sg").textContent="";$("hint").textContent=S.goal;
+ $("chs").innerHTML=S.ch.filter(c=>available(c)&&!st.used[c.id]).map(c=>`<button class="ch${st.used[c.id]?" used":""}" data-c="${c.id}" ${st.used[c.id]||st.busy?"disabled":""}><span>“${val(c.t,st)}”</span><span class="s">~${secs(c,st)}s</span></button>`).join("");
+ $("nx").textContent=st.stage<CASE.stages.length-1?`Next: ${CASE.stages[st.stage+1].name} →`:"Finish consultation";
+ document.querySelectorAll(".ch").forEach(b=>b.onclick=()=>choose(S.ch.find(c=>c.id===b.dataset.c)))}
+async function choose(c){if(st.busy||st.used[c.id])return;st.busy=true;document.querySelectorAll(".ch,#nx,#end").forEach(b=>b.disabled=true);
+ const t=val(c.t,st),cost=secs(c,st);st.used[c.id]=1;st.left=Math.max(0,st.left-cost);clock();
+ // effects before reply where reply depends on prior state
+ const r=val(c.r,st),flags={...(c.flags||{}),...(c.flagFn?c.flagFn(st):{}),...(c.flag?{[c.flag]:1}:{})};
+ const dg=c.DG||0,cm=c.CMFn?c.CMFn(st):(c.CM||0),rto=c.RTOFn?c.RTOFn(st):(c.RTO||0),tag=c.tagFn?c.tagFn(st):c.tag,fb=c.fbFn?c.fbFn(st):c.fb,clue=c.clueFn?c.clueFn(st):c.clue;
+ Object.assign(st.flags,flags);st.DG+=dg;st.CM+=cm;st.RTO+=rto;st.mood+=(c.mood||0)+(tag==="good"&&rto>0?0.4:0);setMood();
+ st.log.push({id:c.id,t,r,tag,fb,stage:CASE.stages[st.stage].name,clue});
+ $("tr").insertAdjacentHTML("beforeend",`<div class="ln dr">${t}</div>`);$("tr").scrollTop=1e6;
+ $("cap").innerHTML=`<span class="who">YOU</span><span>${t}</span>`;await speak(t,"dr");
+ $("cap").innerHTML=`<span class="who pt">${CASE.patient.short.toUpperCase()}</span><span>${r}</span>`;talking(true);await speak(r,"pt");talking(false);
+ $("tr").insertAdjacentHTML("beforeend",`<div class="ln pt">${r}</div>`);$("tr").scrollTop=1e6;
+ st.busy=false;$("nx").disabled=false;$("end").disabled=false;
+ if(st.left<=0){sys("Time's up.");$("cap").innerHTML=`<span class="who">BEEP</span><span>Time's up. The call ends.</span>`;setTimeout(finish,1400);return}
+ renderStage()}
+function grade(x,max){const p=x/max;return p>=0.8?3:p>=0.6?2:p>=0.35?1:0}
+const GL=["Clear fail","Fail","Pass","Clear pass"],GC=["var(--red)","var(--red)","var(--amber)","var(--teal)"];
+function finish(){if(st.phase==="done")return;st.phase="done";try{speechSynthesis.cancel()}catch(e){}
+ const rtoEff=st.RTO+Math.max(0,st.mood-3)*0.8,g={DG:grade(st.DG,CASE.maxDG),CM:grade(st.CM,CASE.maxCM),RTO:grade(rtoEff,CASE.maxRTO)};
+ const usedTime=720-st.left,done=k=>k.startsWith("f:")?!!st.flags[k.slice(2)]:!!st.used[k];
+ const good=st.log.filter(l=>l.tag==="good"),poor=st.log.filter(l=>l.tag==="poor"),low=st.log.filter(l=>l.tag==="low");
+ const miss=(arr)=>arr.filter(([l,k])=>!done(k)).map(([l])=>l);
+ const dgItems=[["Red flags","red"],["Adherence disclosed","f:adherence"],["Over-the-counter drugs","otc"],["Home readings","home"],["Alcohol and smoking","alc"],["Sleep apnoea","osa"],["Summarised","sum"]];
+ const cmItems=[["Correct working diagnosis","f:explained"],["Practical fix for indapamide","loo"],["Stopped the NSAID","nsaid"],["Home BP, bloods, urine, ECG","tests"],["Target and step 4 plan","step4"],["Specific safety-net","sn"],["Follow-up","fu"]];
+ const rtoItems=[["Ideas","ideas"],["Hidden concern","f:concern"],["Expectations","exp"],["Thanked him for disclosing","thanks"],["Linked plan to ICE","link"],["Shared decision","agree"],["Teach-back","tb"]];
+ let hist=[];try{hist=JSON.parse(localStorage.getItem("cgn-sca-"+CASE.title))||[];hist.push({d:Date.now(),g});localStorage.setItem("cgn-sca-"+CASE.title,JSON.stringify(hist.slice(-20)))}catch(e){}
+ const dom=(k,name,items)=>{const v=g[k],m=miss(items),h=items.filter(([l,kk])=>done(kk)).map(([l])=>l);return `<div class="dm"><span class="g" style="color:${GC[v]}">${name}</span><b style="color:${GC[v]}">${v}<span style="font-size:18px">/3</span></b><span class="g">${GL[v]}</span><ul>${h.map(x=>`<li>${x}</li>`).join("")}${m.map(x=>`<li class="m">Missed: ${x}</li>`).join("")}</ul></div>`};
+ $("app").innerHTML=`<div class="panel"><h2>Debrief</h2><p class="hint" style="margin-top:0">Time used: ${Math.floor(usedTime/60)}:${String(usedTime%60).padStart(2,"0")} of 12:00 · Patient ended the call feeling: <b>${$("mt")?$("mt").textContent:""}</b>${hist.length>1?` · Attempt ${hist.length}`:""}</p>
+ <div class="dom">${dom("DG","Data gathering and diagnosis",dgItems)}${dom("CM","Clinical management",cmItems)}${dom("RTO","Relating to others",rtoItems)}</div>
+ <p class="note">Each SCA case is marked 0–3 in each of the three domains; clinical management is weighted more heavily in the real exam. Grades here are a training estimate, not an RCGP mark.</p>
+ <h2 style="margin-top:18px">Your hypotheses vs what you found</h2><div class="anno">${CASE.hyps.map((h,i)=>{const [o,d]=CASE.hypOut[i](st);const ticked=st.hyp&&st.hyp[i];return `<div class="${/Confirmed|Contributing|Screening/.test(o)?"good":/Missed|Not explored|Not addressed/.test(o)?"poor":"low"}"><b>${h}</b>${ticked?" · you planned to test this":""}<small>${o}: ${d}</small></div>`}).join("")}</div>
+ <h2 style="margin-top:18px">Your consultation template</h2><div class="tick">${CASE.checklist.map(([l,k])=>`<div class="${done(k)?"y":"n"}">${done(k)?"✓":"✗"} ${l}</div>`).join("")}</div>
+ <h2 style="margin-top:18px">How each choice landed</h2><div class="anno">${st.log.map(l=>`<div class="${l.tag}"><b>${l.stage}:</b> “${l.t}”<small>${l.fb||(l.tag==="good"?"Good.":"")}</small></div>`).join("")}</div>
+ ${poor.length?`<p><b>Where marks were lost:</b> ${poor.length} choice${poor.length>1?"s":""} damaged rapport or management.</p>`:""}
+ <div class="nextst"><button class="btn ghost" onclick="location.reload()">Try again</button><button class="btn" id="model">▶ Hear a model consultation</button></div><div class="trans hide" id="mtr" style="max-height:none"></div></div>`;
+ $("model").onclick=playModel}
+async function playModel(){const box=$("mtr");box.classList.remove("hide");box.innerHTML="";$("model").disabled=true;const s={flags:{adherence:1,nsaid:1,concern:1,expect:1,salt:1,osa:1,indap:1,nsaidswap:1,hbpm:1,tests:1,sn:1},mood:6,used:{}};
+ const all=CASE.stages.flatMap(S=>S.ch.map(c=>[S.name,c]));let lastSt="";
+ for(const id of CASE.model){const [sn,c]=all.find(([n,x])=>x.id===id);if(sn!==lastSt){box.insertAdjacentHTML("beforeend",`<div class="ln sys">${sn}</div>`);lastSt=sn}
+  const t=val(c.t,s),r=val(c.r,s);box.insertAdjacentHTML("beforeend",`<div class="ln dr">${t}</div>`);box.lastElementChild.scrollIntoView({block:"nearest",behavior:"smooth"});await speak(t,"dr");
+  box.insertAdjacentHTML("beforeend",`<div class="ln pt">${r}</div>`);box.lastElementChild.scrollIntoView({block:"nearest",behavior:"smooth"});await speak(r,"pt")}
+ $("model").disabled=false}
+header();reading();
+</script>
+</body>
+</html>

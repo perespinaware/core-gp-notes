@@ -8,6 +8,6 @@ const CATS=[
   ["Sensitivity and specificity","The 2×2 table","sensitivity-specificity.html"],
   ["Positive and negative predictive value","PPV · NPV · prevalence","predictive-values.html"]]},
  {id:"sca",name:"SCA cases",c:"#7b46c7",src:"SCA consultation practice",lessons:[
-  ["Uncontrolled hypertension on three medicines","Long-term conditions"]]},
+  ["Uncontrolled hypertension on three medicines","Simulator · video · long-term conditions","uncontrolled-hypertension.html"]]},
  {id:"admin",name:"Admin and Management",c:"#b86e00",src:"Core Admin and Management for the GP AKT",lessons:[
   ["The GP contract and QOF","NHS England contract 2026/27 · QOF","gp-contract-qof.html"]]}];
