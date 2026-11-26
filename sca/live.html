@@ -114,7 +114,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 const S={hist:[],tags:new Set(),bad:[],clues:new Set(),mood:3,t0:0,left:720,hints:0,live:true,over:false,busy:false};
 let timer=null,listening=false,speechOn=true;
 /* ---- connection to your cPanel connector ---- */
-const CONF={get ep(){try{return localStorage.getItem("sca-ep")||"https://peres.pinaware.com/sca-proxy.php"}catch(e){return "https://peres.pinaware.com/sca-proxy.php"}},get pass(){try{return localStorage.getItem("sca-pass")||""}catch(e){return ""}}};
+const CONF={get ep(){try{return localStorage.getItem("sca-ep")||"https://api.pinaware.com/sca-proxy.php"}catch(e){return "https://api.pinaware.com/sca-proxy.php"}},get pass(){try{return localStorage.getItem("sca-pass")||""}catch(e){return ""}}};
 async function sample(prompt,opts){const mode=opts&&opts.modelTier==="complex"?"examiner":"patient";
  let r;try{r=await fetch(CONF.ep,{method:"POST",headers:{"Content-Type":"application/json","X-SCA-Pass":CONF.pass},body:JSON.stringify({mode,prompt})})}catch(e){throw {code:"network"}}
  const j=await r.json().catch(()=>({}));if(!r.ok)throw {code:r.status===429?"rate_limited":r.status===401?"not_granted":"error",message:j.error||""};return {text:j.text||""}}
