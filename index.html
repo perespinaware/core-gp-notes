@@ -27,5 +27,6 @@ document.getElementById("shelf").innerHTML=CATS.map(c=>{const n=c.lessons.length
  return `<a class="spine" style="--c:${c.c}" href="${c.id}/"><div><h2>${esc(c.name)}</h2><p>${esc(c.src)}</p></div><span>${n} topic${n>1?"s":""} · ${l} live</span></a>`}).join("")+`<a class="spine" style="--c:#b3263a" href="programme/"><div><h2>AKT Programme</h2><p>Your 69-week plan, high-yield first</p></div><span>This week · tracker · error log · mocks</span></a>`+`<a class="spine" style="--c:#16212a" href="blueprint/"><div><h2>Blueprint</h2><p>High-yield map with your coverage and readiness</p></div><span>AKT and SCA · road to 70%</span></a>`+`<a class="spine" style="--c:#0b5f86" href="akt/"><div><h2>AKT practice</h2><p>Free, fast question practice at exam pace</p></div><span>Daily review · quick-fire · mock exam</span></a>`;
 }
 </script>
+<script src="/time.js" defer></script>
 </body>
 </html>

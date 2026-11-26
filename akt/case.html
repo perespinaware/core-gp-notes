@@ -109,5 +109,6 @@ function murmur(){try{const A=new (window.AudioContext||window.webkitAudioContex
   th(t,0.9,55);th(t+0.36,0.25,70);const s=A.createBufferSource();s.buffer=buf;const bp=A.createBiquadFilter();bp.type="bandpass";bp.frequency.value=320;bp.Q.value=1.4;const g=A.createGain();g.gain.setValueAtTime(0,t+0.06);g.gain.linearRampToValueAtTime(0.55,t+0.2);g.gain.linearRampToValueAtTime(0,t+0.34);s.connect(bp).connect(g).connect(A.destination);s.start(t+0.06);s.stop(t+0.36)}}catch(e){}}
 }
 </script>
+<script src="/time.js" defer></script>
 </body>
 </html>
