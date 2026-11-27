@@ -121,6 +121,18 @@ const STEPS=[
   "Penicillin V 10 days to eradicate strep; NSAIDs for arthritis",
   "Prophylaxis: 5 yrs/21 (no carditis), 10 yrs/21, 10 yrs/40 (valve disease)",
   "Rheumatic mitral stenosis + AF: warfarin; no routine dental prophylaxis"]},
+ {id:"tia",kw:"TIA stroke FAST aspirin 300 ABCD2 amaurosis fugax clopidogrel carotid endarterectomy thrombolysis DVLA mimic Bell's",cat:"cardiology",topic:"TIA and stroke recognition",src:"NICE NG128",url:"https://www.nice.org.uk/guidance/ng128",lesson:"../cardiology/tia-stroke.html",steps:[
+  "Sudden focal deficit: symptoms now = stroke (999, FAST); resolved = TIA",
+  "Check glucose; exclude mimics (migraine aura, seizure, Bell's, syncope)",
+  "TIA: aspirin 300 mg now; specialist clinic within 24 h; no ABCD2",
+  "DAPT 21 days (minor stroke/high-risk TIA) then clopidogrel; DOAC if AF; statin; SBP under 130",
+  "Carotid stenosis 50–99%: surgery within 2 weeks; driving: 1 month off (Group 1)"]},
+ {id:"device",kw:"pacemaker ICD CRT device shock pocket infection haematoma pacemaker syndrome hiccups MRI cremation deactivation driving",cat:"cardiology",topic:"Pacemaker and ICD problems",src:"NICE TA88 · TA314 · DVLA",url:"https://www.nice.org.uk/guidance/ta314",lesson:"../cardiology/pacemaker-icd-problems.html",steps:[
+  "Know the device: pacemaker, ICD, CRT; ask for the device card",
+  "Red, swollen or discharging pocket, erosion or fever: same-day device team; never aspirate",
+  "ICD shock: one and well → clinic; two or more, or unwell → 999",
+  "Dizziness, neck pulsation, hiccups: device clinic (pacemaker syndrome, lead problem)",
+  "Driving: pacemaker 1 week, ICD shock 6 months; deactivate shocks at end of life; remove before cremation"]},
  {id:"rosacea",kw:"flushing facial redness ivermectin brimonidine doxycycline skin",cat:"dermatology",topic:"Rosacea",src:"NICE CKS",url:null,lesson:"../dermatology/rosacea.html",steps:[
   "Clinical diagnosis: avoid triggers, daily SPF, no facial steroids",
   "Papules and pustules: topical ivermectin 1% (or azelaic acid, metronidazole)",

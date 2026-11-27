@@ -43,7 +43,7 @@ const AKT_AREAS=[
   ["ne-headache","Headache and migraine",1,{}],
   ["ne-cranial","Cranial nerve lesions and facial palsy",1,{}],
   ["ne-gait","Gait disturbance and Parkinson's disease",1,{}],
-  ["ne-stroke","Stroke and TIA",1,{}],
+  ["ne-stroke","Stroke and TIA",1,{notes:1,lesson:1,bank:["TIA and stroke recognition"]}],
   ["ne-epilepsy","Epilepsy and first seizure",1,{}],
   ["ne-rare","Rare but important: MS, MND, myasthenia, cord compression",1,{}],
   ["ne-neuro","Peripheral neuropathy and medically unexplained symptoms",2,{}]]},
@@ -67,7 +67,8 @@ const AKT_AREAS=[
   ["cv-aaa","Abdominal aortic aneurysm",3,{notes:1,lesson:1,bank:["Abdominal aortic aneurysm (AAA)"]}],
   ["cv-ie","Infective endocarditis and prophylaxis",3,{notes:1,lesson:1,bank:["Infective endocarditis"]}],
   ["cv-peri","Pericarditis",3,{notes:1,lesson:1,bank:["Pericarditis"]}],
-  ["cv-rf","Rheumatic fever and rheumatic heart disease",3,{notes:1,lesson:1,bank:["Rheumatic fever and rheumatic heart disease"]}]]},
+  ["cv-rf","Rheumatic fever and rheumatic heart disease",3,{notes:1,lesson:1,bank:["Rheumatic fever and rheumatic heart disease"]}],
+  ["cv-device","Pacemaker and ICD problems",3,{notes:1,lesson:1,bank:["Pacemaker and ICD problems"]}]]},
  {area:"Respiratory health",domain:"Clinical",flag:"Flagged in 5 sittings; diagnosis and management in AKT 60",topics:[
   ["re-asthma","Asthma in adults and children",1,{}],
   ["re-copd","COPD",1,{}],

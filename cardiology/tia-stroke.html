@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TIA and stroke recognition · Cardiology · Road to GP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday learning: a revision lesson that plays like a video, then lets you touch the numbers
+   IDEA the Core Cardiology guide come to life: same ink, red and step colours, scenes that build as they are narrated
+   PICTURE the player stage itself: each scene animates in, with live sliders, gauges and a quiz inside it
+   COLOUR ink #16212a ground in the controls, white stage, red #b3263a accent, step colours blue, teal, amber, purple
+   TYPE Bricolage Grotesque headings (the guide's own face) + Atkinson Hyperlegible text
+   LAYOUT laptop: chapter rail on top, stage, caption bar, controls; phone: same order stacked, controls wrap */
+:root{color-scheme:light dark;--bg:light-dark(#eef1f1,#0f1519);--stage:light-dark(#ffffff,#172128);--ink:light-dark(#16212a,#e8eef0);--mut:light-dark(#576470,#9aabb4);--line:light-dark(#dfe3e6,#2a3a44);--soft:light-dark(#f4f6f6,#1c2a33);--red:light-dark(#b3263a,#ff7385);--blue:light-dark(#2f66d0,#79a2f2);--teal:light-dark(#0b8577,#3cc7b3);--amber:light-dark(#b86e00,#f1aa45);--purple:light-dark(#7b46c7,#b08cf0);--bar:#16212a;--okbg:light-dark(#e3f4f0,#123630);--stopbg:light-dark(#fbe6e9,#3d1820)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif;overflow-x:clip}
+b{font-weight:700}
+.wrap{max-width:1180px;margin:0 auto;padding:18px max(16px,3vw) 40px}
+h1{font:800 clamp(26px,3.4vw,38px)/1.08 "Bricolage Grotesque",system-ui,sans-serif;margin:0 0 4px;letter-spacing:-.02em}
+.sub{color:var(--mut);margin:0 0 14px}
+.rail{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.rail button{font:700 14px "Atkinson Hyperlegible",sans-serif;border:0;border-radius:30px;padding:8px 14px;min-height:38px;background:var(--line);color:var(--mut);cursor:pointer}
+.rail button.on{color:#fff;background:var(--c)}
+.rail button:focus-visible,.ctl button:focus-visible,.ctl select:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.player{background:var(--stage);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px -18px rgba(0,0,0,.35)}
+.stage{position:relative;min-height:540px;padding:26px clamp(16px,3vw,36px) 22px}
+.tag{display:inline-block;font:600 12px "IBM Plex Mono",monospace;letter-spacing:.12em;color:#fff;background:var(--c);border-radius:5px;padding:4px 10px}
+.stage h2{font:800 clamp(24px,3vw,36px)/1.1 "Bricolage Grotesque",sans-serif;margin:10px 0 18px;letter-spacing:-.01em}
+.r:not(.in){display:none}
+.r.in{animation:rin .5s ease both}
+@keyframes rin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.r.now{box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 55%,transparent)}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
+.card{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.card h3{font:700 19px/1.2 "Bricolage Grotesque",sans-serif;margin:0 0 10px}
+.card.red h3{color:var(--red)}.card.amber h3{color:var(--amber)}
+ul.b{list-style:none;margin:0;padding:0}
+ul.b li{position:relative;padding:5px 8px 5px 26px;border-radius:8px;margin-bottom:2px}
+ul.b li:before{content:"";position:absolute;left:9px;top:14px;width:8px;height:8px;border-radius:50%;background:var(--c)}
+ol.dec{list-style:none;margin:0;padding:0;counter-reset:n;display:grid;gap:10px}
+ol.dec li{counter-increment:n;display:flex;gap:16px;align-items:center;font-size:clamp(17px,2vw,22px);background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+ol.dec li:before{content:counter(n);font:800 22px "Bricolage Grotesque",sans-serif;color:#fff;background:var(--red);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
+ol.dec li span{display:block}
+.title{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;margin-bottom:22px}
+.big{font:800 clamp(70px,11vw,130px)/.9 "Bricolage Grotesque",sans-serif;color:var(--red)}
+.title p{margin:6px 0 0;color:var(--mut)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;text-align:left;border:1px solid var(--line);background:var(--stage);color:var(--ink);border-radius:12px;padding:10px 14px;min-height:44px;cursor:pointer;transition:background .3s,border-color .3s}
+.chip small{display:block;font-weight:700;margin-top:4px}
+.chip.q{background:var(--okbg);border-color:var(--teal)}.chip.q small{color:var(--teal)}
+.chip.t{background:var(--stopbg);border-color:var(--red)}.chip.t small{color:var(--red)}
+.chip.sel{border:2px solid var(--c);background:color-mix(in srgb,var(--c) 10%,var(--stage))}
+.try{margin-top:16px;border:2px dashed color-mix(in srgb,var(--c) 60%,transparent);border-radius:14px;padding:14px 16px}
+.try h3{font:700 18px "Bricolage Grotesque",sans-serif;margin:0 0 10px;color:var(--c)}
+.meter{margin:6px 0 12px}
+.meter .top{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.meter .val{font:800 26px "Bricolage Grotesque",sans-serif;white-space:nowrap}
+.track{position:relative;height:16px;border-radius:8px;display:flex;overflow:hidden;margin:8px 0 2px}
+.track i{display:block;height:100%}
+.pin{position:absolute;top:-6px;width:4px;height:28px;background:var(--ink);border-radius:2px;transition:left .6s ease}
+.tw{position:relative}
+input[type=range]{width:100%;accent-color:var(--c);height:32px}
+.verdict{border-radius:10px;padding:10px 14px;font-weight:700;margin-top:4px;transition:background .3s}
+.verdict.ok{background:var(--okbg);color:var(--teal)}.verdict.mid{background:color-mix(in srgb,var(--amber) 16%,var(--stage));color:var(--amber)}.verdict.stop{background:var(--stopbg);color:var(--red)}
+.dosebox{text-align:center;padding:22px 18px;min-height:250px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px}
+.pill{font:800 clamp(30px,4.4vw,48px) "Bricolage Grotesque",sans-serif;padding:10px 26px;border-radius:60px;background:color-mix(in srgb,var(--amber) 18%,var(--stage));color:var(--amber);transition:transform .35s,background .3s,color .3s}
+.pill.hi{background:var(--red);color:#fff}
+.pill.pop{transform:scale(1.08)}
+.plist{display:grid;gap:8px}
+.tl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;position:relative;margin-bottom:16px}
+.st{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px;transition:border-color .4s,background .4s}
+.st b{display:block;font:800 20px "Bricolage Grotesque",sans-serif;color:var(--c)}
+.st.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 10%,var(--stage))}
+.calc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.res{font:800 clamp(34px,5vw,54px) "Bricolage Grotesque",sans-serif;line-height:1}
+.fallbar{position:relative;height:22px;background:var(--line);border-radius:11px;margin:12px 0 26px}
+.fallbar span{position:absolute;left:0;top:0;bottom:0;border-radius:11px;background:var(--red);transition:width .6s ease,background .3s}
+.fallbar em{position:absolute;left:40%;top:-6px;bottom:-6px;border-left:3px dashed var(--teal)}
+.fallbar em:after{content:"40% aim";position:absolute;top:30px;left:-26px;font:700 13px "Atkinson Hyperlegible",sans-serif;color:var(--teal);white-space:nowrap;font-style:normal}
+.ladder{display:grid;gap:8px}
+.rung{background:var(--soft);border:1px solid var(--line);border-left:6px solid var(--c);border-radius:10px;padding:10px 14px}
+.rung b{display:block;font:700 17px "Bricolage Grotesque",sans-serif}
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.num{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:16px}
+.num b{display:block;font:800 clamp(34px,4vw,48px)/1 "Bricolage Grotesque",sans-serif;color:var(--red);margin-bottom:8px}
+.qz .stem{font-size:clamp(17px,2vw,20px);margin:0 0 14px}
+.opts{display:grid;gap:8px}
+.opt{font:inherit;text-align:left;display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:12px;padding:10px 14px;min-height:48px;cursor:pointer}
+.opt i{font:800 16px "Bricolage Grotesque",sans-serif;font-style:normal;width:32px;height:32px;border-radius:50%;background:var(--line);display:flex;align-items:center;justify-content:center;flex:none}
+.opt.right{background:var(--okbg);border-color:var(--teal)}.opt.right i{background:var(--teal);color:#fff}
+.opt.wrong{background:var(--stopbg);border-color:var(--red)}.opt.wrong i{background:var(--red);color:#fff}
+.opt:disabled{cursor:default}
+.fb{margin-top:12px;border-left:5px solid var(--teal);background:var(--okbg);border-radius:8px;padding:10px 14px}
+.fb.no{border-color:var(--red);background:var(--stopbg)}
+.qnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.qdots{display:flex;gap:5px;flex-wrap:wrap}
+.qdots span{width:12px;height:12px;border-radius:50%;background:var(--line)}
+.qdots span.ok{background:var(--teal)}.qdots span.no{background:var(--red)}.qdots span.cur{outline:2px solid var(--ink);outline-offset:1px}
+.btn{font:700 15px "Atkinson Hyperlegible",sans-serif;border:0;border-radius:10px;padding:10px 16px;min-height:44px;background:var(--ink);color:var(--stage);cursor:pointer}
+.btn.ghost{background:var(--line);color:var(--ink)}
+.cap{background:var(--bar);color:#fff;min-height:74px;display:flex;align-items:center;gap:14px;padding:12px clamp(16px,3vw,36px);font-size:clamp(16px,1.7vw,19px);line-height:1.35}
+.cap:before{content:"";width:5px;align-self:stretch;min-height:36px;border-radius:3px;background:var(--c);flex:none}
+.ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px clamp(16px,3vw,36px);border-top:1px solid var(--line)}
+.ctl button{font:700 15px "Atkinson Hyperlegible",sans-serif;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:10px;min-height:44px;min-width:44px;padding:0 14px;cursor:pointer}
+.ctl button.play{background:var(--red);border-color:var(--red);color:#fff;min-width:110px}
+.ctl .grow{flex:1}
+.ctl label{font-size:14px;color:var(--mut);display:flex;align-items:center;gap:6px}
+.ctl select{font:16px "Atkinson Hyperlegible",sans-serif;border:1px solid var(--line);background:var(--stage);color:var(--ink);border-radius:8px;min-height:40px;padding:0 6px;max-width:230px}
+.prog{height:5px;background:var(--line)}
+.prog span{display:block;height:100%;background:var(--c);transition:width .4s}
+.hint{font-size:14px;color:var(--mut);margin-top:12px}
+.pulse{animation:pu 1.4s ease-in-out infinite}
+@keyframes pu{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--red) 30%,transparent)}}
+@media(prefers-reduced-motion:reduce){.r.in{animation:none}.pulse{animation:none}.pin,.fallbar span{transition:none}}
+@media(max-width:760px){.g2,.g3,.calc{grid-template-columns:minmax(0,1fr)}.tl{grid-template-columns:repeat(2,minmax(0,1fr))}.stage{min-height:0}.title{grid-template-columns:minmax(0,1fr);gap:8px}}
+.types{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
+.ty{background:var(--soft);border:1px solid var(--line);border-top:5px solid var(--c);border-radius:12px;padding:12px 14px;font-size:15px}
+.ty b{display:block;font:700 17px "Bricolage Grotesque",sans-serif;margin-bottom:4px}
+.strips{display:grid;gap:8px;margin-bottom:14px}
+.strip svg{display:block;width:100%;height:64px;border-radius:8px}
+.cap2{font-size:15px;margin-bottom:3px}.cap2 span{color:var(--mut)}
+.strip.in .ln{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 3s linear forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.togs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.tog{font:inherit;text-align:left;display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:12px;padding:10px 14px;min-height:48px;cursor:pointer}
+.tog b{font:800 16px "Bricolage Grotesque",sans-serif;color:var(--mut)}
+.tog.on{background:color-mix(in srgb,var(--c) 14%,var(--stage));border-color:var(--c)}.tog.on b{color:var(--c)}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.seg button{font:inherit;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:10px;padding:8px 14px;min-height:44px;cursor:pointer}
+.seg button.on{background:var(--c);border-color:var(--c);color:#fff}
+.scorebox{text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;padding:22px}
+.scorebox .res{font-size:clamp(56px,8vw,88px)}
+.pearl{margin-top:14px;border:2px dashed color-mix(in srgb,var(--red) 50%,transparent);border-radius:12px;padding:12px 16px}
+.sl{margin-bottom:8px}
+.drow{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.drow b{font:800 20px "Bricolage Grotesque",sans-serif;color:var(--c)}
+@media(max-width:760px){.types{grid-template-columns:repeat(2,minmax(0,1fr))}.togs{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){.strip.in .ln{animation:none;stroke-dashoffset:0}}
+.scn{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.sc1{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.sc1 p{margin:0 0 8px;font-weight:700}
+.sbtn{display:flex;gap:6px;flex-wrap:wrap}
+.sbtn button{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--stage);color:var(--ink);border-radius:10px;padding:8px 12px;min-height:44px;cursor:pointer}
+.sbtn button.right{background:var(--okbg);border-color:var(--teal);color:var(--teal);font-weight:700}
+.sbtn button.wrong{background:var(--stopbg);border-color:var(--red);color:var(--red)}
+.sfb{font-size:15px;margin-top:6px}.sfb.ok{color:var(--teal)}.sfb.no{color:var(--red)}
+@media(max-width:820px){.scn{grid-template-columns:minmax(0,1fr)}}
+.exitbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;padding-top:16px;border-top:1px solid var(--line,#dfe3e6)}
+.exitbar a{font:inherit;font-weight:700;text-decoration:none;border-radius:12px;padding:11px 18px}
+.exitbar .exit{background:var(--c,#16212a);color:#fff}
+.exitbar .exit2{border:1px solid var(--line,#dfe3e6);color:inherit}
+.exitbar a:hover{text-decoration:underline}
+.exitbar.now{box-shadow:none}
+</style>
+<script src="/sync.js"></script>
+</head>
+<body>
+<div class="wrap">
+<nav class="crumbs" aria-label="Breadcrumb" style="margin-bottom:8px;font-weight:700;color:var(--mut)"><a href="../" style="color:inherit;text-decoration:none">← Home</a> <span aria-hidden="true">›</span> <a href="./" style="color:inherit;text-decoration:none">Cardiology</a></nav>
+<h1>TIA and stroke recognition</h1>
+<p class="sub">Topic 21 of Core Cardiology for the GP AKT, as a narrated lesson. Press play, or tap any chapter. Try every interactive yourself.</p>
+<nav class="rail" id="rail" aria-label="Chapters"></nav>
+<section class="player" id="player" aria-label="Lesson player">
+<div class="prog"><span id="prog"></span></div>
+<div class="stage" id="stage" aria-live="polite"></div>
+<div class="cap" id="cap">Press play to start. The narration uses a voice on your device.</div>
+<div class="ctl">
+<button id="prev" aria-label="Previous scene">◀</button>
+<button class="play" id="play">▶ Play</button>
+<button id="next" aria-label="Next scene">▶▶</button>
+<span class="grow"></span>
+<label for="speed">Speed <select id="speed"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select></label>
+<label for="voice">Voice <select id="voice"><option value="">Captions only</option></select></label>
+</div>
+</section>
+<p class="hint" id="vhint">For the most natural voice, choose one marked Natural, Enhanced, Premium or Siri, if your device has one. Microsoft Edge offers natural online voices; on iPhone and Mac you can download Enhanced voices in your Accessibility settings.</p>
+</div>
+<script>
+{
+const C={0:"var(--ink)",1:"var(--blue)",2:"var(--teal)",3:"var(--amber)",4:"var(--purple)",5:"var(--red)",6:"var(--ink)"};
+const CH=["Intro","1 Recognise","2 Diagnose","3 Manage","4 Prescribe","5 Quiz","Recap"];
+const $=id=>document.getElementById(id);
+const stage=$("stage"),cap=$("cap"),playB=$("play"),voiceS=$("voice"),speedS=$("speed");
+
+/* ---------- TIA and stroke recognition data ---------- */
+const QS=[["A 67-year-old man had 20 minutes of right arm weakness and slurred speech this morning. He is now back to normal. He takes no anticoagulant. What is the most appropriate management?", ["Calculate his ABCD2 score to decide urgency", "Aspirin 300 mg now and refer to be seen in a TIA clinic within 24 hours", "Routine neurology referral", "Arrange a CT head within 7 days", "Start clopidogrel and review in 2 weeks"], 1, "Aspirin 300 mg now and refer to be seen in a TIA clinic within 24 hours. NICE NG128: offer aspirin 300 mg immediately and refer to be seen within 24 hours of onset. Don't use ABCD2 to decide urgency."], ["A 72-year-old woman has had left facial droop and left arm weakness for 40 minutes. She is still symptomatic. What should happen?", ["999 to a hyperacute stroke unit", "Aspirin 300 mg and TIA clinic within 24 hours", "Wait an hour to see if it resolves", "Same-day GP review", "Refer to neurology outpatients"], 0, "999 to a hyperacute stroke unit. Ongoing symptoms mean stroke until proven otherwise. Time matters for thrombolysis (4.5 hours) and thrombectomy; don't wait for symptoms to settle."], ["A 58-year-old has sudden painless loss of vision in his left eye, \"like a curtain coming down\", which recovered after 5 minutes. What is this?", ["Retinal migraine", "Giant cell arteritis is certain", "Retinal detachment", "Acute angle-closure glaucoma", "Amaurosis fugax: a TIA"], 4, "Amaurosis fugax: a TIA. Transient monocular visual loss is a retinal TIA, usually from carotid disease: aspirin 300 mg and TIA clinic within 24 hours."], ["A 61-year-old with type 1 diabetes is found confused with right-sided weakness. What is the first check?", ["CT head", "Blood pressure lying and standing", "ECG", "Capillary blood glucose", "Urine dipstick"], 3, "Capillary blood glucose. Hypoglycaemia is a common, quickly reversible stroke mimic, especially in people on insulin."], ["A man with a TIA has 70% stenosis of the symptomatic carotid artery. What is the recommended timing for endarterectomy?", ["Within 2 weeks of symptom onset", "Within 3 months", "Only if a second TIA occurs", "After 6 months of medical treatment", "Not indicated at this degree of stenosis"], 0, "Within 2 weeks of symptom onset. Symptomatic stenosis 50–99% (NASCET): assess and refer within 1 week, with surgery within 2 weeks, when the benefit is greatest."], ["A 70-year-old had a minor ischaemic stroke 2 days ago. He is in sinus rhythm with a low bleeding risk. What antiplatelet plan does the National Clinical Guideline for Stroke support?", ["Aspirin alone for life", "Aspirin and clopidogrel for 21 days, then clopidogrel alone", "Clopidogrel and ticagrelor for 1 year", "Warfarin", "No antiplatelet"], 1, "Aspirin and clopidogrel for 21 days, then clopidogrel alone. Short-term dual antiplatelet therapy after high-risk TIA or minor stroke reduces recurrence; long-term single antiplatelet follows."], ["A 66-year-old has a confirmed TIA and is found to be in atrial fibrillation. Imaging excludes haemorrhage. What is the best long-term stroke prevention?", ["Clopidogrel 75 mg", "Aspirin and dipyridamole", "A DOAC such as apixaban", "Aspirin 75 mg", "No treatment if the TIA has resolved"], 2, "A DOAC such as apixaban. Cardioembolic TIA or stroke with AF needs anticoagulation, not antiplatelets. After TIA it can start once haemorrhage is excluded."], ["A 59-year-old car driver had a single TIA and has fully recovered. What is the driving advice?", ["No restriction", "Stop for 6 months; no need to notify", "Stop for 3 months and notify", "Stop for 1 year and notify", "Stop for 1 month; no need to notify the DVLA"], 4, "Stop for 1 month; no need to notify the DVLA. Group 1 after a single TIA: no driving for 1 month, and no need to tell the DVLA if fully recovered. Group 2: 1 year and notify."], ["After a confirmed ischaemic stroke, what clinic systolic BP target is recommended for most people?", ["Below 160 mmHg", "Below 150 mmHg", "Below 130 mmHg", "Below 140 mmHg", "Below 120 mmHg"], 2, "Below 130 mmHg. After stroke or TIA, aim for a clinic systolic below 130, except with severe bilateral carotid stenosis (140–150)."], ["A 55-year-old woman has sudden right facial weakness affecting her forehead and eye closure. Limbs and speech are normal. What is the most likely diagnosis?", ["Stroke", "TIA", "Hypoglycaemia", "Bell's palsy", "Migraine aura"], 3, "Bell's palsy. Lower motor neurone facial weakness involves the forehead. In a stroke (upper motor neurone) the forehead is spared."]];
+const SRT2=[["Right arm weak for 20 minutes this morning, now normal", "TIA", "Resolved focal deficit"], ["Facial droop and slurred speech for the last hour, ongoing", "Stroke", "Symptoms now: 999"], ["Painless monocular 'curtain' for 5 minutes", "TIA", "Amaurosis fugax"], ["Confused and weak on one side, glucose 2.1", "Mimic", "Hypoglycaemia"], ["Facial weakness including the forehead, limbs normal", "Mimic", "Bell's palsy"], ["Spreading tingling and zigzag lights over 20 minutes, then headache", "Mimic", "Migraine aura"], ["Isolated vertigo when turning in bed", "Mimic", "BPPV, not TIA"]];
+const PK3={"now": ["Symptoms now", "999", "Hyperacute stroke unit; CT; thrombolysis within 4.5 h", "red"], "tia": ["Symptoms resolved", "Aspirin 300 mg", "Refer now: TIA clinic within 24 hours of onset", "teal"], "ac": ["TIA on an anticoagulant", "Image first", "Same-day assessment; no aspirin", ""], "abcd": ["ABCD2 score?", "Don't use it", "Everyone is seen within 24 hours", ""], "ct": ["CT for every TIA?", "No", "MRI if imaging needed; carotid duplex", ""]};
+const SRT5=[["Use ABCD2 to decide who is seen within 24 hours", "Trap", "Everyone is seen within 24 hours"], ["Car driver after one TIA: 1 month off, no need to notify if recovered", "True", "Group 1"], ["Lorry driver after a TIA: 1 month off", "Trap", "Group 2: 1 year, notify"], ["Check glucose in every suspected stroke", "True", "Hypoglycaemia mimics stroke"], ["In stroke, the forehead is usually spared", "True", "Upper motor neurone"], ["Wait an hour to see if symptoms settle", "Trap", "Symptoms now: 999"]];
+
+/* ---------- shared lesson helpers ---------- */
+function bindSorter(data){stage.querySelectorAll(".sc1").forEach(d=>d.querySelectorAll("button").forEach(b=>b.onclick=()=>{const s=data[d.dataset.a],ok=b.dataset.o===s[1];d.querySelectorAll("button").forEach(x=>x.classList.toggle("right",x.dataset.o===s[1]));if(!ok)b.classList.add("wrong");const f=d.querySelector(".sfb");f.className="sfb "+(ok?"ok":"no");f.textContent=(ok?"Correct: ":"Answer: "+s[1]+". ")+s[2]}))}
+function pick(id,P,k){if(!$(id+"p"))return;stage.querySelectorAll("[data-pk]").forEach(b=>b.classList.toggle("on",b.dataset.pk===k));const v=P[k];$(id+"q").textContent=v[0];$(id+"p").textContent=v[1];$(id+"n").textContent=v[2];const p=$(id+"p");p.style.color=v[3]==="red"?"var(--red)":v[3]==="teal"?"var(--teal)":"";p.classList.add("pop");setTimeout(()=>p.classList.remove("pop"),350)}
+function bindPick(id,P){stage.querySelectorAll("[data-pk]").forEach(b=>b.onclick=()=>pick(id,P,b.dataset.pk))}
+let TG=new Set();
+function upTog(T,F){if(!$("tgs"))return;stage.querySelectorAll("[data-tg]").forEach(b=>{const on=TG.has(+b.dataset.tg);b.classList.toggle("on",on);b.setAttribute("aria-pressed",on)});const s=[...TG].reduce((a,k)=>a+T[k][1],0),r=F(s);$("tgh").textContent=r[0];$("tgs").textContent=r[1];$("tgs").style.color=r[2]==="stop"?"var(--red)":r[2]==="mid"?"var(--amber)":"var(--teal)";const v=$("tgv");v.className="verdict "+r[2];v.textContent=r[3]}
+function bindTog(T,F){TG=new Set();stage.querySelectorAll("[data-tg]").forEach(b=>b.onclick=()=>{const k=+b.dataset.tg;TG.has(k)?TG.delete(k):TG.add(k);upTog(T,F)});upTog(T,F)}
+function setTog(T,F,ks){TG=new Set(ks);upTog(T,F)}
+
+/* ---------- scenes ---------- */
+const S=[
+{ch:0,tag:"TOPIC 21",h:"What examiners test",html:()=>"<div class=\"title r in\" data-i=\"0\"><div class=\"big\">21<\/div><div><b style=\"font-size:20px\">TIA and stroke recognition<\/b><p>NICE NG128 · RCP Stroke 2023 · DVLA<\/p><\/div><\/div><ol class=\"dec\"><li class=\"r\" data-i=\"1\"><span>TIA, stroke, or a <b>mimic<\/b>?<\/span><\/li><li class=\"r\" data-i=\"2\"><span><b>Aspirin 300 mg<\/b> and clinic within <b>24 hours<\/b>; no ABCD2<\/span><\/li><li class=\"r\" data-i=\"3\"><span>Stroke: <b>999 by FAST<\/b><\/span><\/li><li class=\"r\" data-i=\"4\"><span><b>Secondary prevention<\/b>, carotids and driving<\/span><\/li><\/ol>",b:[[0, "Topic twenty-one: TIA and stroke recognition. Questions test four things."], [1, "Telling a TIA or stroke from a mimic."], [2, "For a TIA: aspirin three hundred milligrams and a specialist clinic within twenty-four hours, without ABCD2 scoring."], [3, "For a stroke: nine nine nine, using FAST."], [4, "And secondary prevention, carotid surgery and driving."]]},
+{ch:1,tag:"STEP 1 · RECOGNISE",h:"TIA, stroke or mimic?",stop:1,html:()=>"<div class=\"scn r\" data-i=\"1\"><div class=\"sc1\" data-a=\"0\"><p>Right arm weak for 20 minutes this morning, now normal<\/p><div class=\"sbtn\"><button data-o=\"Stroke\">Stroke<\/button><button data-o=\"TIA\">TIA<\/button><button data-o=\"Mimic\">Mimic<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"1\"><p>Facial droop and slurred speech for the last hour, ongoing<\/p><div class=\"sbtn\"><button data-o=\"Stroke\">Stroke<\/button><button data-o=\"TIA\">TIA<\/button><button data-o=\"Mimic\">Mimic<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"2\"><p>Painless monocular &#x27;curtain&#x27; for 5 minutes<\/p><div class=\"sbtn\"><button data-o=\"Stroke\">Stroke<\/button><button data-o=\"TIA\">TIA<\/button><button data-o=\"Mimic\">Mimic<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"3\"><p>Confused and weak on one side, glucose 2.1<\/p><div class=\"sbtn\"><button data-o=\"Stroke\">Stroke<\/button><button data-o=\"TIA\">TIA<\/button><button data-o=\"Mimic\">Mimic<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"4\"><p>Facial weakness including the forehead, limbs normal<\/p><div class=\"sbtn\"><button data-o=\"Stroke\">Stroke<\/button><button data-o=\"TIA\">TIA<\/button><button data-o=\"Mimic\">Mimic<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"5\"><p>Spreading tingling and zigzag lights over 20 minutes, then headache<\/p><div class=\"sbtn\"><button data-o=\"Stroke\">Stroke<\/button><button data-o=\"TIA\">TIA<\/button><button data-o=\"Mimic\">Mimic<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"6\"><p>Isolated vertigo when turning in bed<\/p><div class=\"sbtn\"><button data-o=\"Stroke\">Stroke<\/button><button data-o=\"TIA\">TIA<\/button><button data-o=\"Mimic\">Mimic<\/button><\/div><div class=\"sfb\"><\/div><\/div><\/div>",init(){bindSorter(SRT2)},b:[[1, "TIA, stroke, or mimic? Decide each one, then press next."]]},
+{ch:2,tag:"STEP 2 · DIAGNOSE",h:"Which pathway?",stop:1,html:()=>"<div class=\"g2\"><div class=\"r\" data-i=\"1\"><p style=\"margin-top:0\">Which situation?<\/p><div class=\"seg\" role=\"group\" aria-label=\"Which situation?\"><button data-pk=\"now\">Symptoms now<\/button><button data-pk=\"tia\">Symptoms resolved<\/button><button data-pk=\"ac\">TIA on an anticoagulant<\/button><button data-pk=\"abcd\">ABCD2 score?<\/button><button data-pk=\"ct\">CT for every TIA?<\/button><\/div><\/div><div class=\"card dosebox r\" data-i=\"1\"><span id=\"pk3q\" style=\"color:var(--mut)\">Choose an option<\/span><span class=\"pill\" id=\"pk3p\">?<\/span><span id=\"pk3n\"><\/span><\/div><\/div>",init(){bindPick("pk3",PK3)},b:[[1,"Symptoms still present: that's a stroke until proven otherwise. Nine nine nine.",()=>pick("pk3",PK3,"now")],[1,"Symptoms gone: aspirin three hundred milligrams now, and refer to be seen within twenty-four hours.",()=>pick("pk3",PK3,"tia")],[1,"If they take an anticoagulant or have a bleeding disorder, they need imaging first, not aspirin.",()=>pick("pk3",PK3,"ac")],[1,"NICE no longer uses ABCD2 to decide urgency.",()=>pick("pk3",PK3,"abcd")],[1,"Press next when ready."]]},
+{ch:3,tag:"STEP 3 · MANAGE",h:"Prevent the next one",html:()=>"<div class=\"g2\"><div class=\"card  r\" data-i=\"1\"><h3>Antiplatelets<\/h3><ul class=\"b\"><li>Minor stroke or high-risk TIA: aspirin + clopidogrel <b>21 days<\/b><\/li><li>Then <b>clopidogrel 75 mg<\/b> long term<\/li><\/ul><\/div><div class=\"card red r\" data-i=\"2\"><h3>AF<\/h3><ul class=\"b\"><li><b>Anticoagulate<\/b>, not antiplatelets<\/li><li>After TIA: once haemorrhage excluded<\/li><\/ul><\/div><div class=\"card  r\" data-i=\"3\"><h3>Risk factors<\/h3><ul class=\"b\"><li><b>Atorvastatin 80 mg<\/b><\/li><li>Clinic systolic <b>below 130<\/b><\/li><li>Stop smoking, diabetes, sleep apnoea<\/li><\/ul><\/div><div class=\"card  r\" data-i=\"4\"><h3>Carotids<\/h3><ul class=\"b\"><li>Symptomatic stenosis <b>50–99%<\/b><\/li><li>Refer within 1 week; surgery within <b>2 weeks<\/b><\/li><\/ul><\/div><\/div>",b:[[1, "After a minor stroke or high-risk TIA, aspirin and clopidogrel for twenty-one days, then clopidogrel alone."], [2, "With AF, anticoagulate instead of antiplatelets."], [3, "High-intensity statin and a systolic target below one hundred and thirty."], [4, "And symptomatic carotid stenosis of fifty to ninety-nine percent needs surgery within two weeks."]]},
+{ch:4,tag:"STEP 4 · PRESCRIBE / REFER",h:"True, or exam trap?",stop:1,html:()=>"<div class=\"scn r\" data-i=\"1\"><div class=\"sc1\" data-a=\"0\"><p>Use ABCD2 to decide who is seen within 24 hours<\/p><div class=\"sbtn\"><button data-o=\"True\">True<\/button><button data-o=\"Trap\">Trap<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"1\"><p>Car driver after one TIA: 1 month off, no need to notify if recovered<\/p><div class=\"sbtn\"><button data-o=\"True\">True<\/button><button data-o=\"Trap\">Trap<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"2\"><p>Lorry driver after a TIA: 1 month off<\/p><div class=\"sbtn\"><button data-o=\"True\">True<\/button><button data-o=\"Trap\">Trap<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"3\"><p>Check glucose in every suspected stroke<\/p><div class=\"sbtn\"><button data-o=\"True\">True<\/button><button data-o=\"Trap\">Trap<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"4\"><p>In stroke, the forehead is usually spared<\/p><div class=\"sbtn\"><button data-o=\"True\">True<\/button><button data-o=\"Trap\">Trap<\/button><\/div><div class=\"sfb\"><\/div><\/div><div class=\"sc1\" data-a=\"5\"><p>Wait an hour to see if symptoms settle<\/p><div class=\"sbtn\"><button data-o=\"True\">True<\/button><button data-o=\"Trap\">Trap<\/button><\/div><div class=\"sfb\"><\/div><\/div><\/div>",init(){bindSorter(SRT5)},b:[[1, "True, or exam trap? Then press next."]]},
+{ch:5,tag:"QUIZ",h:"Ten questions",stop:1,html:()=>`<div class="qz r in" data-i="0" id="qz"></div>`,init(){quiz()},b:[[0,"Ten questions from the guide. Pick the single best answer for each, and you'll get your score at the end."]]},
+{ch:6,tag:"RECAP",h:"The facts to take into the exam",html:()=>"<div class=\"nums\"><div class=\"num r\" data-i=\"1\"><b>999<\/b>FAST: symptoms now<\/div><div class=\"num r\" data-i=\"2\"><b>Aspirin 300 mg<\/b>TIA: then clinic within 24 hours<\/div><div class=\"num r\" data-i=\"3\"><b>No ABCD2<\/b>everyone is seen within 24 hours<\/div><div class=\"num r\" data-i=\"4\"><b>21 days<\/b>aspirin + clopidogrel, then clopidogrel<\/div><div class=\"num r\" data-i=\"5\"><b>1 month<\/b>no driving after a TIA (Group 1)<\/div><\/div>",b:[[1, "Symptoms now: nine nine nine."], [2, "A TIA: aspirin three hundred, and clinic within twenty-four hours."], [3, "No ABCD2: everyone is seen within twenty-four hours."], [4, "Twenty-one days of dual antiplatelets, then clopidogrel."], [5, "And one month off driving for a car driver. That's topic twenty-one."]]}
+];
+let qi=0,qa=[];
+function quiz(){const q=QS[qi],L="ABCDE",box=$("qz");if(!box)return;const done=qa[qi]!==undefined;
+ box.innerHTML=`<p class="stem"><b>Q${qi+1}.</b> ${q[0]}</p><div class="opts">${q[1].map((o,k)=>`<button class="opt${done?(k===q[2]?" right":k===qa[qi]?" wrong":""):""}" data-o="${k}" ${done?"disabled":""}><i>${L[k]}</i>${o}</button>`).join("")}</div>
+ ${done?`<div class="fb${qa[qi]===q[2]?"":" no"}"><b>${qa[qi]===q[2]?"Correct.":"Not quite: the answer is "+L[q[2]]+"."}</b> ${q[3]}</div>`:""}
+ <div class="qnav"><div class="qdots">${QS.map((_,k)=>`<span class="${qa[k]===undefined?"":qa[k]===QS[k][2]?"ok":"no"}${k===qi?" cur":""}"></span>`).join("")}</div>
+ <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" id="qread">Read aloud</button>${qi>0?`<button class="btn ghost" id="qprev">Back</button>`:""}${qi<QS.length-1?`<button class="btn" id="qnext">Next question</button>`:`<button class="btn" id="qscore">See my score</button>`}</div></div>`;
+ box.querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>{qa[qi]=+b.dataset.o;quiz();const ok=qa[qi]===q[2];try{const K="cgn-v1",D=JSON.parse(localStorage.getItem(K)||"null")||{q:{},log:[],cases:{}},ID=location.pathname.replace(/^.*?(\/[^/]+\/[^/]+\.html)$/,"$1")+"#"+qi,C=D.q[ID]||{box:0,due:0,n:0,ok:0},G=[0,1,3,7,14,30,60];C.n++;if(ok){C.ok++;C.box=Math.min(6,C.box+1);C.due=Date.now()+G[C.box]*864e5}else{C.box=0;C.due=Date.now()+6e5}D.q[ID]=C;D.log.push({t:Date.now(),theme:(document.querySelector("h1")||{}).textContent||"",ok,id:ID});localStorage.setItem(K,JSON.stringify(D))}catch(e){}say((ok?"Correct. ":"Not quite. The answer is "+L[q[2]]+". ")+q[3])});
+ $("qread").onclick=()=>say(`Question ${qi+1}. ${q[0]} `+q[1].map((o,k)=>L[k]+": "+o+".").join(" "));
+ if($("qprev"))$("qprev").onclick=()=>{qi--;quiz()};if($("qnext"))$("qnext").onclick=()=>{qi++;quiz()};if($("qscore"))$("qscore").onclick=score}
+function score(){const n=qa.filter((a,k)=>a===QS[k][2]).length,box=$("qz");
+ const band=n>=9?["var(--teal)","Exam-ready","Move on, and re-test once in 2 weeks."]:n>=7?["var(--blue)","Nearly there","Revisit the chapters behind the questions you missed, then re-test within a week."]:n>=5?["var(--amber)","Shaky","Replay Steps 3 and 4, then repeat the questions in 48 hours."]:["var(--red)","Not yet","Replay the whole lesson before re-attempting."];
+ box.innerHTML=`<div class="card" style="border-top:6px solid ${band[0]}"><div class="res" style="color:${band[0]}">${n} / 10</div><h3 style="color:${band[0]};margin-top:10px">${band[1]}</h3><p style="margin:0 0 12px">${band[2]}</p><button class="btn" id="qagain">Try again</button></div>`;
+ $("qagain").onclick=()=>{qi=0;qa=[];quiz()};say(`You scored ${n} out of 10. ${band[1]}. ${band[2]}`)}
+
+/* ---------- speech ---------- */
+const REP=[[/CHA₂DS₂-VASc|CHA2DS2-VASc/g,"chads vasc"],[/\bDOACs?\b/g,"D O A C"],[/\bTIA\b/g,"T I A"],[/\bPAD\b/g,"P A D"],[/\bWPW\b/g,"W P W"],[/\bCrCl\b/g,"creatinine clearance"],[/\bINR\b/g,"I N R"],[/\bTOE\b/g,"T O E"],[/QRISK3/g,"Q-risk three"],[/non-HDL/g,"non H D L"],[/\bLDL\b/g,"L D L"],[/\bHDL\b/g,"H D L"],[/\bHbA1c\b/g,"H B A 1 C"],[/\beGFR\b/g,"e G F R"],[/\bALT\b/g,"A L T"],[/\bCK\b/g,"C K"],[/\bTSH\b/g,"T S H"],[/\bCKD\b/g,"C K D"],[/\bCVD\b/g,"cardiovascular disease"],[/\bCHD\b/g,"coronary heart disease"],[/\bFH\b/g,"F H"],[/\bMI\b/g,"M I"],[/\bACR\b/g,"A C R"],[/(\d)\s*mg\b/g,"$1 milligrams"],[/mmol\/L/g,"millimoles per litre"],[/(\d)\s*%/g,"$1 percent"],[/(\d)\s*×/g,"$1 times"],[/(\d)\s*[–-]\s*(\d)/g,"$1 to $2"],[/IU\/L/g,"units per litre"]];
+const clean=t=>REP.reduce((s,[a,b])=>s.replace(a,b),t);
+const synth=window.speechSynthesis;let voices=[];
+function loadVoices(){if(!synth)return;voices=synth.getVoices().filter(v=>/^en/i.test(v.lang));if(!voices.length)return;
+ const rank=v=>(/natural|neural|premium|enhanced|siri/i.test(v.name)?4:0)+(/en[-_]GB/i.test(v.lang)?2:0)+(/google uk|sonia|libby|ryan|serena|daniel|kate/i.test(v.name)?1:0);
+ voices.sort((a,b)=>rank(b)-rank(a));let keep=voiceS.value;
+ voiceS.innerHTML=`<option value="">Captions only</option>`+voices.map((v,k)=>`<option value="${k}">${v.name.replace(/[<>&"]/g,"")} (${v.lang})</option>`).join("");
+ voiceS.value=keep===""&&!voiceS.dataset.touched?"0":keep}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices}else{$("vhint").textContent="This browser can't speak the narration, so captions only."}
+voiceS.onchange=()=>{voiceS.dataset.touched=1};
+function say(text,onend){cap.textContent=text;const v=voices[+voiceS.value];
+ if(synth)synth.cancel();
+ if(!synth||voiceS.value===""||!v){if(onend)timer=setTimeout(onend,(1200+text.split(/\s+/).length*330)/+speedS.value);return}
+ const u=new SpeechSynthesisUtterance(clean(text));u.voice=v;u.lang=v.lang;u.rate=+speedS.value;
+ let fired=false;const fin=()=>{if(fired)return;fired=true;clearTimeout(guard);if(onend)timer=setTimeout(onend,350)};
+ u.onend=fin;u.onerror=fin;const guard=setTimeout(fin,(4000+text.split(/\s+/).length*700)/+speedS.value);synth.speak(u)}
+
+/* ---------- player ---------- */
+let si=0,bi=-1,playing=false,timer=null;
+$("rail").innerHTML=CH.map((c,k)=>`<button data-ch="${k}" style="--c:${C[k]}">${c}</button>`).join("");
+$("rail").querySelectorAll("button").forEach(b=>b.onclick=()=>{const k=S.findIndex(s=>s.ch===+b.dataset.ch);go(k,true)});
+function render(){const s=S[si];document.documentElement.style.setProperty("--c",C[s.ch]);$("player").style.setProperty("--c",C[s.ch]);
+ stage.innerHTML=`<span class="tag">${s.tag}</span><h2>${s.h}</h2>`+s.html();if(s.init)s.init();if(si===S.length-1)stage.insertAdjacentHTML("beforeend",`<div class="exitbar r" data-i="${Math.max(0,...s.b.map(x=>x[0]))}"><a class="exit" href="./">Exit lesson ✓</a><a class="exit2" href="../guides/Core_Cardiology_for_the_GP_AKT.pdf" target="_blank" rel="noopener">Open the PDF guide</a><a class="exit2" href="../akt/">Practise questions</a></div>`);
+ $("rail").querySelectorAll("button").forEach(b=>b.classList.toggle("on",+b.dataset.ch===s.ch));
+ $("prog").style.width=((si+1)/S.length*100)+"%";$("next").classList.remove("pulse")}
+function reveal(i){stage.querySelectorAll(".r").forEach(e=>{const d=+e.dataset.i;e.classList.toggle("in",d<=i);e.classList.toggle("now",d===i&&d>0)})}
+function beat(){const s=S[si];bi++;
+ if(bi>=s.b.length){if(s.stop||si===S.length-1){stop();if(si<S.length-1){$("next").classList.add("pulse");cap.textContent="Your turn. Press ▶▶ for the next scene when you're ready."}return}
+  timer=setTimeout(()=>{si++;bi=-1;render();beat()},700);return}
+ const [i,t,f]=s.b[bi];reveal(i);if(f)f();say(t,()=>{if(playing)beat()})}
+function start(){playing=true;playB.textContent="❚❚ Pause";if(bi>=S[si].b.length-1&&S[si].b.length){bi=-1;render()}beat()}
+function stop(){playing=false;playB.textContent="▶ Play";clearTimeout(timer);if(synth)synth.cancel()}
+function go(k,autoplay){stop();si=Math.max(0,Math.min(S.length-1,k));bi=-1;render();
+ if(autoplay){start()}else{reveal(99);cap.textContent=S[si].b[0][1]}}
+playB.onclick=()=>playing?stop():(bi>=0&&bi<S[si].b.length?(bi--,start()):start());
+$("next").onclick=()=>go(si+1,true);$("prev").onclick=()=>go(si-1,true);
+speedS.onchange=()=>{};
+document.addEventListener("keydown",e=>{if(/INPUT|SELECT|BUTTON/.test(e.target.tagName))return;if(e.code==="Space"){e.preventDefault();playB.click()}if(e.key==="ArrowRight")$("next").click();if(e.key==="ArrowLeft")$("prev").click()});
+render();reveal(99);
+}
+</script>
+<script src="/time.js" defer></script>
+</body>
+</html>

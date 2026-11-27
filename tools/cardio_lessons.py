@@ -1,5 +1,5 @@
-"""Core Cardiology lessons for topics 1, 3-6 and 8-13. Run from the site root: python3 tools/cardio_lessons.py
-Topics 8-13 take their quiz from the PDF sources (topicNN.py); topics 1-6 from questions parsed out of the original PDF (old/qNN.json)."""
+"""Core Cardiology lessons for topics 1, 3-6, 8-13, 21 and 22. Run from the site root: python3 tools/cardio_lessons.py
+Topics 8-13, 21 and 22 take their quiz from the PDF sources (topicNN.py); topics 1-6 from questions parsed out of the original PDF (old/qNN.json)."""
 import json, sys, importlib
 sys.path.insert(0, "tools"); sys.path.insert(0, "/home/claude/af")
 from make_lesson import build
@@ -433,6 +433,88 @@ L.append(dict(COMMON, file="cardiology/ecg-interpretation.html", num=6, title="E
    say=["Many common drugs prolong the QT, especially macrolides, citalopram, antipsychotics and methadone.", "Others slow the heart: beta-blockers, rate-limiting calcium-channel blockers, digoxin and donepezil.", "Digoxin toxicity causes nausea, confusion and yellow-green vision.", "And a normal ECG never excludes ACS or PE."]),
  dict(kind="quiz"),
  dict(kind="recap", items=[("Regular? P waves?", "ask before naming any rhythm", "Ask: is it regular, and is there a P wave before every QRS?"), ("500 ms", "QTc high risk: stop QT drugs", "A QTc over five hundred is high risk."), ("Peaked T", "hyperkalaemia: emergency", "Peaked T waves with high potassium: emergency."), ("New LBBB + pain", "treat as ACS: 999", "New LBBB with chest pain: treat as ACS."), ("Reassure", "athlete brady · first-degree · night Wenckebach", "And reassure the fit athlete with a slow heart or night-time Wenckebach. That's topic six.")])]))
+
+# ---------------------------------------------------------------- 21 TIA and stroke
+L.append(dict(COMMON, file="cardiology/tia-stroke.html", num=21, title="TIA and stroke recognition", sources="NICE NG128 · RCP Stroke 2023 · DVLA", qs=qs_new(21), scenes=[
+ dict(kind="intro", h="What examiners test", items=["TIA, stroke, or a <b>mimic</b>?", "<b>Aspirin 300 mg</b> and clinic within <b>24 hours</b>; no ABCD2", "Stroke: <b>999 by FAST</b>", "<b>Secondary prevention</b>, carotids and driving"],
+  say=["Topic twenty-one: TIA and stroke recognition. Questions test four things.", "Telling a TIA or stroke from a mimic.", "For a TIA: aspirin three hundred milligrams and a specialist clinic within twenty-four hours, without ABCD2 scoring.", "For a stroke: nine nine nine, using FAST.", "And secondary prevention, carotid surgery and driving."]),
+ dict(kind="sorter", ch=1, h="TIA, stroke or mimic?", opts=["Stroke", "TIA", "Mimic"], data=[
+   ["Right arm weak for 20 minutes this morning, now normal", "TIA", "Resolved focal deficit"],
+   ["Facial droop and slurred speech for the last hour, ongoing", "Stroke", "Symptoms now: 999"],
+   ["Painless monocular 'curtain' for 5 minutes", "TIA", "Amaurosis fugax"],
+   ["Confused and weak on one side, glucose 2.1", "Mimic", "Hypoglycaemia"],
+   ["Facial weakness including the forehead, limbs normal", "Mimic", "Bell's palsy"],
+   ["Spreading tingling and zigzag lights over 20 minutes, then headache", "Mimic", "Migraine aura"],
+   ["Isolated vertigo when turning in bed", "Mimic", "BPPV, not TIA"]],
+   say="TIA, stroke, or mimic? Decide each one, then press next."),
+ dict(kind="picker", ch=2, h="Which pathway?", q="Which situation?", opts=[
+   ("now", "Symptoms now", "999", "Hyperacute stroke unit; CT; thrombolysis within 4.5 h", "red"),
+   ("tia", "Symptoms resolved", "Aspirin 300 mg", "Refer now: TIA clinic within 24 hours of onset", "teal"),
+   ("ac", "TIA on an anticoagulant", "Image first", "Same-day assessment; no aspirin"),
+   ("abcd", "ABCD2 score?", "Don't use it", "Everyone is seen within 24 hours"),
+   ("ct", "CT for every TIA?", "No", "MRI if imaging needed; carotid duplex")],
+   say=[("now", "Symptoms still present: that's a stroke until proven otherwise. Nine nine nine."), ("tia", "Symptoms gone: aspirin three hundred milligrams now, and refer to be seen within twenty-four hours."), ("ac", "If they take an anticoagulant or have a bleeding disorder, they need imaging first, not aspirin."), ("abcd", "NICE no longer uses ABCD2 to decide urgency."), (None, "Press next when ready.")]),
+ dict(kind="cards", ch=3, h="Prevent the next one", grid="g2", cards=[
+   ("Antiplatelets", ["Minor stroke or high-risk TIA: aspirin + clopidogrel <b>21 days</b>", "Then <b>clopidogrel 75 mg</b> long term"]),
+   ("AF", ["<b>Anticoagulate</b>, not antiplatelets", "After TIA: once haemorrhage excluded"], "red"),
+   ("Risk factors", ["<b>Atorvastatin 80 mg</b>", "Clinic systolic <b>below 130</b>", "Stop smoking, diabetes, sleep apnoea"]),
+   ("Carotids", ["Symptomatic stenosis <b>50–99%</b>", "Refer within 1 week; surgery within <b>2 weeks</b>"])],
+   say=["After a minor stroke or high-risk TIA, aspirin and clopidogrel for twenty-one days, then clopidogrel alone.", "With AF, anticoagulate instead of antiplatelets.", "High-intensity statin and a systolic target below one hundred and thirty.", "And symptomatic carotid stenosis of fifty to ninety-nine percent needs surgery within two weeks."]),
+ dict(kind="sorter", ch=4, h="True, or exam trap?", opts=TRAP, data=[
+   ["Use ABCD2 to decide who is seen within 24 hours", "Trap", "Everyone is seen within 24 hours"],
+   ["Car driver after one TIA: 1 month off, no need to notify if recovered", "True", "Group 1"],
+   ["Lorry driver after a TIA: 1 month off", "Trap", "Group 2: 1 year, notify"],
+   ["Check glucose in every suspected stroke", "True", "Hypoglycaemia mimics stroke"],
+   ["In stroke, the forehead is usually spared", "True", "Upper motor neurone"],
+   ["Wait an hour to see if symptoms settle", "Trap", "Symptoms now: 999"]],
+   say="True, or exam trap? Then press next."),
+ dict(kind="quiz"),
+ dict(kind="recap", items=[("999", "FAST: symptoms now", "Symptoms now: nine nine nine."), ("Aspirin 300 mg", "TIA: then clinic within 24 hours", "A TIA: aspirin three hundred, and clinic within twenty-four hours."), ("No ABCD2", "everyone is seen within 24 hours", "No ABCD2: everyone is seen within twenty-four hours."), ("21 days", "aspirin + clopidogrel, then clopidogrel", "Twenty-one days of dual antiplatelets, then clopidogrel."), ("1 month", "no driving after a TIA (Group 1)", "And one month off driving for a car driver. That's topic twenty-one.")])]))
+
+# ---------------------------------------------------------------- 22 Pacemaker and ICD problems
+L.append(dict(COMMON, file="cardiology/pacemaker-icd-problems.html", num=22, title="Pacemaker and ICD problems", sources="NICE TA88 · TA314 · BHRS · DVLA", qs=qs_new(22), scenes=[
+ dict(kind="intro", h="What examiners test", items=["Spotting <b>device complications</b>", "The <b>ICD shock plan</b>", "<b>Everyday advice</b>: phones, MRI, airports, driving", "<b>End of life</b> and cremation"],
+  say=["Topic twenty-two: pacemaker and ICD problems. Questions test four things.", "Spotting device complications.", "What to do after an ICD shock.", "Everyday advice: phones, MRI, airports and driving.", "And end of life: switching off shocks, and removal before cremation."]),
+ dict(kind="cards", ch=1, h="Which device?", grid="g2", cards=[
+   ("Pacemaker", ["Paces a slow heart", "Complete block, Mobitz II, sick sinus"]),
+   ("ICD", ["Treats VT or VF with fast pacing or a <b>shock</b>", "After arrest, VT, or high risk"], "red"),
+   ("CRT", ["Paces both ventricles", "Heart failure, EF 35% or less, LBBB"]),
+   ("Leadless", ["Capsule in the right ventricle", "No pocket or leads"])],
+   pearl="Ask for the <b>device card</b>: it names the device and the centre to call.",
+   say=["A pacemaker paces a slow heart.", "An ICD detects dangerous fast rhythms and treats them, by fast pacing or a shock.", "CRT paces both ventricles to help a failing heart.", "Leadless pacemakers sit inside the heart without a pocket.", "Every patient carries a device card: ask for it."]),
+ dict(kind="sorter", ch=2, h="What's the problem?", opts=["Infection", "Haematoma", "Pacemaker syndrome", "Lead/phrenic", "Twiddler's"], data=[
+   ["Red, warm, discharging pocket at 5 weeks", "Infection", "Same day; never aspirate"],
+   ["Swollen bruised pocket on day 2, on apixaban", "Haematoma", "Same-day device team if tense"],
+   ["Tired, dizzy, neck pulsation with a ventricular-only pacemaker", "Pacemaker syndrome", "Loss of AV synchrony"],
+   ["Persistent hiccups after implant", "Lead/phrenic", "Diaphragm stimulation"],
+   ["Keeps fiddling with the box; leads have pulled back", "Twiddler's", "Lead dislodgement"],
+   ["Skin stretched thin and shiny over the box", "Infection", "Impending erosion: treat as infection"]],
+   say="Name each device problem, then press next."),
+ dict(kind="picker", ch=3, h="The ICD shock plan", q="What happened?", opts=[
+   ("one", "One shock, feels well", "Device clinic", "Same or next working day", "teal"),
+   ("two", "Two or more shocks", "999", "Electrical storm or device fault; don't drive", "red"),
+   ("unwell", "One shock, unwell", "999", "Chest pain, breathless or blacked out", "red"),
+   ("magnet", "Magnet over ICD", "Stops shocks", "Pacing continues; hospital tool with monitoring")],
+   say=[("one", "One shock, and feeling well: contact the device clinic the same or next working day."), ("two", "Two or more shocks: nine nine nine."), ("unwell", "One shock but unwell: also nine nine nine."), ("magnet", "A magnet stops ICD shocks but not pacing. It's used in hospital, with monitoring."), (None, "Press next when ready.")]),
+ dict(kind="cards", ch=3, h="Everyday life", grid="g2", cards=[
+   ("Safe", ["Microwaves, computers, household appliances", "Phones and headphones <b>15 cm</b> from the device"]),
+   ("Take care", ["Airport: show the card; no wand over the device", "Induction hobs, strong magnets", "No heavy lifting above the shoulder for 4–6 weeks"]),
+   ("Procedures", ["<b>MRI</b> only if MRI-conditional", "Tell surgeons: diathermy", "Avoid TENS near the device"], "red"),
+   ("Follow-up", ["Yearly clinic checks", "Remote monitoring at home"])],
+   say=["Everyday appliances are safe; keep phones about fifteen centimetres away.", "At the airport, show the card. Avoid heavy arm lifting for a few weeks after implant.", "MRI only if the whole system is MRI-conditional, and tell surgeons about the device.", "Checks are usually yearly, often with home monitoring."]),
+ dict(kind="sorter", ch=4, h="Driving (Group 1)", opts=["1 week", "1 month", "6 months"], data=[
+   ["Pacemaker implant (notify)", "1 week", "Group 2: 6 weeks"],
+   ["Prophylactic ICD (notify)", "1 month", "Group 2: permanent bar"],
+   ["ICD after VT with collapse (notify)", "6 months", "Group 2: permanent bar"],
+   ["Appropriate ICD shock", "6 months", "Group 1"],
+   ["Pacemaker box change", "1 week", "No need to notify"]],
+   say="How long off driving for a car driver? Then press next."),
+ dict(kind="cards", ch=4, h="End of life", grid="g2", cards=[
+   ("Deactivate shocks", ["Discuss early, and with DNACPR", "Pacing continues: it doesn't cause death"]),
+   ("After death", ["<b>Remove before cremation</b>: can explode", "Not needed for burial"], "red")],
+   say=["Near the end of life, discuss switching off the ICD's shocks. Pacing carries on, so this doesn't cause death.", "After death, devices must be removed before cremation."]),
+ dict(kind="quiz"),
+ dict(kind="recap", items=[("999", "2+ shocks, or shock and unwell", "Two or more shocks, or a shock and unwell: nine nine nine."), ("Clinic", "one shock and well", "One shock and well: device clinic."), ("Never aspirate", "red pocket: same-day device team", "A red pocket is infection: same day, never aspirate."), ("1 week", "pacemaker: no driving, notify", "A pacemaker: one week off driving, and notify."), ("Remove", "before cremation; deactivate shocks at end of life", "And remove devices before cremation. That's topic twenty-two.")])]))
 
 if __name__ == "__main__":
     import sys as _s
