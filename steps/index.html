@@ -54,6 +54,8 @@ details.ex summary{cursor:pointer;color:var(--mut);font-size:14px}
 .hitb:focus-visible{outline:3px solid var(--c);outline-offset:2px}.hitb b{display:block}.hitb small{color:var(--mut);font-size:13px}
 .hit.open .hitb b{color:var(--c)}
 mark{background:color-mix(in srgb,#f2c94c 45%,transparent);color:inherit;border-radius:3px;padding:0 1px}
+.box5 li.now{background:color-mix(in srgb,var(--c) 12%,var(--card));border-radius:10px;font-weight:700}.box5 li.now:after{content:"You just applied this step";grid-column:2;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--c)}
+.case{font-size:18px;line-height:1.5;margin:0 0 4px}.why{border-left:4px solid var(--c);padding:8px 14px;margin:14px 0;background:color-mix(in srgb,var(--c) 6%,var(--card));border-radius:0 10px 10px 0}
 .box5 li.nonum{grid-template-columns:minmax(0,1fr) auto}.box5 li.nonum:before{display:none}
 @media(prefers-reduced-motion:reduce){.stp.bad,.placed li{animation:none}}
 </style>
@@ -63,10 +65,11 @@ mark{background:color-mix(in srgb,#f2c94c 45%,transparent);color:inherit;border-
 <header class="band cat" style="--c:#1b6b5a"><div class="in">
 <a class="back" href="../">← Home</a>
 <h1>NICE in 5 Steps</h1>
-<p class="lead">A searchable library of management steps, five per topic, with a quick test every day: put the steps in order, then recall the missing one.</p>
+<p class="lead">A searchable library of management steps, five per topic, with one patient case a day: choose what to do, then see the steps you just applied.</p>
 </div></header>
 <main><div class="in" id="app"></div></main>
 <script src="data.js"></script>
+<script src="cases.js"></script>
 <script>
 {
 const $=id=>document.getElementById(id),DAY=864e5,K="cgn-steps";
@@ -90,9 +93,9 @@ const norm=t=>String(t).toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]
 function home(){const D=load(),list=dueList(),today=D.days[dkey(new Date())]||0;
  const learnt=STEPS.filter(s=>(D.t[s.id]||{}).box>=3).length,cats=[...new Set(STEPS.map(s=>s.cat))];
  $("app").innerHTML=`<div class="kpis"><div class="kpi"><b>${list.length?"1":"✓"}</b><span>${list.length?"topic due today":"today's topic done"}</span></div><div class="kpi"><b>${today}</b><span>tested today</span></div><div class="kpi"><b>${streak(D)}</b><span>day streak</span></div><div class="kpi"><b>${STEPS.filter(x=>D.t[x.id]).length} / ${STEPS.length}</b><span>topics tested so far</span></div></div>
- <div class="card"><h2>Today's test</h2><p style="margin-top:0">${list.length?`Today: <b>${esc(list[0].topic)}</b>. About a minute.`:"Done for today. Come back tomorrow, or test yourself on any topic in the library."}</p>
-  <div class="row">${list.length?`<button class="btn" id="go">Start today's test</button>`:`<button class="btn ghost" id="any">Practise 3 random topics</button>`}</div>
-  <p class="src" style="margin-bottom:0">One topic a day. A topic you miss comes back first; then ones you haven't tried; then the one you tested longest ago.</p></div>
+ <div class="card"><h2>Today's test</h2><p style="margin-top:0">${list.length?`Today: <b>${esc(list[0].topic)}</b>. One patient case, about a minute.`:"Done for today. Come back tomorrow, or test yourself on any topic in the library."}</p>
+  <div class="row">${list.length?`<button class="btn" id="go">Start today's test</button>`:`<button class="btn ghost" id="any">Practise 3 random cases</button>`}</div>
+  <p class="src" style="margin-bottom:0">One topic a day, one case at a time. A topic you miss comes back first; then ones you haven't tried; then the one you tested longest ago. Each topic has five cases, one for each step.</p></div>
  <div class="card"><h2>Library</h2>
   <label class="src" for="lq">Search by topic, drug, test or keyword</label>
   <input id="lq" type="search" placeholder="e.g. apixaban, Wells, PEST, eczema" value="${esc(LQ)}" autocomplete="off" style="width:100%;font:inherit;font-size:17px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);margin:6px 0 10px">
@@ -119,31 +122,28 @@ function results(){const D=load(),q=norm(LQ).trim(),words=q.split(/\s+/).filter(
 
 /* ---------- test ---------- */
 let Q,qi,res;
-function run(list){Q=list;qi=0;res=[];order()}
-function bar(){return `<div class="prog"><i style="width:${(qi/Q.length)*100}%"></i></div><div class="row" style="justify-content:space-between"><span class="src">Topic ${qi+1} of ${Q.length}</span><a href="#" id="quit" class="src">Stop</a></div>`}
+function run(list){Q=list.filter(s=>(CASES[s.id]||[]).length);qi=0;res=[];if(Q.length)ask();else home()}
+function bar(){return `<div class="prog"><i style="width:${(qi/Q.length)*100}%"></i></div><div class="row" style="justify-content:space-between"><span class="src">Case ${qi+1} of ${Q.length}</span><a href="#" id="quit" class="src">Stop</a></div>`}
 function bindQuit(){$("quit").onclick=e=>{e.preventDefault();home()}}
-function order(){const s=Q[qi],pile=shuffle(s.steps.map((t,k)=>[t,k]));let next=0,miss=0;
- const draw=()=>{$("app").innerHTML=`${bar()}<div class="card"><div class="phase">Part 1 of 2 · put them in order</div><h2>${esc(s.topic)}</h2><p style="margin-top:0">Tap the steps from first to last.</p>
-  <ol class="box5 placed">${s.steps.slice(0,next).map(t=>`<li><span>${esc(t)}</span></li>`).join("")}</ol>
-  <div class="pile">${pile.filter(([,k])=>k>=next).map(([t,k])=>`<button class="stp" data-k="${k}">${esc(t)}</button>`).join("")}</div>
-  ${next===5?`<div class="fb ${miss?"no":"ok"}">${miss?`${miss} wrong tap${miss>1?"s":""}. Read the order once more.`:"Perfect order."}</div><div class="row" style="margin-top:12px"><button class="btn" id="cont">Part 2 →</button></div>`:""}</div>`;
+function pickCase(s){/* a case you missed comes back first, then unseen ones, then the one seen longest ago */
+ const D=load(),C=D.c||{},L=CASES[s.id].map((c,i)=>[i,C[s.id+":"+i]]);
+ const rank=([,r])=>!r?[1,0]:!r.ok?[0,r.last]:[2,r.last];
+ L.sort((a,b)=>{const p=rank(a),q=rank(b);return p[0]-q[0]||p[1]-q[1]||Math.random()-.5});return L[0][0]}
+function ask(){const s=Q[qi],ci=pickCase(s),c=CASES[s.id][ci],opts=shuffle(c.o.map((t,k)=>[t,k===0]));
+ const draw=(pick)=>{const done=pick!==undefined,ok=done&&opts[pick][1];
+  $("app").innerHTML=`${bar()}<div class="card"><div class="phase">${esc(CATN[s.cat]||s.cat)} · ${esc(s.topic)}</div>
+  <h2>What would you do?</h2><p class="case">${esc(c.s)}</p>
+  <div class="pile" role="group" aria-label="Options">${opts.map(([t,r],k)=>`<button class="opt ${done?(r?"right":k===pick?"wrong":""):""}" data-p="${k}" ${done?"disabled":""}>${esc(t)}</button>`).join("")}</div>
+  ${done?`<div class="fb ${ok?"ok":"no"}" role="status">${ok?"Correct.":"Not quite. The answer is: "+esc(c.o[0])}</div>
+  <div class="why">${esc(c.e)}</div>
+  <div class="phase" style="margin-top:6px">The 5 steps · ${esc(s.src)}</div>
+  <ol class="box5 placed" style="margin-top:6px">${s.steps.map((t,k)=>`<li class="${k===c.k-1?"now":""}"><span>${esc(t)}</span></li>`).join("")}</ol>
+  <div class="row" style="margin-top:12px"><button class="btn" id="nx">${qi<Q.length-1?"Next case →":"See today's result"}</button><a class="btn ghost" href="${s.lesson}">Open the lesson</a></div>`:""}</div>`;
   bindQuit();
-  document.querySelectorAll(".stp").forEach(b=>b.onclick=()=>{if(+b.dataset.k===next){next++;draw()}else{miss++;b.classList.remove("bad");void b.offsetWidth;b.classList.add("bad")}});
-  if($("cont")){$("cont").focus();$("cont").onclick=()=>recall(miss===0)}};
+  if(!done)document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{const p=+b.dataset.p;record(s,opts[p][1],ci);draw(p)});
+  else{$("nx").focus();$("nx").onclick=()=>{qi++;qi<Q.length?ask():finish()}}};
  draw()}
-function recall(okOrder){const s=Q[qi],h=Math.floor(Math.random()*5);
- const pool=[...shuffle(STEPS.filter(x=>x.id!==s.id&&x.cat===s.cat).flatMap(x=>x.steps.filter((t,k)=>Math.abs(k-h)<=1))),...shuffle(STEPS.filter(x=>x.id!==s.id).flatMap(x=>x.steps))];const opts=shuffle([s.steps[h],...pool.slice(0,3)]);
- const draw=(pick)=>{const done=pick!==undefined,ok=done&&opts[pick]===s.steps[h];
-  $("app").innerHTML=`${bar()}<div class="card"><div class="phase">Part 2 of 2 · recall the missing step</div><h2>${esc(s.topic)}</h2>
-  <ol class="box5">${s.steps.map((t,k)=>`<li class="${k===h&&!done?"hid":""}"><span>${k===h&&!done?"Which step is missing?":esc(t)}</span></li>`).join("")}</ol>
-  <div class="pile">${opts.map((o,k)=>`<button class="opt ${done?(o===s.steps[h]?"right":k===pick?"wrong":""):""}" data-p="${k}" ${done?"disabled":""}>${esc(o)}</button>`).join("")}</div>
-  ${done?`<div class="fb ${ok&&okOrder?"ok":"no"}">${ok&&okOrder?"Passed: see you tomorrow.":ok?"Right step, but the order needs another look.":"Not quite: read the steps again."}</div>
-  <div class="row" style="margin-top:12px"><button class="btn" id="nx">${qi<Q.length-1?"Next topic →":"See today's result"}</button><a class="btn ghost" href="${s.lesson}">Open the lesson</a></div>`:""}</div>`;
-  bindQuit();
-  if(!done)document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{const p=+b.dataset.p;record(s,okOrder&&opts[p]===s.steps[h]);draw(p)});
-  else{$("nx").focus();$("nx").onclick=()=>{qi++;qi<Q.length?order():finish()}}};
- draw()}
-function record(s,pass){const D=load(),r=D.t[s.id]||{box:0,due:0,n:0,ok:0,first:dkey(new Date())},now=Date.now();r.n++;r.last=now;
+function record(s,pass,ci){const D=load();D.c=D.c||{};D.c[s.id+":"+ci]={ok:pass,last:Date.now()};const r=D.t[s.id]||{box:0,due:0,n:0,ok:0,first:dkey(new Date())},now=Date.now();r.n++;r.last=now;
  if(pass){r.ok++;r.box=Math.min(6,r.box+1)}else{r.box=0}r.due=startOfDay(now)+DAY;/* every topic comes back daily */
  D.t[s.id]=r;const k=dkey(new Date());D.days[k]=(D.days[k]||0)+1;save(D);res.push([s,pass])}
 function finish(){const p=res.filter(x=>x[1]).length,D=load();
