@@ -34,7 +34,7 @@ td.n,th.n{text-align:right}
 <header class="band cat" style="--c:#8a5a00"><div class="in">
 <a class="back" href="../">← Home</a>
 <h1>My bank</h1>
-<p class="lead">Your private AKT questions: ★5 from recalls, ★3 from other banks, rewritten as new questions. They're never part of the public site.</p>
+<p class="lead">Your private AKT questions: ★5 top priority, ★3 priority. They're never part of the public site.</p>
 </div></header>
 <main><div class="in" id="app"></div></main>
 <script>
@@ -57,7 +57,7 @@ function draw(){const d=load(),Q=Object.values(d.q),log=prac().log||[];
  const mine=log.filter(x=>ids.has(x.id)),acc=mine.length?Math.round(mine.filter(x=>x.ok).length/mine.length*100)+"%":"–";
  const areas={};Q.forEach(q=>{const a=areas[q.area]=areas[q.area]||{five:0,three:0,ids:new Set()};q.stars===5?a.five++:a.three++;a.ids.add(q.id)});
  const st=window.RTGSync&&RTGSync.status(),on=window.RTGSync&&RTGSync.enabled();
- $("app").innerHTML=`<div class="kpis"><div class="kpi"><b>${Q.length}</b><span>questions</span></div><div class="kpi"><b class="star">★5 ${five}</b><span>from recalls</span></div><div class="kpi"><b class="star" style="color:var(--mut)">★3 ${three}</b><span>from other banks</span></div><div class="kpi"><b>${acc}</b><span>correct so far (${mine.length} answers)</span></div></div>
+ $("app").innerHTML=`<div class="kpis"><div class="kpi"><b>${Q.length}</b><span>questions</span></div><div class="kpi"><b class="star">★5 ${five}</b><span>top priority</span></div><div class="kpi"><b class="star" style="color:var(--mut)">★3 ${three}</b><span>priority</span></div><div class="kpi"><b>${acc}</b><span>correct so far (${mine.length} answers)</span></div></div>
  ${on?"":`<div class="card" style="border-color:var(--bad)"><b>Sync is off on this device.</b> Your bank is only in this browser until you <a href="../sync/">turn on sync</a>.</div>`}
  <div class="card"><h2>Add questions</h2><p style="margin-top:0">Import the file Claude sends you. Importing the same file twice just updates it.</p>
   <div class="row"><label class="btn" for="imp">Import a question file</label><input id="imp" type="file" accept=".json" multiple class="hide">${Q.length?`<a class="btn ghost" href="../akt/?src=5">Practise ★5 only</a><a class="btn ghost" href="../akt/?src=mine">Practise all my bank</a>`:""}</div>
@@ -67,7 +67,7 @@ function draw(){const d=load(),Q=Object.values(d.q),log=prac().log||[];
  <div class="card"><h2>Batches</h2><table><tbody>${Object.entries(d.batches).sort((a,b)=>b[1].imported-a[1].imported).map(([k,b])=>`<tr><td>${esc(b.label)}<div class="note" style="margin:0">${new Date(b.imported).toLocaleDateString("en-GB")} · ${Q.filter(q=>q.batch===k).length} questions</div></td><td class="n"><button class="btn danger" data-del="${esc(k)}" style="padding:6px 12px">Delete</button></td></tr>`).join("")||`<tr><td class="note">No batches yet.</td></tr>`}</tbody></table></div>`:""}
  <div class="card"><h2>Keeping it private</h2><ul style="margin:0;padding-left:20px">
   <li>Questions live in this browser and in the private sync folder on your server, never in the public site.</li>
-  <li>They're new questions written around the learning point, not copies of bank or exam wording, and they carry no source.</li>
+  <li>They're original questions written around key learning points, and they carry no source.</li>
   <li>For your own revision only: don't share the files or this page's export.</li></ul>
   <div class="row" style="margin-top:12px">${Q.length?`<button class="btn ghost" id="exp">Export my bank</button><button class="btn danger" id="wipe">Delete all</button>`:""}</div></div>`;
  $("imp").onchange=e=>{const fs=[...e.target.files];Promise.all(fs.map(f=>f.text())).then(ts=>{const r=ts.map(importText);MSG=[r.every(x=>x[0]),r.map(x=>x[1]).join(" ")];draw();if(window.RTGSync)RTGSync.now()});e.target.value=""};
