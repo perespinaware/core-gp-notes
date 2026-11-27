@@ -68,7 +68,9 @@ const AKT_AREAS=[
   ["cv-ie","Infective endocarditis and prophylaxis",3,{notes:1,lesson:1,bank:["Infective endocarditis"]}],
   ["cv-peri","Pericarditis",3,{notes:1,lesson:1,bank:["Pericarditis"]}],
   ["cv-rf","Rheumatic fever and rheumatic heart disease",3,{notes:1,lesson:1,bank:["Rheumatic fever and rheumatic heart disease"]}],
-  ["cv-device","Pacemaker and ICD problems",3,{notes:1,lesson:1,bank:["Pacemaker and ICD problems"]}]]},
+  ["cv-device","Pacemaker and ICD problems",3,{notes:1,lesson:1,bank:["Pacemaker and ICD problems"]}],
+  ["cv-angina","Stable angina",1,{notes:1,lesson:1,bank:["Stable angina"]}],
+  ["cv-veins","Varicose veins and venous leg ulcers",2,{notes:1,lesson:1,bank:["Varicose veins and venous leg ulcers"]}]]},
  {area:"Respiratory health",domain:"Clinical",flag:"Flagged in 5 sittings; diagnosis and management in AKT 60",topics:[
   ["re-asthma","Asthma in adults and children",1,{}],
   ["re-copd","COPD",1,{}],

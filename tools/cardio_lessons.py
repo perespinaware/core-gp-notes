@@ -1,5 +1,5 @@
-"""Core Cardiology lessons for topics 1, 3-6, 8-13, 21 and 22. Run from the site root: python3 tools/cardio_lessons.py
-Topics 8-13, 21 and 22 take their quiz from the PDF sources (topicNN.py); topics 1-6 from questions parsed out of the original PDF (old/qNN.json)."""
+"""Core Cardiology lessons for topics 1, 3-6, 8-13 and 21-24. Run from the site root: python3 tools/cardio_lessons.py
+Topics 8-13 and 21-24 take their quiz from the PDF sources (topicNN.py); topics 1-6 from questions parsed out of the original PDF (old/qNN.json)."""
 import json, sys, importlib
 sys.path.insert(0, "tools"); sys.path.insert(0, "/home/claude/af")
 from make_lesson import build
@@ -515,6 +515,72 @@ L.append(dict(COMMON, file="cardiology/pacemaker-icd-problems.html", num=22, tit
    say=["Near the end of life, discuss switching off the ICD's shocks. Pacing carries on, so this doesn't cause death.", "After death, devices must be removed before cremation."]),
  dict(kind="quiz"),
  dict(kind="recap", items=[("999", "2+ shocks, or shock and unwell", "Two or more shocks, or a shock and unwell: nine nine nine."), ("Clinic", "one shock and well", "One shock and well: device clinic."), ("Never aspirate", "red pocket: same-day device team", "A red pocket is infection: same day, never aspirate."), ("1 week", "pacemaker: no driving, notify", "A pacemaker: one week off driving, and notify."), ("Remove", "before cremation; deactivate shocks at end of life", "And remove devices before cremation. That's topic twenty-two.")])]))
+
+# ---------------------------------------------------------------- 23 Stable angina
+L.append(dict(COMMON, file="cardiology/stable-angina.html", num=23, title="Stable angina", sources="NICE CG126 · CG95 · DVLA", qs=qs_new(23), scenes=[
+ dict(kind="intro", h="What examiners test", items=["<b>Classify</b> the chest pain", "<b>CTCA</b> as the first test", "GTN plus a <b>beta-blocker or CCB</b>, then what next", "<b>Drug traps</b> and when to refer"],
+  say=["Topic twenty-three: stable angina. Questions test four things.", "Classifying chest pain as typical, atypical or non-anginal.", "Choosing CT coronary angiography as the first test.", "GTN plus a beta-blocker or calcium-channel blocker, and what comes next.", "And the drug traps, and when to refer for revascularisation."]),
+ dict(kind="toggles", ch=1, h="Typical, atypical or non-anginal?", q="Which features are present?", items=[["Constricting discomfort in chest, neck, jaw, shoulders or arms", 1, "1"], ["Brought on by exertion", 1, "1"], ["Relieved by rest or GTN within about 5 minutes", 1, "1"]],
+   fn='s=>["Features",s+" of 3",s===3?"stop":s===2?"mid":"ok",s===3?"Typical angina: CTCA":s===2?"Atypical angina: CTCA":"Non-anginal: CTCA only if the ECG shows ST-T changes or Q waves"]',
+   say=[([0, 1, 2], "All three features: typical angina."), ([0, 1], "Two features: atypical angina. Both are offered CT coronary angiography."), ([0], "One or none: non-anginal chest pain. Look for other causes, unless the ECG is abnormal."), (None, "Try it, then press next.")]),
+ dict(kind="sorter", ch=2, h="Which test?", opts=["CTCA", "Functional imaging", "Other causes", "999"], data=[
+   ["Typical angina, normal ECG", "CTCA", "First-line test"],
+   ["Atypical angina", "CTCA", "First-line test"],
+   ["CTCA non-diagnostic", "Functional imaging", "Stress echo, perfusion or MRI"],
+   ["Non-anginal pain, normal ECG", "Other causes", "Angina unlikely"],
+   ["Pain at rest for 30 minutes today", "999", "Possible ACS"]],
+   say="Choose the next step for each, then press next."),
+ dict(kind="picker", ch=3, h="The drug ladder", q="Where are they?", opts=[
+   ("all", "Everyone", "GTN", "Before exertion; 999 if pain 5 min after second dose", "teal"),
+   ("first", "First line", "BB or CCB", "By comorbidity and preference"),
+   ("comb", "Combining with a BB", "Amlodipine", "A dihydropyridine CCB; never verapamil", "red"),
+   ("second", "Can't have BB or CCB", "Second line", "Long-acting nitrate, ivabradine, nicorandil, ranolazine"),
+   ("refer", "Not controlled on two", "Refer", "Revascularisation: PCI or CABG"),
+   ("prev", "Secondary prevention", "Aspirin + statin", "Aspirin 75 mg, atorvastatin 80 mg; ACEi if diabetes")],
+   say=[("all", "Everyone has GTN. If pain persists five minutes after the second dose, call nine nine nine."), ("first", "First line is a beta-blocker or a calcium-channel blocker."), ("comb", "To combine with a beta-blocker, use amlodipine or another dihydropyridine, never verapamil."), ("refer", "If symptoms aren't controlled on two drugs, refer for revascularisation."), (None, "Try the others, then press next.")]),
+ dict(kind="sorter", ch=4, h="Drug traps: true or trap?", opts=TRAP, data=[
+   ["Sildenafil is fine with occasional GTN", "Trap", "Contraindicated with nitrates"],
+   ["Nicorandil can cause mouth and anal ulcers", "True", "MHRA: stop it"],
+   ["Ivabradine works in AF", "Trap", "Sinus rhythm only"],
+   ["Long-acting nitrates need a nitrate-free period", "True", "Asymmetric dosing"],
+   ["Verapamil and bisoprolol together is a good combination", "Trap", "Heart block, asystole"],
+   ["Exercise ECG is the first test for suspected angina", "Trap", "CTCA"]],
+   say="True, or exam trap? Then press next."),
+ dict(kind="quiz"),
+ dict(kind="recap", items=[("3 features", "typical; 2 = atypical", "Three features is typical angina; two is atypical."), ("CTCA", "first test", "CT coronary angiography is the first test."), ("BB or CCB", "first line, plus GTN", "A beta-blocker or calcium-channel blocker first, plus GTN."), ("Amlodipine", "to combine with a beta-blocker", "Amlodipine to combine with a beta-blocker."), ("Refer", "not controlled on two drugs", "And refer if not controlled on two drugs. That's topic twenty-three.")])]))
+
+# ---------------------------------------------------------------- 24 Varicose veins and leg ulcers
+L.append(dict(COMMON, file="cardiology/varicose-veins-leg-ulcers.html", num=24, title="Varicose veins and venous leg ulcers", sources="NICE CG168 · CKS · NWCSP 2023", qs=qs_new(24), scenes=[
+ dict(kind="intro", h="What examiners test", items=["<b>Who to refer</b>; bleeding veins immediately", "<b>Hosiery isn't the treatment</b>; ablation first", "<b>ABPI before compression</b>", "Ulcer types, infection, and red flags"],
+  say=["Topic twenty-four: varicose veins and venous leg ulcers. Questions test four things.", "Who to refer, with bleeding veins referred immediately.", "That compression hosiery isn't the treatment, and ablation comes first.", "Checking the ABPI before any compression.", "And ulcer types, infection and red flags."]),
+ dict(kind="sorter", ch=1, h="Venous, arterial or something else?", opts=["Venous", "Arterial", "Neuropathic", "Malignant"], data=[
+   ["Shallow moist ulcer above the medial malleolus, brown skin", "Venous", "Gaiter area"],
+   ["Deep punched-out ulcer on the toes, pain worse lying in bed", "Arterial", "Better hanging the leg down"],
+   ["Painless ulcer under the first metatarsal head in diabetes", "Neuropathic", "Pressure point"],
+   ["Raised rolled edge, not healing after 12 weeks", "Malignant", "Biopsy"],
+   ["Hard, tight lower leg like an inverted champagne bottle, with an ulcer", "Venous", "Lipodermatosclerosis"]],
+   say="Name the ulcer type, then press next."),
+ dict(kind="picker", ch=2, h="ABPI and compression", q="What is the ABPI?", opts=[
+   ("ok", "0.8–1.3", "Compress", "Strong compression is safe", "teal"),
+   ("mixed", "0.5–0.8", "Refer", "Arterial disease: reduced compression only with specialist advice"),
+   ("low", "Under 0.5", "Urgent", "Urgent vascular; no compression", "red"),
+   ("high", "Over 1.3", "Unreliable", "Calcified arteries: specialist assessment")],
+   say=[("ok", "Between point eight and one point three: strong compression is safe."), ("mixed", "Point five to point eight: arterial disease is present, so refer, and use reduced compression only with specialist advice."), ("low", "Under point five: urgent vascular referral and no compression."), ("high", "Over one point three: the arteries are too stiff to read reliably."), (None, "Press next when ready.")]),
+ dict(kind="sorter", ch=3, h="Refer to vascular?", opts=["Immediately", "Refer", "No referral"], data=[
+   ["Bleeding varicose vein", "Immediately", "NICE CG168"],
+   ["Aching, heavy legs with varicose veins", "Refer", "Symptomatic"],
+   ["Venous eczema and pigmentation", "Refer", "Skin changes"],
+   ["Healed venous ulcer", "Refer", "Prevent recurrence"],
+   ["Asymptomatic cosmetic veins", "No referral", "Reassure"]],
+   say="Decide whether each needs referral, then press next."),
+ dict(kind="cards", ch=3, h="Treatment", grid="g2", cards=[
+   ("Varicose veins (order)", ["1. <b>Endothermal ablation</b>", "2. Foam sclerotherapy", "3. Surgery", "4. Hosiery only if intervention unsuitable"]),
+   ("Venous ulcer", ["<b>Strong compression</b> if ABPI allows", "Elevation, walking, emollients", "Early referral for venous treatment"]),
+   ("Infection", ["Treat <b>clinical</b> infection only", "Flucloxacillin; not a positive swab alone"], "red"),
+   ("Pregnancy and after", ["Pregnancy: hosiery for symptoms", "Healed ulcer: lifelong hosiery"])],
+   say=["For varicose veins, endothermal ablation is first, then foam sclerotherapy, then surgery. Hosiery only if none is suitable.", "Venous ulcers heal with strong compression, once the ABPI says it's safe, plus early venous treatment.", "Treat infection only when it's clinically present, not because a swab grew bacteria.", "In pregnancy, hosiery for symptoms; after an ulcer heals, lifelong hosiery."]),
+ dict(kind="quiz"),
+ dict(kind="recap", items=[("Immediately", "bleeding varicose vein", "A bleeding varicose vein: refer immediately."), ("Ablation", "first-line treatment", "Endothermal ablation first."), ("ABPI", "before any compression", "ABPI before any compression."), ("0.8–1.3", "strong compression safe; under 0.5 urgent", "Point eight to one point three: compress. Under point five: urgent."), ("Biopsy", "rolled edge or not healing", "And biopsy a rolled edge or a non-healing ulcer. That's topic twenty-four.")])]))
 
 if __name__ == "__main__":
     import sys as _s

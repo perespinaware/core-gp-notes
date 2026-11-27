@@ -133,6 +133,18 @@ const STEPS=[
   "ICD shock: one and well → clinic; two or more, or unwell → 999",
   "Dizziness, neck pulsation, hiccups: device clinic (pacemaker syndrome, lead problem)",
   "Driving: pacemaker 1 week, ICD shock 6 months; deactivate shocks at end of life; remove before cremation"]},
+ {id:"angina",kw:"stable angina chest pain CTCA GTN beta-blocker amlodipine verapamil nicorandil ivabradine ranolazine nitrate revascularisation",cat:"cardiology",topic:"Stable angina",src:"NICE CG126 · CG95",url:"https://www.nice.org.uk/guidance/cg126",lesson:"../cardiology/stable-angina.html",steps:[
+  "Classify: typical (3 features), atypical (2), non-anginal (0–1)",
+  "Typical or atypical: CT coronary angiography first; functional imaging if unclear",
+  "GTN for everyone (999 if pain 5 min after second dose); aspirin, statin",
+  "Beta-blocker or CCB; switch or combine (amlodipine with a beta-blocker)",
+  "Not controlled on two drugs: refer for revascularisation"]},
+ {id:"veins",kw:"varicose veins leg ulcer venous ABPI compression ablation sclerotherapy hosiery bleeding lipodermatosclerosis pentoxifylline",cat:"cardiology",topic:"Varicose veins and venous leg ulcers",src:"NICE CG168",url:"https://www.nice.org.uk/guidance/cg168",lesson:"../cardiology/varicose-veins-leg-ulcers.html",steps:[
+  "Bleeding varicose vein: refer immediately",
+  "Refer: symptomatic veins, skin changes, active or healed ulcer, thrombophlebitis with reflux",
+  "Treatment order: endothermal ablation, foam, surgery; hosiery only if unsuitable",
+  "Leg ulcer: ABPI first; 0.8–1.3 strong compression; under 0.5 urgent vascular",
+  "Antibiotics only for clinical infection; biopsy non-healing or atypical ulcers"]},
  {id:"rosacea",kw:"flushing facial redness ivermectin brimonidine doxycycline skin",cat:"dermatology",topic:"Rosacea",src:"NICE CKS",url:null,lesson:"../dermatology/rosacea.html",steps:[
   "Clinical diagnosis: avoid triggers, daily SPF, no facial steroids",
   "Papules and pustules: topical ivermectin 1% (or azelaic acid, metronidazole)",
