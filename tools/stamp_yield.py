@@ -38,7 +38,7 @@ def stamp_lesson_pages():
             p = f"{cat}/{f}"
             try: h = open(p).read()
             except FileNotFoundError: continue
-            h = re.sub(r'<span class="yld"[^>]*>.*?</span>', '', h)
+            h = re.sub(r'\s*<span class="yld"[^>]*>.*?</span>', '', h)
             tag = f'<span class="yld" title="AKT relevance: {y} of 5" style="display:inline-block;margin-left:8px;font-weight:700;color:#b7791f;white-space:nowrap">AKT relevance {STAR(y)}</span>'
             h2 = re.sub(r'(<p class="sub">)(.*?)(</p>)', lambda mm: mm.group(1) + mm.group(2) + " " + tag + mm.group(3), h, count=1, flags=re.S)
             if h2 != h: open(p, "w").write(h2); done += 1
