@@ -56,6 +56,7 @@ kbd{font:600 12px ui-monospace,monospace;border:1px solid var(--line);border-bot
 <div id="app"></div>
 </div>
 <script src="cases.js"></script>
+<script src="../lessons.js"></script>
 <script>
 {
 const $=id=>document.getElementById(id);
@@ -63,8 +64,18 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 const L="ABCDE",GAPS=[0,1,3,7,14,30,60],DAY=864e5;
 let SET={recall:false};try{SET=Object.assign(SET,JSON.parse(localStorage.getItem("cgn-akt-settings"))||{})}catch(e){}
 const id=(location.hash||"").slice(1),C=CASES[id];
-if(!C){$("app").innerHTML=`<h1>Cases</h1>${Object.entries(CASES).map(([k,c])=>`<a class="card" style="display:block;text-decoration:none;color:inherit" href="#${k}"><b>${esc(c.title)}</b><div class="note">${esc(c.topic)} · about ${c.mins} minutes</div></a>`).join("")}`;window.onhashchange=()=>location.reload()}
+if(!C){listCases();window.onhashchange=()=>location.reload()}
 else run();
+function listCases(){
+ const AREA={cardiology:"Cardiology",dermatology:"Dermatology",statistics:"Statistics",admin:"Admin and management"};
+ const stars=c=>{try{const cat=(CATS||[]).find(x=>x.id===c.cat);const f=(c.lesson||"").split("/").pop();const l=cat&&cat.lessons.find(x=>x[2]===f);return l&&l[3]||0}catch(e){return 0}};
+ let D={};try{D=(JSON.parse(localStorage.getItem("cgn-v1"))||{}).cases||{}}catch(e){}
+ const all=Object.entries(CASES).map(([k,c])=>({k,c,y:stars(c),done:D[k]}));
+ const done=all.filter(x=>x.done).length;
+ const areas=[...new Set(all.map(x=>x.c.cat))];
+ $("app").innerHTML=`<h1>Cases</h1><p class="sub">${all.length} short patient stories, one for every live topic: gather clues, decide, see what happens. Highest AKT yield first. ${done} done.</p>`+
+ areas.map(a=>`<h2 style="margin-top:22px">${esc(AREA[a]||a)}</h2>`+all.filter(x=>x.c.cat===a).sort((p,q)=>q.y-p.y).map(({k,c,y,done})=>
+  `<a class="card" style="display:flex;justify-content:space-between;gap:12px;align-items:center;text-decoration:none;color:inherit" href="#${k}"><span><b>${esc(c.title)}</b><div class="note">${esc(c.topic)} · about ${c.mins} minutes · ${c.steps.length} decisions</div>${y?`<div style="color:#b7791f;letter-spacing:1px" aria-label="AKT relevance ${y} of 5">${"★".repeat(y)}${"☆".repeat(5-y)}</div>`:""}</span><span class="note" style="white-space:nowrap">${done?`Last: ${done.score}%`:"New"}</span></a>`).join("")).join("")}
 function record(qid,ok){try{const K="cgn-v1",D=JSON.parse(localStorage.getItem(K)||"null")||{q:{},log:[],cases:{}},c=D.q[qid]||{box:0,due:0,n:0,ok:0};c.n++;if(ok){c.ok++;c.box=Math.min(6,c.box+1);c.due=Date.now()+GAPS[c.box]*DAY}else{c.box=0;c.due=Date.now()+6e5}D.q[qid]=c;D.log.push({t:Date.now(),theme:C.topic,ok,id:qid});localStorage.setItem(K,JSON.stringify(D))}catch(e){}}
 function saveCase(score){try{const K="cgn-v1",D=JSON.parse(localStorage.getItem(K)||"null")||{q:{},log:[],cases:{}};D.cases=D.cases||{};D.cases[id]={score,date:Date.now()};localStorage.setItem(K,JSON.stringify(D))}catch(e){}}
 function run(){window.onhashchange=()=>location.reload();document.title=C.title+" · AKT case";
