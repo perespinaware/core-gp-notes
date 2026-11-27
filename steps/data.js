@@ -78,5 +78,23 @@ const STEPS=[
   "Avoid the cause; soap substitute, emollients, protective gloves",
   "Topical steroid by site: mild on the face, potent on the hands",
   "Suspected allergic or persistent: refer for patch testing",
-  "Occupational: refer; the employer reports under RIDDOR"]}
+  "Occupational: refer; the employer reports under RIDDOR"]},
+ {id:"ie",kw:"endocarditis fever murmur prosthetic valve blood cultures Duke Osler Janeway prophylaxis dental amoxicillin SDCEP IVDU Staph gallolyticus",cat:"cardiology",topic:"Infective endocarditis",src:"NICE CG64 · SDCEP 2026",url:"https://www.nice.org.uk/guidance/cg64",lesson:"../cardiology/infective-endocarditis.html",steps:[
+  "Fever + murmur, prosthetic valve, previous IE or IVDU: suspect endocarditis",
+  "Same-day admission (999 if septic); no oral antibiotics before cultures",
+  "Hospital: 3 blood culture sets, echo (TTE then TOE), Duke criteria",
+  "IV antibiotics 4–6 weeks; surgery for heart failure, abscess, emboli",
+  "High risk + extraction: amoxicillin 2 g before; moderate risk: none"]},
+ {id:"pericarditis",kw:"pericarditis chest pain sitting forward saddle ST PR depression colchicine NSAID tamponade Dressler constrictive",cat:"cardiology",topic:"Pericarditis",src:"ESC 2025 · NICE CKS",url:"https://cks.nice.org.uk/topics/pericarditis/",lesson:"../cardiology/pericarditis.html",steps:[
+  "Sharp pain better sitting forward; saddle ST elevation, PR depression",
+  "Same-day assessment: troponin and echo; tamponade = 999",
+  "Admit if fever, subacute, effusion, raised troponin, anticoagulated",
+  "NSAID + PPI (aspirin post-MI) plus colchicine 3 months (6 if recurrent)",
+  "No strenuous exercise until pain gone and CRP normal; review at 1 week"]},
+ {id:"rheumatic",kw:"rheumatic fever Jones criteria chorea erythema marginatum strep throat ASO penicillin prophylaxis mitral stenosis RHD",cat:"cardiology",topic:"Rheumatic fever and rheumatic heart disease",src:"AHA Jones 2015 · NICE NG84",url:"https://www.nice.org.uk/guidance/ng84",lesson:"../cardiology/rheumatic-fever.html",steps:[
+  "Strep evidence + 2 major, or 1 major + 2 minor (Jones)",
+  "Same-day paediatric assessment; echo for everyone",
+  "Penicillin V 10 days to eradicate strep; NSAIDs for arthritis",
+  "Prophylaxis: 5 yrs/21 (no carditis), 10 yrs/21, 10 yrs/40 (valve disease)",
+  "Rheumatic mitral stenosis + AF: warfarin; no routine dental prophylaxis"]}
 ];

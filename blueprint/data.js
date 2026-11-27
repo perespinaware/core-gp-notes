@@ -64,7 +64,10 @@ const AKT_AREAS=[
   ["cv-drive","Cardiac fitness to drive and work",2,{notes:1}],
   ["cv-cmp","Cardiomyopathy",3,{notes:1,lesson:1,bank:["Cardiomyopathy"]}],
   ["cv-fh","Familial hypercholesterolaemia",3,{notes:1}],
-  ["cv-aaa","Abdominal aortic aneurysm",3,{notes:1}]]},
+  ["cv-aaa","Abdominal aortic aneurysm",3,{notes:1}],
+  ["cv-ie","Infective endocarditis and prophylaxis",3,{notes:1,lesson:1,bank:["Infective endocarditis"]}],
+  ["cv-peri","Pericarditis",3,{notes:1,lesson:1,bank:["Pericarditis"]}],
+  ["cv-rf","Rheumatic fever and rheumatic heart disease",3,{notes:1,lesson:1,bank:["Rheumatic fever and rheumatic heart disease"]}]]},
  {area:"Respiratory health",domain:"Clinical",flag:"Flagged in 5 sittings; diagnosis and management in AKT 60",topics:[
   ["re-asthma","Asthma in adults and children",1,{}],
   ["re-copd","COPD",1,{}],
