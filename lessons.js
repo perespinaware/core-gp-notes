@@ -13,4 +13,4 @@ const CATS=[
  {id:"admin",name:"Admin and Management",c:"#b86e00",src:"Core Admin and Management for the GP AKT",lessons:[
   ["The GP contract and QOF","NHS England contract 2026/27 · QOF","gp-contract-qof.html"]]}];
 /* PDF guides hosted in /guides/ (file name, pages). Add one here when a guide is uploaded. */
-const PDFS={cardiology:["Core_Cardiology_for_the_GP_AKT.pdf",142],dermatology:["Core_Dermatology_for_the_GP_AKT.pdf",67],statistics:["Core_Statistics_for_the_GP_AKT.pdf",19],admin:["Core_Admin_and_Management_for_the_GP_AKT.pdf",11]};
+const PDFS={cardiology:["Core_Cardiology_for_the_GP_AKT.pdf",143],dermatology:["Core_Dermatology_for_the_GP_AKT.pdf",67],statistics:["Core_Statistics_for_the_GP_AKT.pdf",19],admin:["Core_Admin_and_Management_for_the_GP_AKT.pdf",11]};
