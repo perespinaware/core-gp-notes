@@ -1,0 +1,5 @@
+# never publish private question banks or backups
+my-bank*.json
+*-mybank*.json
+road-to-gp-backup*.json
+rtg-sync/

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sync and backup · Road to GP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<style>
+:root{--c:#2f4a6b;--ok:#0b8577;--bad:#b3263a}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin-bottom:16px}
+.card h2{font:800 22px/1.2 "Bricolage Grotesque",sans-serif;margin:0 0 10px}
+.btn{display:inline-block;background:var(--c);color:#fff;border:0;border-radius:12px;padding:11px 18px;font:inherit;font-weight:700;text-decoration:none;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.state{display:flex;gap:12px;align-items:center;font-weight:700;font-size:18px}
+.dot{width:14px;height:14px;border-radius:50%;background:var(--line);flex:none}.dot.ok{background:var(--ok)}.dot.bad{background:var(--bad)}
+input[type=password],input[type=text]{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);min-width:0;flex:1}
+.hide{display:none!important}
+ul.b{margin:6px 0 0;padding-left:20px}ul.b li{margin:4px 0}
+</style>
+<script src="/sync.js"></script>
+</head>
+<body>
+<header class="band cat" style="--c:#2f4a6b"><div class="in">
+<a class="back" href="../">← Home</a>
+<h1>Sync and backup</h1>
+<p class="lead">Keep your progress and your private question bank safe and the same on every device.</p>
+</div></header>
+<main><div class="in">
+ <div class="card"><h2>Sync on this device</h2>
+  <div class="state"><span class="dot" id="dot"></span><span id="st">Checking…</span></div>
+  <p class="note" id="sub" style="margin:6px 0 12px"></p>
+  <div class="row"><button class="btn" id="now">Sync now</button><button class="btn ghost" id="toggle"></button></div>
+ </div>
+ <div class="card"><h2>Passcode</h2>
+  <p style="margin-top:0">Sync uses the same passcode as SCA Live. Enter it once on each device.</p>
+  <div class="row"><input type="password" id="pc" autocomplete="current-password" aria-label="Passcode"><button class="btn" id="save">Save and sync</button></div>
+  <p class="note" id="pcmsg" style="margin-bottom:0"></p>
+ </div>
+ <div class="card"><h2>Back up everything</h2>
+  <p style="margin-top:0">One file with all your progress and your private bank. Keep it in your own OneDrive or iCloud, never a shared folder.</p>
+  <div class="row"><button class="btn" id="exp">Download a full backup</button><label class="btn ghost" for="imp">Restore from a backup</label><input id="imp" type="file" accept=".json" class="hide"></div>
+  <p class="note" id="bmsg" style="margin-bottom:0">Restoring adds the backup to what's here; it doesn't delete anything.</p>
+ </div>
+ <div class="card"><h2>Where your data lives</h2>
+  <ul class="b">
+   <li>In this browser, and in a private folder on your own server (<b>outside the website</b>, like your SCA settings). It can't be opened from the web.</li>
+   <li>The public site never contains your answers or your private questions.</li>
+   <li>Your server also keeps hourly copies of the last 40 versions.</li>
+   <li>Anyone who knows your passcode could sync, so keep it private.</li>
+  </ul>
+ </div>
+</div></main>
+<script>
+{
+const $=id=>document.getElementById(id),S=window.RTGSync;
+const ago=t=>{const s=Math.round((Date.now()-t)/1000);return s<60?"just now":s<3600?Math.round(s/60)+" min ago":s<86400?Math.round(s/3600)+" h ago":new Date(t).toLocaleDateString("en-GB")};
+function draw(){const st=S.status(),on=S.enabled(),has=!!localStorage.getItem("sca-pass");
+ $("dot").className="dot "+(on&&st&&st.ok?"ok":on&&st&&st.ok===false?"bad":"");
+ $("st").textContent=!has?"Not set up":!on?"Off on this device":st?(st.ok?"On · "+st.msg:"Problem: "+st.msg):"Starting…";
+ $("sub").textContent=st&&on?"Last check "+ago(st.t)+". Saves automatically about a minute after a change, and when you leave a page.":has?"":"Enter your passcode below to start.";
+ $("toggle").textContent=localStorage.getItem("rtg-sync-off")==="1"?"Turn sync on":"Turn sync off on this device";$("toggle").classList.toggle("hide",!has);$("now").classList.toggle("hide",!on);
+ $("pc").placeholder=has?"Saved. Type to change it":"Your SCA Live passcode"}
+window.addEventListener("rtg-sync",draw);draw();
+$("now").onclick=()=>{$("st").textContent="Syncing…";S.now({onPulled:()=>{}}).then(draw)};
+$("toggle").onclick=()=>{S.off(localStorage.getItem("rtg-sync-off")!=="1");draw();if(S.enabled())S.now().then(draw)};
+$("save").onclick=async()=>{const v=$("pc").value.trim();if(!v){$("pcmsg").textContent="Type the passcode first.";return}
+ localStorage.setItem("sca-pass",v);$("pc").value="";S.off(false);$("pcmsg").textContent="Checking…";await S.now();const st=S.status();
+ $("pcmsg").textContent=st&&st.ok?"Connected. Your progress is now synced.":"Not connected: "+(st?st.msg:"unknown problem");draw()};
+$("exp").onclick=()=>{const snap=S.snapshot(),blob=new Blob([JSON.stringify({type:"road-to-gp-backup",v:1,saved:new Date().toISOString(),...snap})],{type:"application/json"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="road-to-gp-backup-"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
+$("imp").onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{let j;try{j=JSON.parse(t)}catch(err){$("bmsg").textContent="That file isn't a backup.";return}
+ if(j.programme||j.practice){j={keys:{"cgn-programme":j.programme?JSON.stringify(j.programme):undefined,"cgn-v1":j.practice?JSON.stringify(j.practice):undefined},meta:{}}}
+ if(!j.keys){$("bmsg").textContent="That file isn't a Road to GP backup.";return}
+ const {merged}=S.combine(j);S.writeLocal(merged);localStorage.setItem("rtg-sync-meta",JSON.stringify(merged.meta));
+ $("bmsg").textContent="Restored and merged. Syncing…";S.now().then(()=>{$("bmsg").textContent="Restored. Everything from the backup is back.";draw()})});e.target.value=""};
+}
+</script>
+<script src="/time.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>My bank · Road to GP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<style>
+:root{--c:#8a5a00;--ok:#0b8577;--bad:#b3263a;--gold:#c28a00}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin-bottom:16px}
+.card h2{font:800 22px/1.2 "Bricolage Grotesque",sans-serif;margin:0 0 10px}
+.btn{display:inline-block;background:var(--c);color:#fff;border:0;border-radius:12px;padding:11px 18px;font:inherit;font-weight:700;text-decoration:none;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.danger{background:transparent;color:var(--bad);border:1px solid color-mix(in srgb,var(--bad) 40%,transparent)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+.kpi b{display:block;font:800 26px "Bricolage Grotesque",sans-serif}.kpi span{color:var(--mut);font-size:14px}
+.star{color:var(--gold);font-weight:700;white-space:nowrap}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:9px 6px;border-top:1px solid var(--line);font-size:15px}th{color:var(--mut);font-weight:700;font-size:13px;border-top:0}
+td.n,th.n{text-align:right}
+.hide{display:none!important}
+.msg{border-radius:12px;padding:10px 14px;margin-top:12px;font-weight:700}
+.msg.ok{background:color-mix(in srgb,var(--ok) 12%,var(--card));color:var(--ok)}.msg.no{background:color-mix(in srgb,var(--bad) 10%,var(--card));color:var(--bad)}
+@media(max-width:520px){.hm{display:none}}
+</style>
+<script src="/sync.js"></script>
+</head>
+<body>
+<header class="band cat" style="--c:#8a5a00"><div class="in">
+<a class="back" href="../">← Home</a>
+<h1>My bank</h1>
+<p class="lead">Your private AKT questions: ★5 from recalls, ★3 from other banks, rewritten as new questions. They're never part of the public site.</p>
+</div></header>
+<main><div class="in" id="app"></div></main>
+<script>
+{
+const $=id=>document.getElementById(id),K="cgn-mybank";
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const load=()=>{try{const d=JSON.parse(localStorage.getItem(K));return d&&d.q?d:{v:1,q:{},del:{},batches:{}}}catch(e){return {v:1,q:{},del:{},batches:{}}}};
+const save=d=>localStorage.setItem(K,JSON.stringify(d));
+const prac=()=>{try{return JSON.parse(localStorage.getItem("cgn-v1"))||{log:[]}}catch(e){return {log:[]}}};
+let MSG="";
+function valid(q){return q&&typeof q.id==="string"&&(q.stars===5||q.stars===3)&&typeof q.s==="string"&&Array.isArray(q.o)&&q.o.length>=2&&Number.isInteger(q.a)&&q.a>=0&&q.a<q.o.length&&typeof q.topic==="string"&&typeof q.area==="string"}
+function importText(t){let j;try{j=JSON.parse(t)}catch(e){return [false,"That file isn't a question file."]}
+ if(!j||j.type!=="rtg-mybank"||!Array.isArray(j.questions))return [false,"That isn't a My bank file."];
+ const d=load(),now=Date.now(),ok=j.questions.filter(valid);let added=0,updated=0;
+ ok.forEach(q=>{const c={id:q.id,stars:q.stars,area:q.area,topic:q.topic,guide:q.guide||null,bp:q.bp||null,s:q.s,o:q.o,a:q.a,e:q.e||"",batch:j.batch||"",it:now};d.q[q.id]?updated++:added++;d.q[q.id]=c;delete d.del[q.id]});
+ if(j.batch){d.batches[j.batch]={label:j.label||j.batch,n:ok.length,imported:now};delete d.del["batch:"+j.batch]}
+ save(d);return [true,`${added} new question${added!==1?"s":""} added${updated?`, ${updated} updated`:""}${ok.length<j.questions.length?`, ${j.questions.length-ok.length} skipped (incomplete)`:""}.`]}
+function draw(){const d=load(),Q=Object.values(d.q),log=prac().log||[];
+ const five=Q.filter(q=>q.stars===5).length,three=Q.filter(q=>q.stars===3).length,ids=new Set(Q.map(q=>q.id));
+ const mine=log.filter(x=>ids.has(x.id)),acc=mine.length?Math.round(mine.filter(x=>x.ok).length/mine.length*100)+"%":"–";
+ const areas={};Q.forEach(q=>{const a=areas[q.area]=areas[q.area]||{five:0,three:0,ids:new Set()};q.stars===5?a.five++:a.three++;a.ids.add(q.id)});
+ const st=window.RTGSync&&RTGSync.status(),on=window.RTGSync&&RTGSync.enabled();
+ $("app").innerHTML=`<div class="kpis"><div class="kpi"><b>${Q.length}</b><span>questions</span></div><div class="kpi"><b class="star">★5 ${five}</b><span>from recalls</span></div><div class="kpi"><b class="star" style="color:var(--mut)">★3 ${three}</b><span>from other banks</span></div><div class="kpi"><b>${acc}</b><span>correct so far (${mine.length} answers)</span></div></div>
+ ${on?"":`<div class="card" style="border-color:var(--bad)"><b>Sync is off on this device.</b> Your bank is only in this browser until you <a href="../sync/">turn on sync</a>.</div>`}
+ <div class="card"><h2>Add questions</h2><p style="margin-top:0">Import the file Claude sends you. Importing the same file twice just updates it.</p>
+  <div class="row"><label class="btn" for="imp">Import a question file</label><input id="imp" type="file" accept=".json" multiple class="hide">${Q.length?`<a class="btn ghost" href="../akt/?src=5">Practise ★5 only</a><a class="btn ghost" href="../akt/?src=mine">Practise all my bank</a>`:""}</div>
+  ${MSG?`<div class="msg ${MSG[0]?"ok":"no"}">${esc(MSG[1])}</div>`:""}</div>
+ ${Q.length?`<div class="card"><h2>By AKT area</h2><table><thead><tr><th>Area</th><th class="n">★5</th><th class="n">★3</th><th class="n hm">Correct (last 10)</th></tr></thead><tbody>
+  ${Object.entries(areas).sort((a,b)=>(b[1].five+b[1].three)-(a[1].five+a[1].three)).map(([n,a])=>{const L=log.filter(x=>a.ids.has(x.id)).slice(-10);return `<tr><td>${esc(n)}</td><td class="n star">${a.five||""}</td><td class="n">${a.three||""}</td><td class="n hm">${L.length?Math.round(L.filter(x=>x.ok).length/L.length*100)+"%":"–"}</td></tr>`}).join("")}</tbody></table></div>
+ <div class="card"><h2>Batches</h2><table><tbody>${Object.entries(d.batches).sort((a,b)=>b[1].imported-a[1].imported).map(([k,b])=>`<tr><td>${esc(b.label)}<div class="note" style="margin:0">${new Date(b.imported).toLocaleDateString("en-GB")} · ${Q.filter(q=>q.batch===k).length} questions</div></td><td class="n"><button class="btn danger" data-del="${esc(k)}" style="padding:6px 12px">Delete</button></td></tr>`).join("")||`<tr><td class="note">No batches yet.</td></tr>`}</tbody></table></div>`:""}
+ <div class="card"><h2>Keeping it private</h2><ul style="margin:0;padding-left:20px">
+  <li>Questions live in this browser and in the private sync folder on your server, never in the public site.</li>
+  <li>They're new questions written around the learning point, not copies of bank or exam wording, and they carry no source.</li>
+  <li>For your own revision only: don't share the files or this page's export.</li></ul>
+  <div class="row" style="margin-top:12px">${Q.length?`<button class="btn ghost" id="exp">Export my bank</button><button class="btn danger" id="wipe">Delete all</button>`:""}</div></div>`;
+ $("imp").onchange=e=>{const fs=[...e.target.files];Promise.all(fs.map(f=>f.text())).then(ts=>{const r=ts.map(importText);MSG=[r.every(x=>x[0]),r.map(x=>x[1]).join(" ")];draw();if(window.RTGSync)RTGSync.now()});e.target.value=""};
+ document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{const k=b.dataset.del,d2=load(),n=Object.values(d2.q).filter(q=>q.batch===k);if(!confirm(`Delete this batch (${n.length} questions) from every device?`))return;
+  const t=Date.now();n.forEach(q=>{delete d2.q[q.id];d2.del[q.id]=t});delete d2.batches[k];d2.del["batch:"+k]=t;save(d2);MSG=[true,"Batch deleted."];draw();if(window.RTGSync)RTGSync.now()});
+ if($("exp"))$("exp").onclick=()=>{const d2=load(),blob=new Blob([JSON.stringify({type:"rtg-mybank",v:1,batch:"export-"+new Date().toISOString().slice(0,10),label:"Export "+new Date().toLocaleDateString("en-GB"),questions:Object.values(d2.q)})],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="my-bank-export-"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
+ if($("wipe"))$("wipe").onclick=()=>{if(!confirm("Delete every question in My bank, on every device? Your answer history stays."))return;const d2=load(),t=Date.now();Object.keys(d2.q).forEach(id=>d2.del[id]=t);Object.keys(d2.batches).forEach(k=>d2.del["batch:"+k]=t);d2.q={};d2.batches={};save(d2);MSG=[true,"All questions deleted."];draw();if(window.RTGSync)RTGSync.now()}}
+window.addEventListener("rtg-sync",()=>{});draw();
+}
+</script>
+</body>
+</html>

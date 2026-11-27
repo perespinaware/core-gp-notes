@@ -75,6 +75,7 @@ tr.click{cursor:pointer}tr.click:hover td{background:var(--soft)}
 .hide{display:none!important}
 @media(max-width:600px){.hm{display:none}}
 </style>
+<script src="/sync.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -244,7 +245,9 @@ function passOf(c,k){const m=c[3],weeks=m["p"+k]||[];
  const all=[...ws,...(k===1||streamOnly?items:[])].map(x=>x||"Not started");
  if(!all.length)return "–";
  if(all.every(x=>x==="Done"))return "Done";if(all.some(x=>x==="Done"||x==="In progress"))return "Part";return "Not started"}
-function guideConf(i){const c=CURRIC[i],m=c[3],themes=new Set(GUIDE_TOPICS[i+1]||[]);
+/* private My bank topics count towards the guide they're tagged with */
+const MYG={};try{const mb=JSON.parse(localStorage.getItem("cgn-mybank")||"null");if(mb&&mb.q)Object.values(mb.q).forEach(q=>{if(q.guide)(MYG[q.guide]=MYG[q.guide]||new Set()).add(q.topic)})}catch(e){}
+function guideConf(i){const c=CURRIC[i],m=c[3],themes=new Set([...(GUIDE_TOPICS[i+1]||[]),...(MYG[i+1]||[])]);
  const L=practice.log.filter(x=>themes.has(x.theme)).slice(-30);let q=L.length,k=L.filter(x=>x.ok).length;
  const wks=[...(m.p1||[]),...(m.p2||[]),...(m.p3||[]),...(m.p4||[])];let oq=0,oc=0,ms=[],ret=0;
  wks.forEach(n=>{const w=S.weeks[n];if(!w)return;oq+=+w.oq||0;oc+=+w.oc||0;const mm=meas(n);if(mm.some(o=>o.v)){ms.push(mastery(n));if(mm[3].v==="Yes")ret++}});

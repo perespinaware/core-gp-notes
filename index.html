@@ -48,6 +48,7 @@
 @media(max-width:560px){.hero{grid-template-columns:1fr;text-align:center}.hero .lead{margin:0 auto}.labels{font-size:12px}}
 @media(prefers-reduced-motion:reduce){.tile{transition:none}}
 </style>
+<script src="/sync.js"></script>
 </head>
 <body>
 <header class="band"><div class="in">
@@ -79,7 +80,7 @@
   <div class="pdfs" id="pdfs"></div>
  </section>
 
- <p class="note">For exam revision only, based on NICE and other UK guidance at the time of writing. Not clinical advice. Your progress stays in this browser.</p>
+ <p class="note">For exam revision only, based on NICE and other UK guidance at the time of writing. Not clinical advice. <span id="syncline"></span> <a href="sync/">Sync and backup</a></p>
 </div></main>
 <script src="lessons.js"></script>
 <script src="programme/data.js"></script>
@@ -128,12 +129,15 @@ $("shelf").innerHTML=CATS.filter(c=>c.id!=="sca").map(c=>{const n=c.lessons.leng
  return `<a class="spine has-art" style="--c:${c.c}" href="${c.id}/"><img class="sart" src="img/areas/${c.id}.svg" alt="" width="240" height="200" onerror="this.remove();this.parentNode&&this.parentNode.classList.remove('has-art')"><div><h2>${esc(c.name)}</h2><p>${esc(c.src)}</p></div><span>${n} topic${n>1?"s":""} · ${l} live</span></a>`}).join("");
 
 $("pdfs").innerHTML=`<span class="note" style="margin:0">PDF guides:</span>`+CATS.filter(c=>PDFS[c.id]).map(c=>`<a href="guides/${PDFS[c.id][0]}" target="_blank" rel="noopener">${esc(c.name)} · ${PDFS[c.id][1]} pages</a>`).join("");
+{const sl=()=>{const st=window.RTGSync&&RTGSync.status(),on=window.RTGSync&&RTGSync.enabled();$("syncline").textContent=!on?"Sync is off: progress is only in this browser.":st&&st.ok?"Progress synced privately.":st&&st.ok===false?"Sync problem: "+st.msg+".":"Syncing…"};sl();window.addEventListener("rtg-sync",sl)}
 /* ---------- 3 questions and practice ---------- */
 const sca=CATS.find(c=>c.id==="sca"),nCase=typeof CASES==="undefined"?null:Object.keys(CASES).length;
 $("practice").innerHTML=`<a class="tile" style="--c:#0b5f86" href="akt/"><h3>AKT practice</h3><p>Free, fast questions: daily review, quick-fire, calculation drill and timed mocks</p><span class="live">${due?`${due} due for review →`:"Start practising →"}</span></a>
  ${(()=>{let D={t:{},days:{}};try{D=JSON.parse(localStorage.getItem("cgn-steps")||"null")||D}catch(e){}
   const td=new Date(),tk=td.getFullYear()+"-"+String(td.getMonth()+1).padStart(2,"0")+"-"+String(td.getDate()).padStart(2,"0"),n=((D.days||{})[tk]||0)>0?0:1;
   return `<a class="tile" style="--c:#1b6b5a" href="steps/"><h3>NICE in 5 Steps</h3><p>A searchable library of management steps, five per topic, tested every day</p><span class="live">${n?"Today's topic is waiting →":"Today's topic done ✓"}</span></a>`})()}
+ ${(()=>{let n5=0,n3=0;try{const mb=JSON.parse(localStorage.getItem("cgn-mybank")||"null");if(mb&&mb.q)Object.values(mb.q).forEach(q=>q.stars===5?n5++:n3++)}catch(e){}
+  return `<a class="tile" style="--c:#c28a00" href="mybank/"><h3>My bank</h3><p>Your private questions: ★5 from recalls, ★3 from other banks, rewritten as new questions</p><span class="live">${n5+n3?`★5 ${n5} · ★3 ${n3} →`:"Import your first batch →"}</span></a>`})()}
  <a class="tile" style="--c:#0b8577" href="akt/case.html"><h3>AKT cases</h3><p>Case-led reasoning: gather the history, then decide step by step</p><span class="live">Open a case →</span></a>
  <a class="tile" style="--c:#7b46c7" href="sca/live.html"><h3>SCA Live</h3><p>A spoken 12-minute consultation: you lead, Claude plays the patient and the examiner</p><span class="live">Start a consultation →</span></a>
  <a class="tile" style="--c:#5b3a9a" href="sca/"><h3>SCA cases</h3><p>${esc(sca?sca.src:"Guided SCA scenarios mapped to the clinical experience groups")}</p><span class="live">${sca?sca.lessons.filter(x=>x[2]).length+" live":""} →</span></a>`;

@@ -81,7 +81,10 @@ kbd{font:600 12px ui-monospace,monospace;border:1px solid var(--line);border-bot
 .note{font-size:13px;color:var(--mut)}
 .hide{display:none!important}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.srcb{font:inherit;font-size:14px;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:6px 12px;cursor:pointer}.srcb small{font-weight:400;color:var(--mut)}.srcb.on{background:#16212a;color:#fff;border-color:#16212a}.srcb.on small{color:#fff}
+.stb{font-size:12px;font-weight:700;color:#8a5a00;background:color-mix(in srgb,#c28a00 16%,transparent);border-radius:10px;padding:1px 7px;white-space:nowrap}.stb.s3{color:var(--mut);background:var(--line)}
 </style>
+<script src="/sync.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -100,11 +103,14 @@ const DAY=864e5,GAPS=[0,1,3,7,14,30,60],L="ABCDE";
 const KEY="cgn-v1",SKEY="cgn-akt-settings";
 const load=()=>{try{const d=JSON.parse(localStorage.getItem(KEY));return d&&d.q?d:{q:{},log:[],cases:{}}}catch(e){return {q:{},log:[],cases:{}}}};
 const save=d=>{try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}};
-let SET={recall:false,pace:true};try{SET=Object.assign(SET,JSON.parse(localStorage.getItem(SKEY))||{})}catch(e){}
+let SET={recall:false,pace:true,src:"all"};try{SET=Object.assign(SET,JSON.parse(localStorage.getItem(SKEY))||{})}catch(e){}
 const saveSet=()=>{try{localStorage.setItem(SKEY,JSON.stringify(SET))}catch(e){}};
+{const u=new URLSearchParams(location.search).get("src");if(["all","5","3","site","mine"].includes(u))SET.src=u}
+const SRC_LABEL={all:"All questions",5:"★5 only",3:"★3 only",site:"Site questions only",mine:"My bank only"};
+const inSrc=q=>q.gen?SET.src==="all"||SET.src==="site":SET.src==="all"?true:SET.src==="5"?q.stars===5:SET.src==="3"?q.stars===3:SET.src==="site"?!q.stars:!!q.stars;
 
 /* ---------------- bank ---------------- */
-const COLORS={};(typeof CATS!=="undefined"?CATS:[]).forEach(c=>COLORS[c.id]=c.c);COLORS.calc="#5b4fc4";
+const COLORS={};(typeof CATS!=="undefined"?CATS:[]).forEach(c=>COLORS[c.id]=c.c);COLORS.calc="#5b4fc4";COLORS.mybank="#c28a00";
 let BANK=[],TOPICS=[];
 const GEN={
  twobytwo(){const dz=[40,60,80,100,120,150][r(6)],nd=[300,400,600,800,900][r(5)],se=[.7,.75,.8,.85,.9,.95][r(6)],sp=[.75,.8,.85,.9,.95][r(5)];
@@ -131,10 +137,14 @@ async function buildBank(){const live=[];(typeof CATS!=="undefined"?CATS:[]).for
  TOPICS=got.filter(Boolean);
  const st={};const liveNames=new Set(TOPICS.map(t=>t.name));[...(typeof STATIC_BANK!=="undefined"?STATIC_BANK:[]),...(typeof DERM_BANK!=="undefined"?DERM_BANK:[])].filter(q=>!liveNames.has(q.topic)).forEach(q=>{(st[q.topic]=st[q.topic]||{key:"static/"+q.topic,name:q.topic,cat:q.cat,link:null,qs:[]}).qs.push({id:q.id,s:q.s,o:q.o,a:q.a,e:q.e})});
  TOPICS.push(...Object.values(st));
+ /* private My bank (from sync / import), merged into a matching topic or its own */
+ try{const mb=JSON.parse(localStorage.getItem("cgn-mybank")||"null");if(mb&&mb.q)Object.values(mb.q).forEach(q=>{let t=TOPICS.find(x=>x.name===q.topic);
+  if(!t){t={key:"my/"+q.topic,name:q.topic,cat:"mybank",area:q.area,link:null,qs:[]};TOPICS.push(t)}
+  t.qs.push({id:q.id,s:q.s,o:q.o,a:q.a,e:q.e,stars:q.stars,area:q.area})})}catch(e){}
  if(typeof CASES!=="undefined")Object.entries(CASES).forEach(([k,c])=>{let t=TOPICS.find(x=>x.name===c.topic);if(!t){t={key:"case/"+k,name:c.topic,cat:c.cat,link:c.lesson||null,qs:[]};TOPICS.push(t)}t.caseId=k;
   c.steps.forEach((q,i)=>t.qs.push({id:`case-${k}#${i}`,s:q.solo||q.s,o:q.o,a:q.a,e:q.e}))});
  TOPICS.push({key:"calc",name:"Calculations (new numbers every time)",cat:"calc",link:null,gen:true,qs:Object.keys(GEN).map(k=>({id:"gen-"+k,gen:k}))});
- const order=["cardiology","dermatology","statistics","admin","calc"];TOPICS.sort((a,b)=>order.indexOf(a.cat)-order.indexOf(b.cat));
+ const order=["cardiology","dermatology","statistics","admin","mybank","calc"];TOPICS.sort((a,b)=>order.indexOf(a.cat)-order.indexOf(b.cat));
  BANK=TOPICS.flatMap(t=>t.qs.map(q=>Object.assign(q,{topic:t.name,cat:t.cat,link:t.link})))}
 const real=q=>q.gen?Object.assign({},q,GEN[q.gen]()):q;
 
@@ -159,26 +169,27 @@ function home(){stopTimers();document.onkeydown=null;const d=load(),ts=topicStat
   <button class="mode t" id="m-calc"><b>Calculation drill</b><span>Endless stats, ABPI and postural BP with new numbers.</span></button>
  </div>
  <div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Settings</h2>${mis?`<button class="btn ghost" id="m-miss">Retry my mistakes (${mis})</button>`:""}</div>
+ <div style="margin-top:8px"><div class="note" style="margin:0 0 6px">Questions to use</div><div class="row" role="group" aria-label="Questions to use">${["all","5","3","site","mine"].map(k=>{const n=BANK.filter(q=>!q.gen&&(k==="all"||(k==="5"?q.stars===5:k==="3"?q.stars===3:k==="site"?!q.stars:!!q.stars))).length;return (k==="all"||k==="site"||n)?`<button class="srcb ${SET.src===k?"on":""}" data-src="${k}">${SRC_LABEL[k]} <small>${n}</small></button>`:""}).join("")}</div></div>
  <div class="set" style="margin-top:8px"><label><input type="checkbox" id="s-recall" ${SET.recall?"checked":""}> <span><b>Recall first</b>: think of your answer before the options appear</span></label><label><input type="checkbox" id="s-pace" ${SET.pace?"checked":""}> <span><b>Pace bar</b>: 60 seconds per question</span></label></div></div>
  <div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Topics</h2><span class="note" id="selnote">Tick topics for Quick-fire, or press Practise on one.</span></div>
  <table class="tt"><thead><tr><th></th><th>Topic</th><th class="hm">Mastery (last 10)</th><th class="n">Done</th><th class="n hm">Due</th><th></th></tr></thead><tbody>
- ${TOPICS.map((t,i)=>{const s=ts[t.name],p=s.p,c=p===null?"var(--line)":p>=80?"var(--teal)":p>=60?"var(--amber)":"var(--red)";
-  return `<tr><td><input type="checkbox" data-sel="${i}" aria-label="Select ${esc(t.name)}" ${selTopics.has(i)?"checked":""} style="width:18px;height:18px"></td><td><span class="dot" style="background:${COLORS[t.cat]||"#888"}"></span>${esc(t.name)}${t.link?` <a href="${esc(t.link)}" class="note">lesson</a>`:""}${t.caseId?` <a href="case.html#${t.caseId}" class="note">case</a>`:""}<div class="note">${t.gen?"endless":t.qs.length+" questions"}</div></td>
+ ${TOPICS.map((t,i)=>{if(t.gen?!(SET.src==="all"||SET.src==="site"):!t.qs.some(inSrc))return "";const s=ts[t.name],p=s.p,c=p===null?"var(--line)":p>=80?"var(--teal)":p>=60?"var(--amber)":"var(--red)";
+  return `<tr><td><input type="checkbox" data-sel="${i}" aria-label="Select ${esc(t.name)}" ${selTopics.has(i)?"checked":""} style="width:18px;height:18px"></td><td><span class="dot" style="background:${COLORS[t.cat]||"#888"}"></span>${esc(t.name)}${(()=>{const f=t.qs.filter(q=>q.stars===5).length,th=t.qs.filter(q=>q.stars===3).length;return (f?` <span class="stb">★5 ${f}</span>`:"")+(th?` <span class="stb s3">★3 ${th}</span>`:"")})()}${t.link?` <a href="${esc(t.link)}" class="note">lesson</a>`:""}${t.caseId?` <a href="case.html#${t.caseId}" class="note">case</a>`:""}<div class="note">${t.gen?"endless":t.qs.length+" questions"}</div></td>
   <td class="hm"><div class="row" style="flex-wrap:nowrap"><div class="mbar" style="flex:1"><div style="width:${p||0}%;background:${c}"></div></div><b style="color:${c};width:44px;text-align:right">${p===null?"–":p+"%"}</b></div></td><td class="n">${s.n}</td><td class="n hm">${s.due||""}</td><td class="n"><button class="go" data-go="${i}">Practise</button></td></tr>`}).join("")}
  </tbody></table></div>
  <p class="note">Progress is saved in this browser. Your lesson quizzes count towards it too. <a href="#" id="reset">Reset progress</a></p>`;
  $("m-daily").onclick=()=>start("Daily review",pickDaily(20));
- $("m-quick").onclick=()=>{const qs=selTopics.size?[...selTopics].flatMap(i=>TOPICS[i].qs):BANK.filter(q=>!q.gen);start("Quick-fire",pickQuick(qs,20))};
+ $("m-quick").onclick=()=>{const qs=(selTopics.size?[...selTopics].flatMap(i=>TOPICS[i].qs):BANK.filter(q=>!q.gen)).filter(inSrc);start("Quick-fire",pickQuick(qs,20))};
  $("m-mock").onclick=mockSetup;$("m-calc").onclick=()=>start("Calculation drill",Array.from({length:20},(_,i)=>TOPICS.find(t=>t.gen).qs[i%4]).sort(()=>Math.random()-.5),{endless:true});
  if($("m-miss"))$("m-miss").onclick=()=>start("Mistakes",shuffle(mistakes(load())).slice(0,20));
- $("s-recall").onchange=e=>{SET.recall=e.target.checked;saveSet()};$("s-pace").onchange=e=>{SET.pace=e.target.checked;saveSet()};
+ $("s-recall").onchange=e=>{SET.recall=e.target.checked;saveSet()};document.querySelectorAll("[data-src]").forEach(b=>b.onclick=()=>{SET.src=b.dataset.src;saveSet();home()});$("s-pace").onchange=e=>{SET.pace=e.target.checked;saveSet()};
  document.querySelectorAll("[data-sel]").forEach(c=>c.onchange=()=>{const i=+c.dataset.sel;c.checked?selTopics.add(i):selTopics.delete(i);$("selnote").textContent=selTopics.size?`${selTopics.size} topic${selTopics.size>1?"s":""} selected: press Quick-fire.`:"Tick topics for Quick-fire, or press Practise on one."});
- document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{const t=TOPICS[+b.dataset.go];start(t.name,t.gen?Array.from({length:20},(_,i)=>t.qs[i%t.qs.length]).sort(()=>Math.random()-.5):pickQuick(t.qs,t.qs.length),t.gen?{endless:true}:{})});
+ document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{const t=TOPICS[+b.dataset.go];start(t.name,t.gen?Array.from({length:20},(_,i)=>t.qs[i%t.qs.length]).sort(()=>Math.random()-.5):pickQuick(t.qs.filter(inSrc),t.qs.length),t.gen?{endless:true}:{})});
  $("reset").onclick=e=>{e.preventDefault();if(confirm("Reset all your AKT progress in this browser?")){try{localStorage.removeItem(KEY)}catch(x){}home()}}}
 function pickDaily(n){const d=load(),now=Date.now(),ts=topicStats(d),w=q=>{const p=ts[q.topic]&&ts[q.topic].p;return p===null||p===undefined?50:p};
- const pool=BANK.filter(q=>!q.gen);const due=pool.filter(q=>d.q[q.id]&&d.q[q.id].due<=now).sort((a,b)=>w(a)-w(b));
+ const pool=BANK.filter(q=>!q.gen&&inSrc(q));const due=pool.filter(q=>d.q[q.id]&&d.q[q.id].due<=now).sort((a,b)=>w(a)-w(b));
  const fresh=shuffle(pool.filter(q=>!d.q[q.id])).sort((a,b)=>w(a)-w(b));const later=pool.filter(q=>d.q[q.id]&&d.q[q.id].due>now).sort((a,b)=>d.q[a.id].due-d.q[b.id].due);
- const out=[...due,...fresh.slice(0,Math.max(0,n-due.length-2)),...later];const calc=TOPICS.find(t=>t.gen).qs;out.splice(Math.min(out.length,7),0,calc[r(4)]);out.splice(Math.min(out.length,15),0,calc[r(4)]);
+ const out=[...due,...fresh.slice(0,Math.max(0,n-due.length-2)),...later];const calc=TOPICS.find(t=>t.gen).qs;if(SET.src==="all"||SET.src==="site"){out.splice(Math.min(out.length,7),0,calc[r(4)]);out.splice(Math.min(out.length,15),0,calc[r(4)])}
  return [...new Set(out)].slice(0,n)}
 function pickQuick(qs,n){const d=load(),now=Date.now();return shuffle(qs.slice()).sort((a,b)=>{const da=d.q[a.id],db=d.q[b.id];const sa=!da?1:da.due<=now?0:2,sb=!db?1:db.due<=now?0:2;return sa-sb}).slice(0,n)}
 
@@ -228,11 +239,11 @@ function results(){stopTimers();document.onkeydown=null;const n=S.ans.filter(a=>
 function reviewList(){const wrong=S.qs.map((q,i)=>[q,i]).filter(([q,i])=>S.ans[i]!==undefined&&S.ans[i]!==q.a);if(!wrong.length)return"";
  return `<div class="card"><h2>Review your wrong answers</h2><div class="rev">${wrong.map(([q,i])=>`<details><summary>${esc(q.topic)}: <span class="w">${S.ans[i]<0?"not answered":"you chose "+L[S.ans[i]]}</span>, <span class="c">answer ${L[q.a]}</span></summary><div class="stem" style="font-size:16px">${q.s}</div><p><b>${L[q.a]}. ${esc(q.o[q.a])}</b><br>${esc(q.e)}</p></details>`).join("")}</div></div>`}
 /* mock */
-function mockSetup(){const pool=BANK.filter(q=>!q.gen).length;
+function mockSetup(){const pool=BANK.filter(q=>!q.gen&&inSrc(q)).length;
  $("app").innerHTML=`<h1>Mock exam</h1><div class="card"><p style="margin-top:0">Mixed questions from all your topics, timed at the real AKT pace of 1 minute per question. No feedback until you finish; you can flag questions and go back.</p>
  <div class="row">${[20,40,80,160].map(n=>`<button class="btn ${n===40?"":"ghost"}" data-n="${n}" ${n>pool?"disabled":""}>${n} questions · ${n} min</button>`).join("")}</div>
  <p class="note">You have ${pool} questions so far${pool<160?", so the full 160-question mock unlocks as you add topics":""}.</p><button class="btn ghost" id="hm">Back</button></div>`;
- document.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>start("Mock exam",shuffle(BANK.filter(q=>!q.gen)).slice(0,+b.dataset.n),{mock:true}));$("hm").onclick=home}
+ document.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>start("Mock exam",shuffle(BANK.filter(q=>!q.gen&&inSrc(q))).slice(0,+b.dataset.n),{mock:true}));$("hm").onclick=home}
 function mockTick(){const left=Math.max(0,Math.round((S.end-Date.now())/1000)),el=$("mclk");if(el){el.textContent=`${Math.floor(left/60)}:${String(left%60).padStart(2,"0")}`;el.style.color=left<300?"var(--red)":""}if(left<=0)finishMock()}
 function finishMock(){stopTimers();S.qs.forEach((q,i)=>{if(S.ans[i]!==undefined)record(q,S.ans[i]===q.a,0)});try{const d=load();d.mocks=d.mocks||[];d.mocks.push({t:Date.now(),q:S.qs.length,c:S.qs.filter((q,i)=>S.ans[i]===q.a).length,mins:Math.round((Date.now()-S.t0)/60000)});save(d)}catch(e){}S.mock=false;const unanswered=S.qs.length-S.ans.filter(a=>a!==undefined).length;
  S.ans=S.qs.map((q,i)=>S.ans[i]===undefined?-1:S.ans[i]);results();if(unanswered)$("app").insertAdjacentHTML("afterbegin",`<p class="note">${unanswered} unanswered question${unanswered>1?"s":""} counted as wrong.</p>`)}

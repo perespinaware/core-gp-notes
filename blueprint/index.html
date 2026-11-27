@@ -59,6 +59,7 @@ details.area>summary b{font-size:16px}details.area>summary small{display:block;c
 .note{font-size:13px;color:var(--mut)}
 .src{font-size:14px;color:var(--mut)}.src li{margin-bottom:4px}
 </style>
+<script src="/sync.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -77,7 +78,9 @@ let log=[];try{const d=JSON.parse(localStorage.getItem("cgn-v1"));if(d&&d.log)lo
 const read=k=>{try{return JSON.parse(localStorage.getItem(k))||[]}catch(e){return []}};
 const col=p=>p>=70?"var(--teal)":p>=40?"var(--amber)":"var(--red)";
 /* ---- AKT ---- */
+const MYBP={};try{const mb=JSON.parse(localStorage.getItem("cgn-mybank")||"null");if(mb&&mb.q)Object.values(mb.q).forEach(q=>{if(q.bp)(MYBP[q.bp]=MYBP[q.bp]||new Set()).add(q.topic)})}catch(e){}
 const topics=AKT_AREAS.flatMap((a,ai)=>a.topics.map(([id,name,tier,have])=>{
+ if(MYBP[id])have={...have,bank:[...new Set([...(have.bank||[]),...MYBP[id]])]};
  const names=have.bank||[],L=log.filter(x=>names.includes(x.theme)),last=L.slice(-10),n=L.length,p=last.length?Math.round(last.filter(x=>x.ok).length/last.length*100):null;
  const cov=have.notes&&names.length?1:(have.notes||have.lesson||names.length)?0.5:0;
  return {id,name,tier,have,ai,area:a.area,cov,n,p,mastered:n>=5&&p>=70}}));
