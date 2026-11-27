@@ -84,9 +84,19 @@ def build(spec, out):
     s = src[:a] + block + src[b:]
     s = re.sub(r"<title>[^<]*</title>", f"<title>{E(spec['title'])} · {spec['cat_name']} · Road to GP</title>", s, 1)
     s = re.sub(r"<h1>[^<]*</h1>", f"<h1>{E(spec['title'])}</h1>", s, 1)
-    s = re.sub(r'<p class="sub">[^<]*</p>', f'<p class="sub">Topic {spec["num"]} of {spec["guide"]}, as a narrated lesson. Press play, or tap any chapter. Try every interactive yourself.</p>', s, 1)
+    s = re.sub(r'<p class="sub">.*?</p>', lambda _: f'<p class="sub">Topic {spec["num"]} of {spec["guide"]}, as a narrated lesson. Press play, or tap any chapter. Try every interactive yourself.</p>', s, 1, flags=re.S)
     s = s.replace('<a href="./" style="color:inherit;text-decoration:none">Cardiology</a>', f'<a href="./" style="color:inherit;text-decoration:none">{spec["cat_name"]}</a>')
     s = s.replace("../guides/Core_Cardiology_for_the_GP_AKT.pdf", f"../guides/{spec['pdf']}")
     assert "Syncope" not in s.split("<script>")[0], "base header text left over"
     open(out, "w").write(s)
     return out
+
+# keep AKT relevance stars on lesson headers after any rebuild
+_build = build
+def build(spec, out):
+    r = _build(spec, out)
+    try:
+        import stamp_yield; stamp_yield.stamp_lesson_pages()
+    except Exception as e:
+        print("stars not stamped:", e)
+    return r

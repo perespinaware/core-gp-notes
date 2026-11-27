@@ -9,6 +9,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style.css">
 <script src="/sync.js"></script>
+<style>.list .yld{display:block;color:#b7791f;font-size:15px;letter-spacing:1px;margin-top:3px}
+.sortbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 12px;font-size:14px;color:var(--mut)}
+.sortbar button{font:inherit;font-size:14px;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:6px 14px;cursor:pointer}
+.sortbar button[aria-pressed="true"]{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.sortbar .key{margin-left:auto;color:#b7791f;font-size:13px}</style>
 </head>
 <body data-cat="admin">
 <header class="band cat" id="band"><div class="in">
@@ -30,9 +35,16 @@ document.body.style.setProperty("--c",c.c);
 const live=c.lessons.filter(l=>l[2]).length;
 document.getElementById("lead").textContent=`From ${c.src} · ${c.lessons.length} topic${c.lessons.length>1?"s":""}, ${live} live`;
 if(typeof PDFS!=="undefined"&&PDFS[c.id]){const p=PDFS[c.id];document.getElementById("lead").insertAdjacentHTML("afterend",`<a class="pdfbtn" href="../guides/${p[0]}" target="_blank" rel="noopener">Open the PDF guide <small>${p[1]} pages</small></a>`)}
-document.getElementById("list").innerHTML=c.lessons.map((l,i)=>{
- const inner=`<span class="n">${String(i+1).padStart(2,"0")}</span><span class="t"><b>${esc(l[0])}</b><small>${esc(l[1])}</small></span><span class="st ${l[2]?"live":"soon"}">${l[2]?"Live · interactive":"Coming soon"}</span>`;
+const STAR=n=>n?`<span class="yld" title="AKT relevance: ${n} of 5" aria-label="AKT relevance ${n} of 5">${"★".repeat(n)}${"☆".repeat(5-n)}</span>`:"";
+let SORT=(()=>{try{return localStorage.getItem("rtg-sort")||"guide"}catch(e){return "guide"}})();
+function drawList(){const L=c.lessons.map((l,i)=>[l,i]);if(SORT==="yield")L.sort((a,b)=>(b[0][3]||0)-(a[0][3]||0)||a[1]-b[1]);
+document.getElementById("list").innerHTML=L.map(([l,i])=>{
+ const inner=`<span class="n">${String(i+1).padStart(2,"0")}</span><span class="t"><b>${esc(l[0])}</b><small>${esc(l[1])}</small>${STAR(l[3])}</span><span class="st ${l[2]?"live":"soon"}">${l[2]?"Live · interactive":"Coming soon"}</span>`;
  return `<li>${l[2]?`<a class="row" href="${esc(l[2])}">${inner}</a>`:`<div class="row">${inner}</div>`}</li>`}).join("");
+ document.querySelectorAll("[data-sort]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.sort===SORT))}
+if(c.lessons.some(l=>l[3])){const bar=document.createElement("div");bar.className="sortbar";bar.innerHTML=`<span>Order:</span><button data-sort="guide">Guide order</button><button data-sort="yield">Highest AKT yield first</button><span class="key">★★★★★ = most often tested</span>`;
+ document.getElementById("list").before(bar);bar.querySelectorAll("[data-sort]").forEach(b=>b.onclick=()=>{SORT=b.dataset.sort;try{localStorage.setItem("rtg-sort",SORT)}catch(e){}drawList()})}
+drawList();
 }
 </script>
 <script src="/time.js" defer></script>
