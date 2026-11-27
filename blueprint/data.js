@@ -6,12 +6,15 @@
    have: notes = PDF guide topic · lesson = Road to GP lesson · bank = AKT practice topic name(s) · case = AKT case id */
 const AKT_AREAS=[
  {area:"Prescribing and patient safety",domain:"Clinical",flag:"Flagged in 11 sittings over 5 years; side effects of long-term drugs flagged again in AKTs 57–60",topics:[
-  ["rx-monitor","Drug monitoring (DMARDs, lithium, amiodarone, methotrexate)",1,{}],
-  ["rx-se","Important side effects and red BNF interactions",1,{}],
-  ["rx-cd","Controlled drugs and prescribing rules",1,{}],
-  ["rx-calc","Drug dose calculations",1,{}],
-  ["rx-special","Prescribing in older adults, renal and hepatic impairment",1,{}],
-  ["rx-amr","Antimicrobial stewardship",1,{}]]},
+  ["rx-monitor","Drug monitoring (DMARDs, lithium, amiodarone, methotrexate)",1,{notes:1,lesson:1,bank:["Medicines monitoring and blood results"],case:"rxmonitor"}],
+  ["rx-se","Important side effects and red BNF interactions",1,{notes:1,lesson:1,bank:["Side effects of long-term condition drugs","Interactions and MHRA alerts"],case:"rxsidefx"}],
+  ["rx-cd","Controlled drugs and prescribing rules",1,{notes:1,lesson:1,bank:["Safe prescribing and controlled drugs"],case:"rxsafe"}],
+  ["rx-calc","Drug dose calculations",1,{notes:1,lesson:1,bank:["Drug dose calculations"],case:"rxcalc"}],
+  ["rx-special","Prescribing in older adults, renal and hepatic impairment",1,{notes:1,lesson:1,bank:["Renal, hepatic impairment and older people"],case:"rxrenal"}],
+  ["rx-amr","Antimicrobial stewardship",1,{notes:1,lesson:1,bank:["Antimicrobial stewardship"],case:"rxamr"}],
+  ["rx-alerts","MHRA safety alerts and drug interactions",1,{notes:1,lesson:1,bank:["Interactions and MHRA alerts"],case:"rxinteract"}],
+  ["rx-antidep","Antidepressants and serotonin syndrome",2,{notes:1,lesson:1,bank:["Antidepressants and serious interactions"],case:"rxantidep"}],
+  ["rx-deprescribe","Polypharmacy and deprescribing",2,{notes:1,lesson:1,bank:["Deprescribing and polypharmacy"],case:"rxdeprescribe"}]]},
  {area:"Leadership, management and administration",domain:"Admin",flag:"Flagged in 10 sittings; confidentiality and data protection in 2 of AKTs 57–60",topics:[
   ["ad-conf","Confidentiality, data protection and access to records",1,{}],
   ["ad-capacity","Mental capacity and consent in adults",1,{notes:1,lesson:1,bank:["Consent and capacity"],case:"consent"}],
@@ -83,7 +86,7 @@ const AKT_AREAS=[
   ["wh-bleed","Abnormal bleeding and amenorrhoea",1,{}],
   ["wh-screen","Cervical screening and gynaecological cancers",1,{}],
   ["wh-early","Diagnosis of pregnancy and early pregnancy problems",1,{}],
-  ["wh-rxpreg","Prescribing in pregnancy and breastfeeding",1,{}],
+  ["wh-rxpreg","Prescribing in pregnancy and breastfeeding",1,{notes:1,lesson:1,bank:["Pregnancy and breastfeeding"],case:"rxpreg"}],
   ["wh-breast","Breast symptoms and breast cancer referral",2,{}],
   ["wh-pcos","Endometriosis, PCOS and fibroids",2,{}],
   ["wh-ante","Antenatal and postnatal problems",2,{}]]},

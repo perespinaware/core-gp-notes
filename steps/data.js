@@ -192,5 +192,65 @@ const STEPS=[
   "Presume capacity from 16; support first; unwise ≠ incapable",
   "Test: understand, retain, use or weigh, communicate, because of an impairment",
   "Lacks capacity: valid ADRT → LPA → best interests (IMCA if no one to consult)",
-  "Under 16: Gillick; contraception: Fraser; under-18 refusal can be overridden by court"]}
+  "Under 16: Gillick; contraception: Fraser; under-18 refusal can be overridden by court"]},
+ {id:"rxsafe",kw:"prescription controlled drug schedule CD register 28 days 30 days words and figures pregabalin gabapentin tramadol zopiclone Yellow Card black triangle GMC family unlicensed travel licence",cat:"prescribing",topic:"Safe prescribing and controlled drugs",src:"Misuse of Drugs Regulations · GMC 2021",url:"https://bnf.nice.org.uk/medicines-guidance/controlled-drugs-and-drug-dependence/",lesson:"../prescribing/safe-prescribing-controlled-drugs.html",steps:[
+  "Every prescription: name, address, age if under 12, signature, date; units and micrograms in full",
+  "Schedule 2/3: form, strength, dose, total in words and figures; valid 28 days (schedules 2–4)",
+  "Supply up to 30 days; no repeat dispensing for schedules 2 and 3; gabapentinoids are schedule 3",
+  "Avoid prescribing for self or family; you're responsible for what you sign; justify unlicensed use",
+  "Yellow Card: all ▼ reactions, serious reactions to others; agree a stopping plan for dependence-forming drugs"]},
+ {id:"rxinteract",kw:"interaction enzyme inducer inhibitor carbamazepine rifampicin St John's wort clarithromycin simvastatin methotrexate trimethoprim triple whammy lithium NSAID clopidogrel omeprazole valproate topiramate fluoroquinolone GLP-1 tirzepatide contraception MHRA alert",cat:"prescribing",topic:"Interactions and MHRA alerts",src:"BNF · FSRH · MHRA 2024–26",url:"https://www.gov.uk/drug-safety-update",lesson:"../prescribing/interactions-mhra-alerts.html",steps:[
+  "Inducers lower levels (pill fails); inhibitors raise levels (toxicity)",
+  "Enzyme inducer + hormonal contraception: copper IUD, IUS or injection, for 28 days after stopping",
+  "Classic pairs: statin + macrolide, methotrexate + trimethoprim, ACEi + diuretic + NSAID, lithium + NSAID",
+  "Valproate: two specialists to start under 55; topiramate PPP; quinolones only if others inappropriate",
+  "GLP-1: contraception, not in pregnancy; tirzepatide: extra method for 4 weeks after start or dose rise"]},
+ {id:"rxmonitor",kw:"monitoring DMARD methotrexate azathioprine TPMT leflunomide hydroxychloroquine lithium level antipsychotic amiodarone ACE inhibitor creatinine potassium statin ALT CK clozapine steroid card",cat:"prescribing",topic:"Medicines monitoring and blood results",src:"BSR · NICE CG185 · UKKA",url:"https://cks.nice.org.uk/topics/dmards/",lesson:"../prescribing/monitoring-blood-results.html",steps:[
+  "DMARDs: FBC, U&E, LFT 2-weekly until stable 6 weeks, monthly × 3, then 3-monthly; TPMT before azathioprine",
+  "Withhold DMARD: neutrophils < 1.6, WCC < 3.5, platelets < 140, ALT > 100; sore throat → urgent FBC",
+  "Lithium: level 12 h post-dose, 3-monthly in year 1 then 6-monthly; U&E, TFT, calcium 6-monthly",
+  "ACEi: creatinine rise < 30% continue; ≥ 30% stop or reduce; K ≥ 6.5 same day",
+  "Antipsychotics: weight, BP, HbA1c, lipids at 12 weeks, 1 year, then yearly; amiodarone TFT/LFT 6-monthly"]},
+ {id:"rxsidefx",kw:"side effect ACE inhibitor cough angioedema amlodipine ankle oedema thiazide gout SGLT2 DKA ketones metformin B12 bisphosphonate atypical fracture carbimazole agranulocytosis finasteride PSA tamoxifen alpha-blocker floppy iris oxybutynin",cat:"prescribing",topic:"Side effects of long-term condition drugs",src:"BNF · NICE CKS · MHRA",url:"https://bnf.nice.org.uk/",lesson:"../prescribing/long-term-drug-side-effects.html",steps:[
+  "ACEi cough → ARB; angioedema → stop, never re-challenge; amlodipine oedema → reduce or switch",
+  "SGLT2 inhibitor + unwell → check ketones (euglycaemic DKA); metformin neuropathy → check B12",
+  "Bisphosphonate: upright with water; thigh pain → femoral X-rays; dental check first",
+  "Carbimazole sore throat → urgent FBC; amiodarone → thyroid, lungs, liver",
+  "Finasteride halves PSA; tamoxifen PMB → urgent referral; avoid oxybutynin in frail older women"]},
+ {id:"rxamr",kw:"antibiotic antimicrobial stewardship back-up delayed prescription FeverPAIN Centor sore throat otitis media sinusitis cough pneumonia UTI nitrofurantoin trimethoprim pregnancy dipstick cellulitis flucloxacillin impetigo hydrogen peroxide bite co-amoxiclav Lyme penicillin allergy",cat:"prescribing",topic:"Antimicrobial stewardship",src:"NICE antimicrobial guidelines · UKHSA",url:"https://www.nice.org.uk/guidance/ng15",lesson:"../prescribing/antimicrobial-stewardship.html",steps:[
+  "Self-limiting infections: no antibiotic or a back-up prescription, with illness durations and safety-netting",
+  "Sore throat: FeverPAIN 0–1 none, 2–3 none or back-up, 4–5 penicillin V; otitis media: amoxicillin if otorrhoea or unwell",
+  "Cystitis in women: nitrofurantoin (eGFR ≥ 45) or trimethoprim 3 days; men and pregnancy: 7 days + culture",
+  "No dipstick over 65 or with a catheter; treat asymptomatic bacteriuria only in pregnancy",
+  "Cellulitis: flucloxacillin; bites: co-amoxiclav; impetigo: hydrogen peroxide 1%; check the allergy history"]},
+ {id:"rxantidep",kw:"antidepressant SSRI sertraline citalopram escitalopram QT fluoxetine paroxetine venlafaxine mirtazapine serotonin syndrome neuroleptic malignant syndrome MAOI washout hyponatraemia discontinuation tapering tramadol triptan",cat:"prescribing",topic:"Antidepressants and serious interactions",src:"NICE NG222 · MHRA",url:"https://www.nice.org.uk/guidance/ng222",lesson:"../prescribing/antidepressants.html",steps:[
+  "SSRI first; sertraline in heart disease; citalopram max 20 mg over 65",
+  "Review within 2 weeks (1 week if 18–25 or suicide risk); continue ≥ 6 months after remission",
+  "SSRI + NSAID or anticoagulant: PPI or avoid; + tramadol, triptan, MAOI: serotonin syndrome",
+  "Serotonin syndrome: hours, clonus, hyperreflexia, diarrhoea; NMS: days, rigidity, high CK",
+  "Taper over weeks to months (paroxetine, venlafaxine worst); MAOI washouts: fluoxetine 5 weeks"]},
+ {id:"rxrenal",kw:"renal impairment CKD eGFR creatinine clearance Cockcroft-Gault DOAC metformin nitrofurantoin sick day rules SADMANS AKI KDIGO liver disease hepatic cirrhosis cholestasis flucloxacillin older people STOPP START falls anticholinergic",cat:"prescribing",topic:"Renal, hepatic impairment and older people",src:"NICE NG148 · STOPP/START",url:"https://www.nice.org.uk/guidance/ng148",lesson:"../prescribing/renal-hepatic-older-people.html",steps:[
+  "Metformin: review eGFR < 45, stop < 30; nitrofurantoin: avoid eGFR < 45; reduce gabapentinoids",
+  "Use creatinine clearance (Cockcroft–Gault) for DOACs, narrow-index drugs, age 75+, extremes of weight",
+  "Sick days: pause SADMANS drugs; restart 24–48 h after eating and drinking normally",
+  "AKI: creatinine up 26 in 48 h or 1.5× in 7 days; liver disease: avoid sedatives, opioids, NSAIDs",
+  "Older people: review falls-risk and anticholinergic drugs; stop aspirin for primary prevention"]},
+ {id:"rxpreg",kw:"pregnancy breastfeeding teratogen valproate topiramate warfarin LMWH ACE inhibitor labetalol folic acid 5 mg levothyroxine nausea ondansetron codeine breastfeeding UKMEC vaccine pertussis RSV MMR trimethoprim",cat:"prescribing",topic:"Pregnancy and breastfeeding",src:"UKTIS · NICE NG133 · UKMEC",url:"https://www.medicinesinpregnancy.org/",lesson:"../prescribing/pregnancy-breastfeeding.html",steps:[
+  "Folic acid 400 micrograms; 5 mg if antiepileptics, diabetes, BMI ≥ 30, previous NTD",
+  "Switch teratogens: ACEi → labetalol (within 2 days), warfarin → LMWH (before 6 weeks), valproate → specialist",
+  "Levothyroxine: increase 25–50 micrograms at once; nausea: antihistamine, then ondansetron",
+  "Avoid trimethoprim (1st trimester), tetracyclines, nitrofurantoin at term, NSAIDs, live vaccines",
+  "Breastfeeding: avoid codeine; ibuprofen, sertraline, enalapril OK; no combined pill under 6 weeks"]},
+ {id:"rxcalc",kw:"dose calculation percentage ratio 1 in 1000 lidocaine adrenaline anaphylaxis paediatric dose mg/kg suspension volume opioid conversion morphine diamorphine oxycodone breakthrough steroid equivalence alcohol units pack-years Cockcroft-Gault",cat:"prescribing",topic:"Drug dose calculations",src:"BNF · Resus Council UK",url:"https://bnf.nice.org.uk/medicines-guidance/prescription-writing/",lesson:"../prescribing/dose-calculations.html",steps:[
+  "1% = 10 mg/mL; 1 in 1,000 = 1 mg/mL; volume = dose ÷ concentration",
+  "IM adrenaline 1:1,000: 500 micrograms over 12, 300 aged 6–12, 150 aged 6 months–6 years",
+  "Opioids: codeine ÷ 10 → morphine; oral → SC morphine ÷ 2; → SC diamorphine ÷ 3",
+  "Breakthrough 1/10–1/6 of daily dose; prednisolone 5 mg = hydrocortisone 20 mg = dexamethasone 750 micrograms",
+  "Units = ABV × mL ÷ 1,000; pack-years = packs a day × years; CrCl by Cockcroft–Gault"]},
+ {id:"rxdeprescribe",kw:"deprescribing polypharmacy structured medication review STOPP START anticholinergic burden PPI step down aspirin primary prevention antipsychotic dementia bisphosphonate holiday benzodiazepine taper diazepam steroid taper beta-blocker adherence dosette medicines reconciliation",cat:"prescribing",topic:"Deprescribing and polypharmacy",src:"NICE NG5 · NG197 · CG76",url:"https://www.nice.org.uk/guidance/ng5",lesson:"../prescribing/deprescribing-polypharmacy.html",steps:[
+  "Structured review: aims, need, effectiveness, safety, cost, adherence; reconcile within 1 week of discharge",
+  "Stop: aspirin for primary prevention; step down PPIs; review antipsychotics in dementia at 6 weeks",
+  "Bisphosphonate: reassess at 5 years oral (3 years IV); holiday if low risk",
+  "Taper: benzodiazepines ~1/8 every 2 weeks via diazepam; steroids if > 3 weeks; never stop beta-blockers abruptly",
+  "Adherence: ask non-judgementally; intentional vs unintentional; dosette boxes only for practical problems"]}
 ];

@@ -3,7 +3,7 @@ Run from the site root: python3 tools/cases_src/build_cases.py
 Answers are moved to a spread of positions (A-E) deterministically; why[] and bad{} are remapped with them."""
 import json, re, sys, random
 sys.path.insert(0, "tools/cases_src")
-import c1, c2, c3, c4
+import c1, c2, c3, c4, c5
 
 src = open("akt/cases.js").read()
 i = src.index("\nsyncope:{"); j = src.index("\n", src.index('lesson:"../cardiology/syncope.html"'))
@@ -29,7 +29,7 @@ def spread(cid, steps):
 
 J = lambda x: json.dumps(x, ensure_ascii=False)
 parts = [syncope]
-for mod in (c1, c2, c3, c4):
+for mod in (c1, c2, c3, c4, c5):
     for cid, c in mod.C:
         c = dict(c); c["steps"] = spread(cid, c["steps"])
         parts.append(f"{cid}:{J(c)}")

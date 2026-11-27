@@ -144,7 +144,7 @@ async function buildBank(){const live=[];(typeof CATS!=="undefined"?CATS:[]).for
  if(typeof CASES!=="undefined")Object.entries(CASES).forEach(([k,c])=>{let t=TOPICS.find(x=>x.name===c.topic);if(!t){t={key:"case/"+k,name:c.topic,cat:c.cat,link:c.lesson||null,qs:[]};TOPICS.push(t)}t.caseId=k;
   c.steps.forEach((q,i)=>t.qs.push({id:`case-${k}#${i}`,s:q.solo||q.s,o:q.o,a:q.a,e:q.e}))});
  TOPICS.push({key:"calc",name:"Calculations (new numbers every time)",cat:"calc",link:null,gen:true,qs:Object.keys(GEN).map(k=>({id:"gen-"+k,gen:k}))});
- const order=["cardiology","dermatology","statistics","admin","mybank","calc"];TOPICS.sort((a,b)=>order.indexOf(a.cat)-order.indexOf(b.cat));
+ const order=["cardiology","dermatology","statistics","admin","prescribing","mybank","calc"];TOPICS.sort((a,b)=>order.indexOf(a.cat)-order.indexOf(b.cat));
  BANK=TOPICS.flatMap(t=>t.qs.map(q=>Object.assign(q,{topic:t.name,cat:t.cat,link:t.link})))}
 const real=q=>q.gen?Object.assign({},q,GEN[q.gen]()):q;
 

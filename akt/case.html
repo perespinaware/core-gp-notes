@@ -67,7 +67,7 @@ const id=(location.hash||"").slice(1),C=CASES[id];
 if(!C){listCases();window.onhashchange=()=>location.reload()}
 else run();
 function listCases(){
- const AREA={cardiology:"Cardiology",dermatology:"Dermatology",statistics:"Statistics",admin:"Admin and management"};
+ const AREA={cardiology:"Cardiology",dermatology:"Dermatology",statistics:"Statistics",admin:"Admin and management",prescribing:"Prescribing and medicines safety"};
  const stars=c=>{try{const cat=(CATS||[]).find(x=>x.id===c.cat);const f=(c.lesson||"").split("/").pop();const l=cat&&cat.lessons.find(x=>x[2]===f);return l&&l[3]||0}catch(e){return 0}};
  let D={};try{D=(JSON.parse(localStorage.getItem("cgn-v1"))||{}).cases||{}}catch(e){}
  const all=Object.entries(CASES).map(([k,c])=>({k,c,y:stars(c),done:D[k]}));
