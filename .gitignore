@@ -3,3 +3,5 @@ my-bank*.json
 *-mybank*.json
 road-to-gp-backup*.json
 rtg-sync/
+__pycache__/
+*.pyc
