@@ -186,5 +186,11 @@ const STEPS=[
   "Avoid the cause; soap substitute, emollients, protective gloves",
   "Topical steroid by site: mild on the face, potent on the hands",
   "Suspected allergic or persistent: refer for patch testing",
-  "Occupational: refer; the employer reports under RIDDOR"]}
+  "Occupational: refer; the employer reports under RIDDOR"]},
+ {id:"consent",kw:"consent capacity Mental Capacity Act MCA best interests LPA advance decision ADRT IMCA Gillick Fraser parental responsibility Montgomery DoLS",cat:"admin",topic:"Consent and capacity",src:"MCA 2005 · GMC 2020",url:"https://www.gmc-uk.org/professional-standards/the-professional-standards/decision-making-and-consent",lesson:"../admin/consent-capacity.html",steps:[
+  "Valid consent: capacity, information (material risks), voluntary",
+  "Presume capacity from 16; support first; unwise ≠ incapable",
+  "Test: understand, retain, use or weigh, communicate, because of an impairment",
+  "Lacks capacity: valid ADRT → LPA → best interests (IMCA if no one to consult)",
+  "Under 16: Gillick; contraception: Fraser; under-18 refusal can be overridden by court"]}
 ];

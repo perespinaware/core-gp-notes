@@ -1,0 +1,27 @@
+from _h import case, step, G
+C = []
+
+C.append(case("consent", "Consent and capacity", "admin", "The daughter with the consent form",
+ "Mrs Iris Walker, 84 · moderate dementia · lives in a care home · daughter present",
+ "Her daughter: “Mum needs her hip done. I'm her next of kin, so I'll sign the form. She just says no to everything.”",
+ [G("What does Iris say?", "“I don't want an operation. I'm 84. I've had a good life and I'm frightened of hospitals.”", 1, "Iris refuses, gives reasons"),
+  G("Can she explain the choice?", "She says the operation could help her walk but might go wrong; without it she'll probably stay in her chair. She repeats this accurately 20 minutes later.", 1, "Understands, retains, weighs"),
+  G("Any LPA or advance decision?", "No LPA; no advance decision.", 1, "No LPA or ADRT"),
+  G("Memory score", "MMSE 19 last month.", 0, "MMSE 19"),
+  G("Pain control", "Paracetamol; comfortable at rest.", 0, "Pain controlled"),
+  G("Any delirium today?", "Alert, orientated to person and place; no fluctuation per staff.", 0, "No delirium")],
+ [step("Can the daughter consent on her mother's behalf?", ["Yes: she's next of kin", "No: 'next of kin' has no legal power to consent for an adult", "Yes, if two doctors agree", "Yes, if Iris lacks capacity", "Only for emergency treatment"], 1,
+   "No adult can consent for another adult unless they hold a relevant registered LPA (or are a court-appointed deputy).",
+   ["Next of kin has no legal status in consent.", "", "Not a legal route.", "Even then, only with an LPA or deputyship; otherwise best interests.", "Not a legal route."],
+   "A daughter, as 'next of kin', wants to sign consent for her mother's surgery. Can she?"),
+  step("Iris has dementia. Does she have capacity for this decision?", ["No: dementia means she can't decide", "Yes: she can understand, retain, weigh and communicate this decision", "No: MMSE under 24 means no capacity", "Can't tell without a psychiatrist", "No: she disagrees with the doctors"], 1,
+   "Capacity is decision-specific. She understands, retains, weighs and communicates the choice, so she has capacity for this decision, despite her dementia.",
+   ["A diagnosis doesn't decide capacity.", "", "No score determines capacity.", "The treating clinician can assess.", "Disagreeing isn't incapacity."],
+   "An 84-year-old with dementia explains the risks and benefits of surgery and refuses it. Has she capacity?",
+   bad={0: "She's listed for surgery against her will. The care home manager raises a safeguarding concern; the operation is cancelled after a complaint."}),
+  step("What should happen now?", ["Proceed in her best interests", "Respect her refusal, record the assessment, and keep the option open", "Apply to the Court of Protection", "Detain her under the Mental Health Act", "Ask the daughter to apply for an LPA today"], 1,
+   "An adult with capacity can refuse treatment, even if others disagree. Record how capacity was assessed, address her fears, and revisit if she changes her mind or her capacity changes.",
+   ["She has capacity: best interests doesn't apply.", "", "Not needed: there's no doubt she has capacity.", "Not a mental disorder treatment issue.", "Iris would have to make it herself, and it wouldn't override her current capacitous decision."],
+   "An older woman with capacity refuses a hip operation her family want. What next?")],
+ "../admin/consent-capacity.html",
+ ["'Next of kin' can't consent for an adult", "Dementia ≠ incapacity: decision-specific test", "Four abilities: understand, retain, weigh, communicate", "A capacitous refusal is binding; record the assessment"]))

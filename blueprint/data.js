@@ -14,7 +14,7 @@ const AKT_AREAS=[
   ["rx-amr","Antimicrobial stewardship",1,{}]]},
  {area:"Leadership, management and administration",domain:"Admin",flag:"Flagged in 10 sittings; confidentiality and data protection in 2 of AKTs 57–60",topics:[
   ["ad-conf","Confidentiality, data protection and access to records",1,{}],
-  ["ad-capacity","Mental capacity and consent in adults",1,{}],
+  ["ad-capacity","Mental capacity and consent in adults",1,{notes:1,lesson:1,bank:["Consent and capacity"],case:"consent"}],
   ["ad-death","Death certification, coroner referral and cremation",1,{}],
   ["ad-dvla","Fitness to drive (non-cardiac) and fit notes",1,{}],
   ["ad-contract","The GP contract and QOF",2,{notes:1,lesson:1,bank:["The GP contract and QOF"],case:"qof"}],
@@ -36,7 +36,7 @@ const AKT_AREAS=[
   ["ch-cancer","Childhood cancer red flags",1,{}],
   ["ch-joint","Limp and joint problems in children",1,{}],
   ["ch-uro","Paediatric urology: UTI, testes, enuresis",1,{}],
-  ["ch-consent","Consent and capacity in young people (Gillick, Fraser)",1,{}],
+  ["ch-consent","Consent and capacity in young people (Gillick, Fraser)",1,{notes:1,lesson:1,bank:["Consent and capacity"],case:"consent"}],
   ["ch-imm","Immunisation: indications, contraindications, PGDs",1,{}],
   ["ch-neo","Neonatal problems: jaundice, feeding, rashes",2,{}]]},
  {area:"Neurology",domain:"Clinical",flag:"Most persistent weak area: flagged in 7 sittings and in every report from AKT 55 to 58, again in AKT 60",topics:[
