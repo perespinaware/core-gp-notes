@@ -68,14 +68,78 @@ if(!C){listCases();window.onhashchange=()=>location.reload()}
 else run();
 function listCases(){
  const AREA={cardiology:"Cardiology",dermatology:"Dermatology",statistics:"Statistics",admin:"Admin and management",prescribing:"Prescribing and medicines safety"};
+ const SHORT={admin:"Admin",prescribing:"Prescribing"};
+ const COL={};try{(CATS||[]).forEach(c=>COL[c.id]=c.c)}catch(e){}
  const stars=c=>{try{const cat=(CATS||[]).find(x=>x.id===c.cat);const f=(c.lesson||"").split("/").pop();const l=cat&&cat.lessons.find(x=>x[2]===f);return l&&l[3]||0}catch(e){return 0}};
  let D={};try{D=(JSON.parse(localStorage.getItem("cgn-v1"))||{}).cases||{}}catch(e){}
  const all=Object.entries(CASES).map(([k,c])=>({k,c,y:stars(c),done:D[k]}));
- const done=all.filter(x=>x.done).length;
  const areas=[...new Set(all.map(x=>x.c.cat))];
- $("app").innerHTML=`<h1>Cases</h1><p class="sub">${all.length} short patient stories, one for every live topic: gather clues, decide, see what happens. Highest AKT yield first. ${done} done.</p>`+
- areas.map(a=>`<h2 style="margin-top:22px">${esc(AREA[a]||a)}</h2>`+all.filter(x=>x.c.cat===a).sort((p,q)=>q.y-p.y).map(({k,c,y,done})=>
-  `<a class="card" style="display:flex;justify-content:space-between;gap:12px;align-items:center;text-decoration:none;color:inherit" href="#${k}"><span><b>${esc(c.title)}</b><div class="note">${esc(c.topic)} · about ${c.mins} minutes · ${c.steps.length} decisions</div>${y?`<div style="color:#b7791f;letter-spacing:1px" aria-label="AKT relevance ${y} of 5">${"★".repeat(y)}${"☆".repeat(5-y)}</div>`:""}</span><span class="note" style="white-space:nowrap">${done?`Last: ${done.score}%`:"New"}</span></a>`).join("")).join("")}
+ const PAGE=12,VK="rtg-cases-view";
+ let V={area:"all",status:"all",sort:"yield",q:""};try{V=Object.assign(V,JSON.parse(localStorage.getItem(VK))||{})}catch(e){}
+ if(V.area!=="all"&&!areas.includes(V.area))V.area="all";
+ let shown=PAGE;
+ const save=()=>{try{localStorage.setItem(VK,JSON.stringify({area:V.area,status:V.status,sort:V.sort}))}catch(e){}};
+ const done=all.filter(x=>x.done).length,weak=all.filter(x=>x.done&&x.done.score<70).length;
+ const next=[...all].sort((p,q)=>(!!p.done-!!q.done)||((p.done?p.done.score:0)-(q.done?q.done.score:0))||q.y-p.y)[0];
+ const pct=all.length?Math.round(done/all.length*100):0;
+ const pill=d=>!d?`<span class="cs-pill">New</span>`:`<span class="cs-pill ${d.score>=70?"g":d.score>=50?"a":"r"}">${d.score}%</span>`;
+ const st=y=>y?`<span class="cs-st" aria-label="AKT relevance ${y} of 5">${"★".repeat(y)}<i>${"☆".repeat(5-y)}</i></span>`:"";
+ $("app").innerHTML=`<style>
+ .cs-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center}
+ .cs-bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:8px}.cs-bar i{display:block;height:100%;background:var(--teal)}
+ .cs-next{display:flex;flex-direction:column;gap:2px;text-decoration:none;color:#fff;background:var(--acc);border-radius:14px;padding:11px 16px;max-width:300px}
+ .cs-next small{opacity:.85;font-size:12px;letter-spacing:.4px;text-transform:uppercase}.cs-next b{font-size:15.5px;line-height:1.3}
+ @media(max-width:620px){.cs-top{grid-template-columns:1fr}.cs-next{max-width:none}}
+ .cs-tools{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px;margin-bottom:4px}
+ .cs-chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.cs-chips::-webkit-scrollbar{display:none}
+ .cs-chip{flex:none;font:inherit;font-size:14px;white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer;display:flex;gap:6px;align-items:center}
+ .cs-chip i{width:9px;height:9px;border-radius:50%;flex:none}.cs-chip span{color:var(--mut);font-size:12.5px}
+ .cs-chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}.cs-chip[aria-pressed=true] span{color:inherit;opacity:.75}
+ .cs-row2{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+ .cs-row2 input,.cs-row2 select{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 10px;min-height:42px}
+ .cs-row2 input{flex:1 1 200px}
+ @media(max-width:560px){.cs-row2{display:grid;grid-template-columns:1fr 1fr}.cs-row2 input{grid-column:1/-1}}
+ .cs-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}@media(max-width:700px){.cs-list{grid-template-columns:minmax(0,1fr)}}
+ .cs-item{display:grid;grid-template-columns:5px minmax(0,1fr) auto;gap:10px;align-items:center;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px 10px 0;overflow:hidden}
+ .cs-item:hover{border-color:var(--acc)}.cs-item:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+ .cs-item>i{align-self:stretch;margin:-10px 0}
+ .cs-item b{display:block;font-size:15.5px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .cs-item .note{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .cs-st{color:#b7791f;font-size:12px;letter-spacing:1px}.cs-st i{font-style:normal;opacity:.45}
+ .cs-pill{font-size:12.5px;font-weight:700;border-radius:999px;padding:3px 9px;background:var(--soft);color:var(--mut);white-space:nowrap}
+ .cs-pill.g{background:var(--ok);color:var(--teal)}.cs-pill.a{background:var(--soft);color:var(--amber)}.cs-pill.r{background:var(--bad);color:var(--red)}
+ .cs-more{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+ .cs-empty{text-align:center;color:var(--mut);padding:28px 10px}
+ </style>
+ <div class="cs-top"><div><h1>Cases</h1><p class="sub" style="margin:0">${all.length} short patient stories: gather clues, decide, see what happens.</p>
+  <div class="cs-bar" aria-hidden="true"><i style="width:${pct}%"></i></div><div class="note" style="margin-top:4px">${done} of ${all.length} done${weak?` · ${weak} under 70%`:""}</div></div>
+  ${next?`<a class="cs-next" href="#${next.k}"><small>${next.done?"Retry your weakest":"Up next"}</small><b>${esc(next.c.title)}</b></a>`:""}</div>
+ <div class="cs-tools"><div class="cs-chips" role="group" aria-label="Area">
+  ${[["all","All",all.length,""],...areas.map(a=>[a,SHORT[a]||AREA[a]||a,all.filter(x=>x.c.cat===a).length,COL[a]||"var(--acc)"])].map(([v,l,n,c])=>`<button class="cs-chip" data-a="${v}" aria-pressed="${V.area===v}">${c?`<i style="background:${c}"></i>`:""}${esc(l)} <span>${n}</span></button>`).join("")}</div>
+  <div class="cs-row2"><input id="csq" type="search" placeholder="Search cases or topics" aria-label="Search cases" value="${esc(V.q)}">
+  <select id="css" aria-label="Show"><option value="all">All cases</option><option value="new">Not tried</option><option value="weak">Under 70%</option><option value="done">Done</option></select>
+  <select id="cso" aria-label="Sort"><option value="yield">Highest yield</option><option value="score">Lowest score</option><option value="az">A to Z</option></select></div></div>
+ <div id="csl"></div>`;
+ $("css").value=V.status;$("cso").value=V.sort;
+ function draw(){
+  const q=V.q.trim().toLowerCase();
+  let L=all.filter(x=>(V.area==="all"||x.c.cat===V.area)&&(!q||(x.c.title+" "+x.c.topic+" "+x.c.who+" "+(AREA[x.c.cat]||"")).toLowerCase().includes(q))
+   &&(V.status==="all"||(V.status==="new"&&!x.done)||(V.status==="done"&&x.done)||(V.status==="weak"&&x.done&&x.done.score<70)));
+  const sc=x=>x.done?x.done.score:-1;
+  const byYield=(p,q)=>q.y-p.y||(!!p.done-!!q.done)||p.c.title.localeCompare(q.c.title);
+  L.sort(V.sort==="az"?(p,q)=>p.c.title.localeCompare(q.c.title):V.sort==="score"?(p,q)=>(!!q.done-!!p.done)||sc(p)-sc(q)||byYield(p,q):byYield);
+  const vis=L.slice(0,shown);
+  $("csl").innerHTML=!L.length?`<div class="card cs-empty">No cases match. <button class="btn ghost" id="csr" style="margin-left:8px">Clear filters</button></div>`:
+   `<div class="cs-list">${vis.map(({k,c,y,done})=>`<a class="cs-item" href="#${k}"><i style="background:${COL[c.cat]||"var(--acc)"}"></i><span><b>${esc(c.title)}</b><div class="note">${esc(c.topic)} · ${c.mins} min</div>${st(y)}</span>${pill(done)}</a>`).join("")}</div>
+   <div class="cs-more"><span class="note">Showing ${vis.length} of ${L.length}</span>${L.length>shown?`<button class="btn ghost" id="csm">Show ${Math.min(PAGE,L.length-shown)} more</button>`:""}</div>`;
+  const m=$("csm");if(m)m.onclick=()=>{shown+=PAGE;draw()};
+  const r=$("csr");if(r)r.onclick=()=>{V={area:"all",status:"all",sort:V.sort,q:""};$("csq").value="";$("css").value="all";document.querySelectorAll("[data-a]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.a==="all"));shown=PAGE;save();draw()};
+ }
+ document.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{V.area=b.dataset.a;document.querySelectorAll("[data-a]").forEach(x=>x.setAttribute("aria-pressed",x===b));shown=PAGE;save();draw()});
+ $("csq").oninput=e=>{V.q=e.target.value;shown=PAGE;draw()};
+ $("css").onchange=e=>{V.status=e.target.value;shown=PAGE;save();draw()};
+ $("cso").onchange=e=>{V.sort=e.target.value;shown=PAGE;save();draw()};
+ draw()}
 function record(qid,ok){try{const K="cgn-v1",D=JSON.parse(localStorage.getItem(K)||"null")||{q:{},log:[],cases:{}},c=D.q[qid]||{box:0,due:0,n:0,ok:0};c.n++;if(ok){c.ok++;c.box=Math.min(6,c.box+1);c.due=Date.now()+GAPS[c.box]*DAY}else{c.box=0;c.due=Date.now()+6e5}D.q[qid]=c;D.log.push({t:Date.now(),theme:C.topic,ok,id:qid});localStorage.setItem(K,JSON.stringify(D))}catch(e){}}
 function saveCase(score){try{const K="cgn-v1",D=JSON.parse(localStorage.getItem(K)||"null")||{q:{},log:[],cases:{}};D.cases=D.cases||{};D.cases[id]={score,date:Date.now()};localStorage.setItem(K,JSON.stringify(D))}catch(e){}}
 function run(){window.onhashchange=()=>location.reload();document.title=C.title+" · AKT case";
