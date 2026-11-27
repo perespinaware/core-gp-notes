@@ -41,6 +41,30 @@ h2{font:800 21px "Bricolage Grotesque",sans-serif;margin:0 0 8px}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
 .chip{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer;min-height:36px}
 .chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.tp-tools{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px}
+.tp-chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.tp-chips::-webkit-scrollbar{display:none}
+.tp-chip{flex:none;font:inherit;font-size:14px;white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.tp-chip i{width:9px;height:9px;border-radius:50%;flex:none}.tp-chip span{color:var(--mut);font-size:12.5px}
+.tp-chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}.tp-chip[aria-pressed=true] span{color:inherit;opacity:.75}
+.tp-row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.tp-row input,.tp-row select{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 10px;min-height:42px}
+.tp-row input{flex:1 1 200px}
+@media(max-width:560px){.tp-row{display:grid;grid-template-columns:1fr 1fr}.tp-row input{grid-column:1/-1}}
+.tp-sel{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:8px;padding:8px 12px;border-radius:12px;background:var(--card);border:1px solid var(--acc)}
+.tp-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}@media(max-width:700px){.tp-list{grid-template-columns:minmax(0,1fr)}}
+.tp-item{display:grid;grid-template-columns:5px auto minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px 10px 0;overflow:hidden}
+.tp-item.on{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
+.tp-item>i{align-self:stretch;margin:-10px 0}
+.tp-item input{width:20px;height:20px;margin:0}
+.tp-item b{display:block;font-size:15.5px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tp-meta{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--mut);margin-top:3px;flex-wrap:wrap}
+.tp-meta a{color:var(--acc)}
+.tp-m{display:flex;gap:6px;align-items:center;margin-top:5px}.tp-m .mbar{flex:1;max-width:160px}.tp-m b{font-size:13px;display:inline}
+.tp-st{color:#b7791f;font-size:12px;letter-spacing:1px}.tp-st i{font-style:normal;opacity:.45}
+.tp-due{font-size:12px;font-weight:700;border-radius:999px;padding:2px 8px;background:var(--soft);color:var(--red)}
+.tp-item .go{font:inherit;font-size:14px;font-weight:700;border:1px solid var(--acc);background:var(--card);color:var(--acc);border-radius:10px;padding:7px 12px;cursor:pointer;white-space:nowrap}.tp-item .go:hover{background:var(--acc);color:#fff}
+.tp-more{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+.tp-empty{text-align:center;color:var(--mut);padding:28px 10px}
 .tt{width:100%;border-collapse:collapse;font-size:15px}
 .tt th{text-align:left;font-size:13px;color:var(--mut);font-weight:700;padding:6px 8px;border-bottom:1px solid var(--line)}
 .tt td{padding:8px;border-bottom:1px solid var(--line);vertical-align:middle}
@@ -155,6 +179,48 @@ function mistakes(d){const last={};d.log.forEach(x=>{if(x.id)last[x.id]=x.ok});r
 
 /* ---------------- home ---------------- */
 let selTopics=new Set();
+const TV_KEY="rtg-akt-view";let TV={area:"all",status:"all",sort:"yield",q:""},tShown=12;try{TV=Object.assign(TV,JSON.parse(localStorage.getItem(TV_KEY))||{});TV.q=""}catch(e){}
+function topicSection(ts){
+ const AREA={cardiology:"Cardiology",dermatology:"Dermatology",statistics:"Statistics",admin:"Admin",prescribing:"Prescribing",mybank:"My bank",calc:"Calculations"};
+ const yieldOf=t=>{try{if(t.cat==="calc")return 5;const cat=(CATS||[]).find(x=>x.id===t.cat);const f=(t.link||"").split("/").pop();const l=cat&&cat.lessons.find(x=>x[2]===f||x[0]===t.name);return l&&l[3]||0}catch(e){return 0}};
+ const items=TOPICS.map((t,i)=>({t,i,s:ts[t.name],y:yieldOf(t)})).filter(({t})=>t.gen?(SET.src==="all"||SET.src==="site"):t.qs.some(inSrc));
+ const areas=[...new Set(items.map(x=>x.t.cat))];
+ if(TV.area!=="all"&&!areas.includes(TV.area))TV.area="all";
+ const save=()=>{try{localStorage.setItem(TV_KEY,JSON.stringify({area:TV.area,status:TV.status,sort:TV.sort}))}catch(e){}};
+ $("tsec").innerHTML=`<div class="tp-tools"><div class="tp-chips" role="group" aria-label="Area">
+  ${[["all","All",items.length,""],...areas.map(a=>[a,AREA[a]||a,items.filter(x=>x.t.cat===a).length,COLORS[a]||"#888"])].map(([v,l,n,c])=>`<button class="tp-chip" data-ta="${v}" aria-pressed="${TV.area===v}">${c?`<i style="background:${c}"></i>`:""}${esc(l)} <span>${n}</span></button>`).join("")}</div>
+  <div class="tp-row"><input id="tq" type="search" placeholder="Search topics" aria-label="Search topics" value="${esc(TV.q)}">
+  <select id="tst" aria-label="Show"><option value="all">All topics</option><option value="due">Due for review</option><option value="weak">Weak (under 60%)</option><option value="new">Not started</option><option value="mast">Strong (80%+)</option></select>
+  <select id="tso" aria-label="Sort"><option value="yield">Highest yield</option><option value="weak">Weakest first</option><option value="due">Most due</option><option value="az">A to Z</option></select></div>
+  <div id="tsel"></div></div><div id="tlist"></div>`;
+ $("tst").value=TV.status;$("tso").value=TV.sort;
+ const selBar=()=>{$("tsel").innerHTML=selTopics.size?`<div class="tp-sel"><span><b>${selTopics.size}</b> topic${selTopics.size>1?"s":""} selected</span><span class="row" style="margin:0"><button class="btn ghost" id="tclr">Clear</button><button class="btn" id="tqf">Quick-fire these</button></span></div>`:"";
+  if($("tclr"))$("tclr").onclick=()=>{selTopics.clear();selBar();draw()};if($("tqf"))$("tqf").onclick=()=>$("m-quick").click()};
+ function draw(){
+  const q=TV.q.trim().toLowerCase(),pv=x=>x.s.p===null?-1:x.s.p;
+  let L=items.filter(x=>(TV.area==="all"||x.t.cat===TV.area)&&(!q||(x.t.name+" "+(AREA[x.t.cat]||"")).toLowerCase().includes(q))&&
+   (TV.status==="all"||(TV.status==="due"&&x.s.due>0)||(TV.status==="weak"&&x.s.p!==null&&x.s.p<60)||(TV.status==="new"&&!x.s.n)||(TV.status==="mast"&&x.s.p!==null&&x.s.p>=80)));
+  const byY=(a,b)=>b.y-a.y||a.t.name.localeCompare(b.t.name);
+  L.sort(TV.sort==="az"?(a,b)=>a.t.name.localeCompare(b.t.name):TV.sort==="weak"?(a,b)=>((a.s.p===null)-(b.s.p===null))||pv(a)-pv(b)||byY(a,b):TV.sort==="due"?(a,b)=>(b.s.due||0)-(a.s.due||0)||byY(a,b):byY);
+  const vis=L.slice(0,tShown);
+  $("tlist").innerHTML=!L.length?`<div class="card tp-empty">No topics match. <button class="btn ghost" id="tres" style="margin-left:8px">Clear filters</button></div>`:
+   `<div class="tp-list">${vis.map(({t,i,s,y})=>{const p=s.p,c=p===null?"var(--line)":p>=80?"var(--teal)":p>=60?"var(--amber)":"var(--red)";
+    const f=t.qs.filter(q=>q.stars===5).length,th=t.qs.filter(q=>q.stars===3).length;
+    return `<div class="tp-item${selTopics.has(i)?" on":""}"><i style="background:${COLORS[t.cat]||"#888"}"></i><input type="checkbox" data-sel="${i}" aria-label="Select ${esc(t.name)}" ${selTopics.has(i)?"checked":""}>
+    <div><b title="${esc(t.name)}">${esc(t.name)}</b><div class="tp-meta"><span>${t.gen?"endless":t.qs.length+" questions"} · ${s.n} done</span>${s.due?`<span class="tp-due">${s.due} due</span>`:""}${y&&t.cat!=="calc"?`<span class="tp-st" aria-label="AKT relevance ${y} of 5">${"★".repeat(y)}<i>${"☆".repeat(5-y)}</i></span>`:""}${f?`<span class="stb">★5 ${f}</span>`:""}${th?`<span class="stb s3">★3 ${th}</span>`:""}${t.link?`<a href="${esc(t.link)}">lesson</a>`:""}${t.caseId?`<a href="case.html#${t.caseId}">case</a>`:""}</div>
+    <div class="tp-m"><div class="mbar"><div style="width:${p||0}%;background:${c}"></div></div><b style="color:${c}">${p===null?"–":p+"%"}</b></div></div>
+    <button class="go" data-go="${i}">Practise</button></div>`}).join("")}</div>
+   <div class="tp-more"><span class="note">Showing ${vis.length} of ${L.length}</span>${L.length>tShown?`<button class="btn ghost" id="tmore">Show ${Math.min(12,L.length-tShown)} more</button>`:""}</div>`;
+  if($("tmore"))$("tmore").onclick=()=>{tShown+=12;draw()};
+  if($("tres"))$("tres").onclick=()=>{TV.area="all";TV.status="all";TV.q="";$("tq").value="";$("tst").value="all";document.querySelectorAll("[data-ta]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ta==="all"));tShown=12;save();draw()};
+  document.querySelectorAll("[data-sel]").forEach(c=>c.onchange=()=>{const i=+c.dataset.sel;c.checked?selTopics.add(i):selTopics.delete(i);c.closest(".tp-item").classList.toggle("on",c.checked);selBar()});
+  document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{const t=TOPICS[+b.dataset.go];start(t.name,t.gen?Array.from({length:20},(_,i)=>t.qs[i%t.qs.length]).sort(()=>Math.random()-.5):pickQuick(t.qs.filter(inSrc),t.qs.length),t.gen?{endless:true}:{})});
+ }
+ document.querySelectorAll("[data-ta]").forEach(b=>b.onclick=()=>{TV.area=b.dataset.ta;document.querySelectorAll("[data-ta]").forEach(x=>x.setAttribute("aria-pressed",x===b));tShown=12;save();draw()});
+ $("tq").oninput=e=>{TV.q=e.target.value;tShown=12;draw()};
+ $("tst").onchange=e=>{TV.status=e.target.value;tShown=12;save();draw()};
+ $("tso").onchange=e=>{TV.sort=e.target.value;tShown=12;save();draw()};
+ selBar();draw()}
 function home(){stopTimers();document.onkeydown=null;const d=load(),ts=topicStats(d),now=Date.now();
  const due=BANK.filter(q=>d.q[q.id]&&d.q[q.id].due<=now).length,today=d.log.filter(x=>new Date(x.t).toDateString()===new Date().toDateString()).length;
  const last=d.log.slice(-100),acc=last.length?Math.round(last.filter(x=>x.ok).length/last.length*100):null,mis=mistakes(d).length;
@@ -163,7 +229,7 @@ function home(){stopTimers();document.onkeydown=null;const d=load(),ts=topicStat
  <div class="kpis"><div class="kpi"><b>${due}</b><span>due for review</span></div><div class="kpi"><b>${today}</b><span>answered today${streak(d)>1?` · ${streak(d)}-day streak`:""}</span></div><div class="kpi"><b>${acc===null?"–":acc+"%"}</b><span>accuracy, last 100</span></div><div class="kpi"><b>${BANK.filter(q=>d.q[q.id]&&d.q[q.id].box>=4).length}</b><span>mastered</span></div></div>
  <div class="modes">
   <button class="mode r" id="m-daily"><b>Daily review</b><span>20 questions: overdue first, then your weakest topics, then new.</span></button>
-  <button class="mode" id="m-quick"><b>Quick-fire</b><span>Pick topics below, then go. Instant feedback after each answer.</span></button>
+  <button class="mode" id="m-quick"><b>Quick-fire</b><span>Tick topics below (or none for a mix), then go. Instant feedback.</span></button>
   <button class="mode a" id="m-mock"><b>Mock exam</b><span>Timed, mixed, no feedback until the end. 1 minute per question.</span></button>
   <a class="mode" style="border-top-color:#7b46c7;text-decoration:none" href="case.html"><b>Cases</b><span>Short patient stories: gather clues, decide, see what happens. ${typeof CASES!=="undefined"?Object.keys(CASES).length:0} so far.</span></a>
   <button class="mode t" id="m-calc"><b>Calculation drill</b><span>Endless stats, ABPI and postural BP with new numbers.</span></button>
@@ -171,20 +237,14 @@ function home(){stopTimers();document.onkeydown=null;const d=load(),ts=topicStat
  <div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Settings</h2>${mis?`<button class="btn ghost" id="m-miss">Retry my mistakes (${mis})</button>`:""}</div>
  <div style="margin-top:8px"><div class="note" style="margin:0 0 6px">Questions to use</div><div class="row" role="group" aria-label="Questions to use">${["all","5","3","site","mine"].map(k=>{const n=BANK.filter(q=>!q.gen&&(k==="all"||(k==="5"?q.stars===5:k==="3"?q.stars===3:k==="site"?!q.stars:!!q.stars))).length;return (k==="all"||k==="site"||n)?`<button class="srcb ${SET.src===k?"on":""}" data-src="${k}">${SRC_LABEL[k]} <small>${n}</small></button>`:""}).join("")}</div></div>
  <div class="set" style="margin-top:8px"><label><input type="checkbox" id="s-recall" ${SET.recall?"checked":""}> <span><b>Recall first</b>: think of your answer before the options appear</span></label><label><input type="checkbox" id="s-pace" ${SET.pace?"checked":""}> <span><b>Pace bar</b>: 60 seconds per question</span></label></div></div>
- <div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Topics</h2><span class="note" id="selnote">Tick topics for Quick-fire, or press Practise on one.</span></div>
- <table class="tt"><thead><tr><th></th><th>Topic</th><th class="hm">Mastery (last 10)</th><th class="n">Done</th><th class="n hm">Due</th><th></th></tr></thead><tbody>
- ${TOPICS.map((t,i)=>{if(t.gen?!(SET.src==="all"||SET.src==="site"):!t.qs.some(inSrc))return "";const s=ts[t.name],p=s.p,c=p===null?"var(--line)":p>=80?"var(--teal)":p>=60?"var(--amber)":"var(--red)";
-  return `<tr><td><input type="checkbox" data-sel="${i}" aria-label="Select ${esc(t.name)}" ${selTopics.has(i)?"checked":""} style="width:18px;height:18px"></td><td><span class="dot" style="background:${COLORS[t.cat]||"#888"}"></span>${esc(t.name)}${(()=>{const f=t.qs.filter(q=>q.stars===5).length,th=t.qs.filter(q=>q.stars===3).length;return (f?` <span class="stb">★5 ${f}</span>`:"")+(th?` <span class="stb s3">★3 ${th}</span>`:"")})()}${t.link?` <a href="${esc(t.link)}" class="note">lesson</a>`:""}${t.caseId?` <a href="case.html#${t.caseId}" class="note">case</a>`:""}<div class="note">${t.gen?"endless":t.qs.length+" questions"}</div></td>
-  <td class="hm"><div class="row" style="flex-wrap:nowrap"><div class="mbar" style="flex:1"><div style="width:${p||0}%;background:${c}"></div></div><b style="color:${c};width:44px;text-align:right">${p===null?"–":p+"%"}</b></div></td><td class="n">${s.n}</td><td class="n hm">${s.due||""}</td><td class="n"><button class="go" data-go="${i}">Practise</button></td></tr>`}).join("")}
- </tbody></table></div>
+ <h2 style="margin:22px 0 0">Topics</h2><div id="tsec"></div>
  <p class="note">Progress is saved in this browser. Your lesson quizzes count towards it too. <a href="#" id="reset">Reset progress</a></p>`;
  $("m-daily").onclick=()=>start("Daily review",pickDaily(20));
  $("m-quick").onclick=()=>{const qs=(selTopics.size?[...selTopics].flatMap(i=>TOPICS[i].qs):BANK.filter(q=>!q.gen)).filter(inSrc);start("Quick-fire",pickQuick(qs,20))};
  $("m-mock").onclick=mockSetup;$("m-calc").onclick=()=>start("Calculation drill",Array.from({length:20},(_,i)=>TOPICS.find(t=>t.gen).qs[i%4]).sort(()=>Math.random()-.5),{endless:true});
  if($("m-miss"))$("m-miss").onclick=()=>start("Mistakes",shuffle(mistakes(load())).slice(0,20));
  $("s-recall").onchange=e=>{SET.recall=e.target.checked;saveSet()};document.querySelectorAll("[data-src]").forEach(b=>b.onclick=()=>{SET.src=b.dataset.src;saveSet();home()});$("s-pace").onchange=e=>{SET.pace=e.target.checked;saveSet()};
- document.querySelectorAll("[data-sel]").forEach(c=>c.onchange=()=>{const i=+c.dataset.sel;c.checked?selTopics.add(i):selTopics.delete(i);$("selnote").textContent=selTopics.size?`${selTopics.size} topic${selTopics.size>1?"s":""} selected: press Quick-fire.`:"Tick topics for Quick-fire, or press Practise on one."});
- document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{const t=TOPICS[+b.dataset.go];start(t.name,t.gen?Array.from({length:20},(_,i)=>t.qs[i%t.qs.length]).sort(()=>Math.random()-.5):pickQuick(t.qs.filter(inSrc),t.qs.length),t.gen?{endless:true}:{})});
+ topicSection(ts);
  $("reset").onclick=e=>{e.preventDefault();if(confirm("Reset all your AKT progress in this browser?")){try{localStorage.removeItem(KEY)}catch(x){}home()}}}
 function pickDaily(n){const d=load(),now=Date.now(),ts=topicStats(d),w=q=>{const p=ts[q.topic]&&ts[q.topic].p;return p===null||p===undefined?50:p};
  const pool=BANK.filter(q=>!q.gen&&inSrc(q));const due=pool.filter(q=>d.q[q.id]&&d.q[q.id].due<=now).sort((a,b)=>w(a)-w(b));
