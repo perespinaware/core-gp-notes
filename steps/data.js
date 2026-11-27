@@ -1,18 +1,84 @@
 /* NICE in 5 Steps: concise management steps for every clinical topic with a lesson, in order.
    Summarised in our own words from the lessons; check the linked guidance for detail. Add a topic here when a lesson goes live; kw holds extra search words. */
 const STEPS=[
+ {id:"htn",kw:"blood pressure hypertension ABPM HBPM ramipril amlodipine indapamide spironolactone aldosteronism phaeochromocytoma target",cat:"cardiology",topic:"Hypertension, including secondary hypertension",src:"NICE NG136",url:"https://www.nice.org.uk/guidance/ng136",lesson:"../cardiology/hypertension.html",steps:[
+  "Clinic BP 140/90 or more: confirm with ABPM (or HBPM)",
+  "Investigate: urine ACR and dipstick, HbA1c, U&E, lipids, fundi, ECG, QRISK3",
+  "180/120 or more: same day if papilloedema or life-threatening; else repeat within 7 days",
+  "Step 1: ACE inhibitor if under 55 or diabetes; CCB if 55+ or Black; then A+C+D",
+  "Resistant: K⁺ 4.5 or less → spironolactone; target below 140/90 (150/90 if 80+)"]},
  {id:"qrisk",kw:"cholesterol statin lipids atorvastatin ezetimibe cardiovascular risk primary secondary prevention",cat:"cardiology",topic:"QRISK, lipids and statins",src:"NICE NG238",url:"https://www.nice.org.uk/guidance/ng238",lesson:"../cardiology/qrisk-lipids-statins.html",steps:[
   "Lifestyle advice for everyone; baseline lipids and ALT",
   "Primary prevention, QRISK3 10% or more: atorvastatin 20 mg",
   "Established CVD: atorvastatin 80 mg, as soon as possible",
   "At 2–3 months recheck lipids and ALT: aim for over 40% fall in non-HDL",
   "Not at target: check adherence, raise the dose, then add ezetimibe"]},
+ {id:"fh",kw:"familial hypercholesterolaemia FH Simon Broome DLCN xanthomata cascade LDL PCSK9 statin decision aid muscle aches",cat:"cardiology",topic:"Familial hypercholesterolaemia and statin conversations",src:"NICE CG71 · NG238",url:"https://www.nice.org.uk/guidance/cg71",lesson:"../cardiology/familial-hypercholesterolaemia.html",steps:[
+  "Suspect FH: total over 7.5 or LDL over 4.9, xanthomata, premature CHD in family",
+  "Two LDL tests, exclude secondary causes; no QRISK3; refer if Simon Broome or DLCN over 5",
+  "Atorvastatin 80 mg aiming for a 50% LDL fall; then ezetimibe; PCSK9 via specialist",
+  "Cascade-test relatives; children by age 10; stop statins 3 months before conception",
+  "Statin talk: their view, absolute risk, options; respect an informed decline"]},
+ {id:"aaa",kw:"abdominal aortic aneurysm AAA screening 65 ultrasound 5.5 cm rupture renal colic fluoroquinolone EVAR DVLA",cat:"cardiology",topic:"Abdominal aortic aneurysm (AAA)",src:"NICE NG156",url:"https://www.nice.org.uk/guidance/ng156",lesson:"../cardiology/abdominal-aortic-aneurysm.html",steps:[
+  "Men screened by ultrasound in the year they turn 65",
+  "3.0–4.4 cm: annual scans; 4.5–5.4 cm: 3-monthly; both seen by vascular within 12 weeks",
+  "5.5 cm or more, or growing over 1 cm a year: vascular within 2 weeks",
+  "Pain + collapse or low BP (even 'renal colic'): 999",
+  "Everyone: stop smoking, BP, statin, antiplatelet; avoid fluoroquinolones"]},
+ {id:"drive",kw:"DVLA driving Group 1 Group 2 PCI CABG pacemaker ICD syncope fit note GMC disclosure fitness to work",cat:"cardiology",topic:"Fitness to drive and work in cardiovascular disease",src:"DVLA · GMC",url:"https://www.gov.uk/guidance/cardiovascular-disorders-assessing-fitness-to-drive",lesson:"../cardiology/fitness-to-drive.html",steps:[
+  "Find the licence group: 1 (car) or 2 (bus, lorry)",
+  "Group 1: PCI 1 week; ACS without PCI or CABG 4 weeks; no need to notify",
+  "Notify: pacemaker (1 week), ICD (6 months), unexplained syncope (6 months)",
+  "Won't stop driving: explain, persuade, then tell the DVLA (tell the patient first)",
+  "Work: self-certify 7 days; fit note 'may be fit' with adjustments; cardiac rehab"]},
+ {id:"ecg",kw:"ECG electrocardiogram rhythm QT QTc LBBB RBBB hyperkalaemia WPW delta wave heart block territories axis",cat:"cardiology",topic:"ECG interpretation in primary care",src:"NICE CG95 · CG109 · NG196",url:"https://www.nice.org.uk/guidance/cg109",lesson:"../cardiology/ecg-interpretation.html",steps:[
+  "Read it the same way: rate, rhythm, axis, PR, QRS, ST/T, QTc",
+  "Regular? P before every QRS? Then name the rhythm",
+  "999: STEMI, new LBBB with pain, VT, symptomatic complete block",
+  "Same day: Mobitz II, high K⁺ with ECG changes; 24 h: syncope + abnormal ECG",
+  "Check drugs: QT prolongers, rate-slowers; a normal ECG never excludes ACS"]},
  {id:"af",kw:"atrial fibrillation AF anticoagulation DOAC CHA2DS2-VASc ORBIT rate control cardioversion palpitations",cat:"cardiology",topic:"Atrial fibrillation",src:"NICE NG196",url:"https://www.nice.org.uk/guidance/ng196",lesson:"../cardiology/atrial-fibrillation.html",steps:[
   "Unstable (rate over 150, low BP, syncope, chest pain): 999",
   "Onset under 48 hours: same-day referral for cardioversion",
   "Rate control first: beta-blocker, or diltiazem (never in HFrEF)",
   "Assess stroke risk with CHA₂DS₂-VASc and offer a DOAC",
   "Symptoms still not controlled: refer within 4 weeks"]},
+ {id:"brady",kw:"bradycardia heart block Mobitz Wenckebach complete pacemaker donepezil beta-blocker digoxin sick sinus",cat:"cardiology",topic:"Bradycardia and heart block",src:"RCUK 2025 · NICE CG109",url:"https://www.resus.org.uk/library/2025-resuscitation-guidelines",lesson:"../cardiology/bradycardia-heart-block.html",steps:[
+  "Slow pulse: physiological, drug, metabolic (K⁺, thyroid) or conduction disease?",
+  "ECG names the block; check U&E, TFTs, digoxin level; ambulatory ECG if intermittent",
+  "Adverse features (shock, syncope, heart failure, ischaemia): 999",
+  "Mobitz II, complete block, pause over 3 s: same day; collapse + abnormal ECG: 24 h",
+  "Stop rate-slowing drugs; pacemaker for Mobitz II or complete block (DVLA: 1 week)"]},
+ {id:"tachy",kw:"tachycardia SVT palpitations Valsalva adenosine verapamil VT flutter ectopics WPW long QT ablation",cat:"cardiology",topic:"Tachyarrhythmias",src:"RCUK 2025 · NICE CKS",url:"https://cks.nice.org.uk/topics/palpitations/",lesson:"../cardiology/tachyarrhythmias.html",steps:[
+  "Name the rhythm: sinus, SVT, flutter, VT, ectopics, WPW",
+  "Red flags (syncope, exertion, family sudden death, abnormal ECG): urgent cardiology",
+  "Adverse features or broad-complex tachycardia: 999",
+  "Stable SVT: modified Valsalva, then adenosine 6–12–18 mg (verapamil in asthma)",
+  "Long term: SVT ablation; anticoagulate flutter; avoid QT drugs; reassure ectopics"]},
+ {id:"acs",kw:"acute coronary syndrome MI STEMI NSTEMI chest pain aspirin ticagrelor DAPT secondary prevention Dressler driving troponin",cat:"cardiology",topic:"Acute coronary syndrome and myocardial infarction",src:"NICE NG185 · CG95",url:"https://www.nice.org.uk/guidance/ng185",lesson:"../cardiology/acute-coronary-syndrome.html",steps:[
+  "Suspect ACS: pain over 15 min, sweaty; atypical in elderly, diabetes, women",
+  "Pain now, or within 12 h with abnormal ECG: 999 and aspirin 300 mg",
+  "Pain 12–72 h ago, now well: same-day assessment; over 72 h: assess in practice",
+  "DAPT: aspirin lifelong + ticagrelor 12 months; ACE inhibitor, beta-blocker, atorvastatin 80 mg",
+  "Cardiac rehab; driving 1 week after successful PCI (else 4 weeks)"]},
+ {id:"arrest",kw:"cardiac arrest CPR BLS ALS AED adrenaline amiodarone 4Hs 4Ts DNACPR ReSPECT anaphylaxis agonal",cat:"cardiology",topic:"Cardiac arrest and CPR",src:"RCUK Guidelines 2025",url:"https://www.resus.org.uk/library/2025-resuscitation-guidelines",lesson:"../cardiology/cardiac-arrest-cpr.html",steps:[
+  "Unresponsive, absent or abnormal breathing (agonal gasps) = arrest: 999",
+  "CPR 30:2, 5–6 cm, 100–120 a minute; AED as soon as it arrives",
+  "After a shock: straight back to CPR for 2 minutes, no pulse check",
+  "Shockable: adrenaline 1 mg + amiodarone 300 mg after the 3rd shock; non-shockable: adrenaline ASAP",
+  "Find the 4 Hs and 4 Ts; DNACPR discussed and never means 'do not treat'"]},
+ {id:"hf",kw:"heart failure NT-proBNP HFrEF HFpEF ejection fraction four pillars SGLT2 dapagliflozin spironolactone daily weights",cat:"cardiology",topic:"Heart failure",src:"NICE NG106 (2025)",url:"https://www.nice.org.uk/guidance/ng106",lesson:"../cardiology/heart-failure.html",steps:[
+  "Suspected HF: NT-proBNP and ECG",
+  "Over 2,000: specialist and echo within 2 weeks; 400–2,000: within 6 weeks",
+  "HFrEF (EF 40% or less): offer all four: ACE inhibitor, beta-blocker, MRA, SGLT2 inhibitor",
+  "U&E after starting and each rise; avoid NSAIDs, verapamil, diltiazem, pioglitazone",
+  "Daily weights (gain 1.5–2 kg in 2–3 days: call); rehab, vaccines; 999 if acute oedema"]},
+ {id:"valve",kw:"heart valve disease murmur aortic stenosis regurgitation mitral stenosis echo TAVI mechanical valve warfarin bicuspid",cat:"cardiology",topic:"Heart valve disease",src:"NICE NG208",url:"https://www.nice.org.uk/guidance/ng208",lesson:"../cardiology/heart-valve-disease.html",steps:[
+  "Name the lesion from the murmur and signs",
+  "Systolic murmur + exertional syncope, or severe symptoms: specialist with echo within 2 weeks",
+  "Murmur + symptoms, abnormal ECG, or ejection systolic with soft S2: echo",
+  "Specialist follow-up: moderate–severe disease, bicuspid valve, any prosthetic valve",
+  "Mechanical valve or AF + mitral stenosis: warfarin, never a DOAC"]},
  {id:"cardiomyopathy",kw:"HCM hypertrophic dilated sudden death ICD family screening",cat:"cardiology",topic:"Cardiomyopathy",src:"ESC 2023 · NICE TA913",url:null,lesson:"../cardiology/cardiomyopathy.html",steps:[
   "Suspected, no red flags: echo and routine cardiology",
   "Syncope on exertion: urgent cardiology, no strenuous exercise",
@@ -37,6 +103,24 @@ const STEPS=[
   "Unlikely: D-dimer within 4 hours; if positive, image",
   "Delay or confirmed clot: apixaban or rivaroxaban (LMWH in pregnancy)",
   "Duration: 3 months if provoked; consider longer if unprovoked"]},
+ {id:"ie",kw:"endocarditis fever murmur prosthetic valve blood cultures Duke Osler Janeway prophylaxis dental amoxicillin SDCEP IVDU Staph gallolyticus",cat:"cardiology",topic:"Infective endocarditis",src:"NICE CG64 · SDCEP 2026",url:"https://www.nice.org.uk/guidance/cg64",lesson:"../cardiology/infective-endocarditis.html",steps:[
+  "Fever + murmur, prosthetic valve, previous IE or IVDU: suspect endocarditis",
+  "Same-day admission (999 if septic); no oral antibiotics before cultures",
+  "Hospital: 3 blood culture sets, echo (TTE then TOE), Duke criteria",
+  "IV antibiotics 4–6 weeks; surgery for heart failure, abscess, emboli",
+  "High risk + extraction: amoxicillin 2 g before; moderate risk: none"]},
+ {id:"pericarditis",kw:"pericarditis chest pain sitting forward saddle ST PR depression colchicine NSAID tamponade Dressler constrictive",cat:"cardiology",topic:"Pericarditis",src:"ESC 2025 · NICE CKS",url:"https://cks.nice.org.uk/topics/pericarditis/",lesson:"../cardiology/pericarditis.html",steps:[
+  "Sharp pain better sitting forward; saddle ST elevation, PR depression",
+  "Same-day assessment: troponin and echo; tamponade = 999",
+  "Admit if fever, subacute, effusion, raised troponin, anticoagulated",
+  "NSAID + PPI (aspirin post-MI) plus colchicine 3 months (6 if recurrent)",
+  "No strenuous exercise until pain gone and CRP normal; review at 1 week"]},
+ {id:"rheumatic",kw:"rheumatic fever Jones criteria chorea erythema marginatum strep throat ASO penicillin prophylaxis mitral stenosis RHD",cat:"cardiology",topic:"Rheumatic fever and rheumatic heart disease",src:"AHA Jones 2015 · NICE NG84",url:"https://www.nice.org.uk/guidance/ng84",lesson:"../cardiology/rheumatic-fever.html",steps:[
+  "Strep evidence + 2 major, or 1 major + 2 minor (Jones)",
+  "Same-day paediatric assessment; echo for everyone",
+  "Penicillin V 10 days to eradicate strep; NSAIDs for arthritis",
+  "Prophylaxis: 5 yrs/21 (no carditis), 10 yrs/21, 10 yrs/40 (valve disease)",
+  "Rheumatic mitral stenosis + AF: warfarin; no routine dental prophylaxis"]},
  {id:"rosacea",kw:"flushing facial redness ivermectin brimonidine doxycycline skin",cat:"dermatology",topic:"Rosacea",src:"NICE CKS",url:null,lesson:"../dermatology/rosacea.html",steps:[
   "Clinical diagnosis: avoid triggers, daily SPF, no facial steroids",
   "Papules and pustules: topical ivermectin 1% (or azelaic acid, metronidazole)",
@@ -78,23 +162,5 @@ const STEPS=[
   "Avoid the cause; soap substitute, emollients, protective gloves",
   "Topical steroid by site: mild on the face, potent on the hands",
   "Suspected allergic or persistent: refer for patch testing",
-  "Occupational: refer; the employer reports under RIDDOR"]},
- {id:"ie",kw:"endocarditis fever murmur prosthetic valve blood cultures Duke Osler Janeway prophylaxis dental amoxicillin SDCEP IVDU Staph gallolyticus",cat:"cardiology",topic:"Infective endocarditis",src:"NICE CG64 · SDCEP 2026",url:"https://www.nice.org.uk/guidance/cg64",lesson:"../cardiology/infective-endocarditis.html",steps:[
-  "Fever + murmur, prosthetic valve, previous IE or IVDU: suspect endocarditis",
-  "Same-day admission (999 if septic); no oral antibiotics before cultures",
-  "Hospital: 3 blood culture sets, echo (TTE then TOE), Duke criteria",
-  "IV antibiotics 4–6 weeks; surgery for heart failure, abscess, emboli",
-  "High risk + extraction: amoxicillin 2 g before; moderate risk: none"]},
- {id:"pericarditis",kw:"pericarditis chest pain sitting forward saddle ST PR depression colchicine NSAID tamponade Dressler constrictive",cat:"cardiology",topic:"Pericarditis",src:"ESC 2025 · NICE CKS",url:"https://cks.nice.org.uk/topics/pericarditis/",lesson:"../cardiology/pericarditis.html",steps:[
-  "Sharp pain better sitting forward; saddle ST elevation, PR depression",
-  "Same-day assessment: troponin and echo; tamponade = 999",
-  "Admit if fever, subacute, effusion, raised troponin, anticoagulated",
-  "NSAID + PPI (aspirin post-MI) plus colchicine 3 months (6 if recurrent)",
-  "No strenuous exercise until pain gone and CRP normal; review at 1 week"]},
- {id:"rheumatic",kw:"rheumatic fever Jones criteria chorea erythema marginatum strep throat ASO penicillin prophylaxis mitral stenosis RHD",cat:"cardiology",topic:"Rheumatic fever and rheumatic heart disease",src:"AHA Jones 2015 · NICE NG84",url:"https://www.nice.org.uk/guidance/ng84",lesson:"../cardiology/rheumatic-fever.html",steps:[
-  "Strep evidence + 2 major, or 1 major + 2 minor (Jones)",
-  "Same-day paediatric assessment; echo for everyone",
-  "Penicillin V 10 days to eradicate strep; NSAIDs for arthritis",
-  "Prophylaxis: 5 yrs/21 (no carditis), 10 yrs/21, 10 yrs/40 (valve disease)",
-  "Rheumatic mitral stenosis + AF: warfarin; no routine dental prophylaxis"]}
+  "Occupational: refer; the employer reports under RIDDOR"]}
 ];

@@ -21,8 +21,16 @@ function touch(k){const m=jget(META,{});m[k]=Date.now();internal=true;origSet.ca
 const P=s=>{try{return JSON.parse(s)}catch(e){return null}};
 const by=(a,b,f)=>{const o={};[...(a||[]),...(b||[])].forEach(x=>{o[f(x)]=x});return Object.values(o)};
 const pickN=(x,y)=>!x?y:!y?x:((y.n||0)>(x.n||0)||((y.n||0)===(x.n||0)&&(y.last||y.due||0)>(x.last||x.due||0))?y:x);
+/* question IDs that moved: guide-only cardiology questions now live in lessons (same order, same questions) */
+const MOVED={"cardio-t08":"bradycardia-heart-block","cardio-t09":"tachyarrhythmias","cardio-t10":"acute-coronary-syndrome","cardio-t11":"cardiac-arrest-cpr","cardio-t12":"heart-failure","cardio-t13":"heart-valve-disease"};
+const mapId=id=>{const m=/^(cardio-t\d\d)#(\d+)$/.exec(id||"");return m&&MOVED[m[1]]?"/cardiology/"+MOVED[m[1]]+".html#"+m[2]:id};
+function migrateV1(d){if(!d||typeof d!=="object")return d;let ch=false;const q={};
+ for(const k in (d.q||{})){const n=mapId(k);if(n!==k)ch=true;q[n]=q[n]?pickN(q[n],d.q[k]):d.q[k]}
+ const log=(d.log||[]).map(e=>{const n=mapId(e&&e.id);if(n!==(e&&e.id)){ch=true;return {...e,id:n}}return e});
+ return ch?{...d,q,log}:d}
+(function(){try{const raw=LS.getItem("cgn-v1");if(!raw)return;const d=JSON.parse(raw),m=migrateV1(d);if(m!==d){internal=true;origSet.call(LS,"cgn-v1",JSON.stringify(m));internal=false;touch("cgn-v1")}}catch(e){}})();
 const MERGE={
- "cgn-v1":(a,b)=>{const q={...(a.q||{})};for(const k in (b.q||{}))q[k]=pickN(q[k],b.q[k]);
+ "cgn-v1":(a,b)=>{a=migrateV1(a);b=migrateV1(b);const q={...(a.q||{})};for(const k in (b.q||{}))q[k]=pickN(q[k],b.q[k]);
   const cases={...(a.cases||{})};for(const k in (b.cases||{}))cases[k]=!cases[k]?b.cases[k]:((b.cases[k].date||b.cases[k].t||0)>(cases[k].date||cases[k].t||0)?b.cases[k]:cases[k]);
   return {...a,...b,q,cases,log:by(a.log,b.log,x=>x.t+"|"+x.id).sort((x,y)=>x.t-y.t),mocks:by(a.mocks,b.mocks,x=>String(x.t)).sort((x,y)=>x.t-y.t)}},
  "cgn-time":(a,b)=>{const d={...(a.d||{})};for(const day in (b.d||{})){d[day]={...(d[day]||{})};for(const p in b.d[day])d[day][p]=Math.max(d[day][p]||0,b.d[day][p])}return {...a,...b,d}},
