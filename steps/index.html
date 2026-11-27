@@ -54,7 +54,8 @@ details.ex summary{cursor:pointer;color:var(--mut);font-size:14px}
 .hitb:focus-visible{outline:3px solid var(--c);outline-offset:2px}.hitb b{display:block}.hitb small{color:var(--mut);font-size:13px}
 .hit.open .hitb b{color:var(--c)}
 mark{background:color-mix(in srgb,#f2c94c 45%,transparent);color:inherit;border-radius:3px;padding:0 1px}
-.box5 li.now{background:color-mix(in srgb,var(--c) 12%,var(--card));border-radius:10px;font-weight:700}.box5 li.now:after{content:"You just applied this step";grid-column:2;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--c)}
+.box5 li.now{background:color-mix(in srgb,var(--c) 12%,var(--card));border-radius:10px;padding:10px 8px;font-weight:700}.box5 li .tagnow{display:block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--c);margin-bottom:2px}
+.box5 li .exp{display:block;font-weight:400;color:var(--mut);font-size:14.5px;line-height:1.5;margin-top:3px}
 .case{font-size:18px;line-height:1.5;margin:0 0 4px}.why{border-left:4px solid var(--c);padding:8px 14px;margin:14px 0;background:color-mix(in srgb,var(--c) 6%,var(--card));border-radius:0 10px 10px 0}
 .box5 li.nonum{grid-template-columns:minmax(0,1fr) auto}.box5 li.nonum:before{display:none}
 @media(prefers-reduced-motion:reduce){.stp.bad,.placed li{animation:none}}
@@ -70,10 +71,12 @@ mark{background:color-mix(in srgb,#f2c94c 45%,transparent);color:inherit;border-
 <main><div class="in" id="app"></div></main>
 <script src="data.js"></script>
 <script src="cases.js"></script>
+<script src="explain.js"></script>
 <script>
 {
 const $=id=>document.getElementById(id),DAY=864e5,K="cgn-steps";
 const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const ex=(s,k)=>((typeof EXPLAIN!=="undefined"&&EXPLAIN[s.id])||[])[k]||"";
 const CATN={cardiology:"Cardiology",dermatology:"Dermatology",statistics:"Statistics",admin:"Admin"};
 const load=()=>{try{return JSON.parse(localStorage.getItem(K)||"null")||{t:{},days:{}}}catch(e){return {t:{},days:{}}}};
 const save=d=>{try{localStorage.setItem(K,JSON.stringify(d))}catch(e){}};
@@ -101,13 +104,13 @@ function home(){const D=load(),list=dueList(),today=D.days[dkey(new Date())]||0;
   <input id="lq" type="search" placeholder="e.g. apixaban, Wells, PEST, eczema" value="${esc(LQ)}" autocomplete="off" style="width:100%;font:inherit;font-size:17px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);margin:6px 0 10px">
   <div class="row" role="group" aria-label="Area">${[["","All"],...cats.map(c=>[c,CATN[c]||c])].map(([c,l])=>`<button class="chip ${LC===c?"on":""}" data-c="${c}">${esc(l)} <small>${c?STEPS.filter(s=>s.cat===c).length:STEPS.length}</small></button>`).join("")}</div>
   <div id="res" aria-live="polite"></div></div>
- <p class="note">Steps are summarised in our own words from the lessons, for revision only. Always check the current guidance.</p>`;
+ <p class="note">Steps and explainers are summarised in our own words from the lessons, for revision only. Always check the current guidance.</p>`;
  if($("go"))$("go").onclick=()=>run(list);if($("any"))$("any").onclick=()=>run(shuffle(STEPS).slice(0,3));
  $("lq").oninput=e=>{LQ=e.target.value;OPEN=null;results()};
  document.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{LC=b.dataset.c;OPEN=null;document.querySelectorAll("[data-c]").forEach(x=>x.classList.toggle("on",x.dataset.c===LC));results()});
  results()}
 function results(){const D=load(),q=norm(LQ).trim(),words=q.split(/\s+/).filter(Boolean),end=startOfDay(Date.now())+DAY;
- const hay=s=>norm([s.topic,s.src,s.kw||"",CATN[s.cat]||"",...s.steps].join(" "));
+ const hay=s=>norm([s.topic,s.src,s.kw||"",CATN[s.cat]||"",...s.steps,...(EXPLAIN[s.id]||[])].join(" "));
  let L=STEPS.filter(s=>(!LC||s.cat===LC)&&words.every(w=>hay(s).includes(w)));
  if(!q&&!LC){$("res").innerHTML=`<p class="src" style="margin:12px 0 0">Type to search, or choose an area to browse.</p>`;return}
  if(!L.length){$("res").innerHTML=`<p class="src" style="margin:12px 0 0">No topics match “${esc(LQ)}”.</p>`;return}
@@ -115,7 +118,7 @@ function results(){const D=load(),q=norm(LQ).trim(),words=q.split(/\s+/).filter(
  if(L.length===1)OPEN=L[0].id;
  $("res").innerHTML=`<p class="src" style="margin:12px 0 4px">${L.length} topic${L.length>1?"s":""}</p>`+L.map(s=>{const r=D.t[s.id],open=OPEN===s.id,due=!r?"New":r.due<end?"Due":"Done today";
   return `<div class="hit ${open?"open":""}"><button class="hitb" data-o="${s.id}" aria-expanded="${open}"><span><b>${mark(s.topic)}</b><small>${esc(CATN[s.cat]||s.cat)} · ${esc(s.src)}</small></span><span class="row" style="flex-wrap:nowrap"><span class="lvl" aria-label="${r?r.box:0} passes in a row">${[1,2,3,4,5,6].map(k=>`<i class="${r&&k<=r.box?"on":""}"></i>`).join("")}</span><span class="due ${due==="Done today"?"ok":""}">${due}</span></span></button>
-  ${open?`<ol class="box5" style="margin-top:6px">${s.steps.map(t=>`<li><span>${mark(t)}</span></li>`).join("")}</ol>
+  ${open?`<ol class="box5" style="margin-top:6px">${s.steps.map((t,k)=>`<li><span>${mark(t)}${ex(s,k)?`<span class="exp">${mark(ex(s,k))}</span>`:""}</span></li>`).join("")}</ol>
   <div class="row" style="margin:8px 0 6px"><button class="btn ghost" data-one="${s.id}">Test me on this</button><a class="btn ghost" href="${s.lesson}">Open the lesson</a>${s.url?`<a class="btn ghost" href="${s.url}" target="_blank" rel="noopener">${esc(s.src.split(" · ")[0])} ↗</a>`:""}</div>`:""}</div>`}).join("");
  document.querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>{OPEN=OPEN===b.dataset.o?null:b.dataset.o;results()});
  document.querySelectorAll("[data-one]").forEach(b=>b.onclick=()=>run([STEPS.find(s=>s.id===b.dataset.one)]))}
@@ -137,7 +140,7 @@ function ask(){const s=Q[qi],ci=pickCase(s),c=CASES[s.id][ci],opts=shuffle(c.o.m
   ${done?`<div class="fb ${ok?"ok":"no"}" role="status">${ok?"Correct.":"Not quite. The answer is: "+esc(c.o[0])}</div>
   <div class="why">${esc(c.e)}</div>
   <div class="phase" style="margin-top:6px">The 5 steps · ${esc(s.src)}</div>
-  <ol class="box5 placed" style="margin-top:6px">${s.steps.map((t,k)=>`<li class="${k===c.k-1?"now":""}"><span>${esc(t)}</span></li>`).join("")}</ol>
+  <ol class="box5 placed" style="margin-top:6px">${s.steps.map((t,k)=>`<li class="${k===c.k-1?"now":""}"><span>${k===c.k-1?`<span class="tagnow">You just applied this step</span>`:""}${esc(t)}${ex(s,k)?`<span class="exp">${esc(ex(s,k))}</span>`:""}</span></li>`).join("")}</ol>
   <div class="row" style="margin-top:12px"><button class="btn" id="nx">${qi<Q.length-1?"Next case →":"See today's result"}</button><a class="btn ghost" href="${s.lesson}">Open the lesson</a></div>`:""}</div>`;
   bindQuit();
   if(!done)document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{const p=+b.dataset.p;record(s,opts[p][1],ci);draw(p)});

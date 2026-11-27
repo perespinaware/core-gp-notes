@@ -1,0 +1,100 @@
+/* NICE in 5 Steps: a plain-English explainer under each step (5 per topic, in step order).
+   Add five here whenever a topic is added to data.js. */
+const EXPLAIN={
+qrisk:[
+ "Everyone gets advice on diet, activity, weight, smoking and alcohol. Before a statin, check a full lipid profile (non-fasting is fine) and ALT (a liver test), so you have a baseline to compare against.",
+ "Primary prevention means the person has no heart disease or stroke yet. If their 10-year QRISK3 risk is 10% or more, offer atorvastatin 20 mg, a moderate dose.",
+ "Established CVD means they have already had an MI, angina, stroke, TIA or PAD. This is secondary prevention: no QRISK3 is needed. Start high-intensity atorvastatin 80 mg straight away (lower if interactions, kidney disease or side effects).",
+ "Non-HDL cholesterol is total cholesterol minus HDL. NICE's target is a fall of more than 40% from baseline. Recheck ALT at the same time: stop the statin only if it is more than 3 times the upper limit.",
+ "First ask whether they actually take it. Then increase the statin dose. If they are on the most they can tolerate and still not at target, add ezetimibe."],
+af:[
+ "Haemodynamically unstable means the circulation is failing: very fast rate, low BP, fainting, chest pain or heart failure. This needs emergency treatment, often electrical cardioversion.",
+ "If AF started less than 48 hours ago, the heart can be shocked back to normal rhythm (cardioversion) with a low risk of clot. After 48 hours, at least 3 weeks of anticoagulation is needed first, so timing matters.",
+ "Rate control slows the heart rather than restoring rhythm. Use a beta-blocker (e.g. bisoprolol) or a rate-limiting calcium-channel blocker (diltiazem or verapamil). These calcium-channel blockers weaken a failing heart, so never use them in HFrEF (heart failure with reduced ejection fraction).",
+ "CHA₂DS₂-VASc scores stroke risk: heart failure, hypertension, age, diabetes, previous stroke, vascular disease and female sex. Offer anticoagulation at 2 or more (consider at 1 in men). A DOAC (e.g. apixaban) is first line; check bleeding risk with ORBIT.",
+ "If symptoms continue despite rate control, refer to cardiology within 4 weeks. They can offer rhythm control: ablation, cardioversion or antiarrhythmic drugs."],
+cardiomyopathy:[
+ "A clue such as a murmur, an abnormal ECG or a family history, without warning signs, needs an echocardiogram to look at heart muscle thickness and pumping, plus a routine cardiology referral.",
+ "Fainting during exercise can be the first sign of a life-threatening arrhythmia, especially in hypertrophic cardiomyopathy (HCM). Refer urgently and advise no strenuous exercise until a cardiologist has assessed them.",
+ "In HCM the thick muscle can block blood leaving the heart. A beta-blocker slows the heart and eases this. Nitrates and other vasodilators lower the pressure and can make the blockage, and fainting, worse.",
+ "Dilated cardiomyopathy is a large, weak heart, managed like heart failure with reduced ejection fraction (HFrEF). If alcohol is the cause, stopping completely can let the heart recover.",
+ "Many cardiomyopathies are inherited. Parents, siblings and children should be checked at an inherited cardiac conditions clinic with an ECG, echo and sometimes genetic testing."],
+syncope:[
+ "The 3 Ps are posture (standing or lying), provoking factors (pain, heat, standing) and prodrome (warning signs such as sweating or feeling sick). With lying and standing BP and an ECG, these sort out most causes.",
+ "Red flags suggest a heart cause, which can be fatal: collapse during exercise, an abnormal ECG, a new murmur, heart failure, or a family history of sudden death under 40. These need specialist cardiovascular assessment within 24 hours.",
+ "Features of a seizure include a bitten tongue (on the side), head turning, unusual posturing, prolonged jerking, and confusion afterwards. Refer to a first-fit or epilepsy clinic within 2 weeks, and give driving advice.",
+ "Orthostatic hypotension is a fall in BP on standing (20 systolic or 10 diastolic). In older people it is often caused by medicines: alpha-blockers, diuretics, antihypertensives, nitrates or antidepressants. Review these first.",
+ "A typical faint with a clear trigger and warning signs, and a normal ECG, needs only reassurance and advice. Simple faints standing up usually need no DVLA notification; other types follow the DVLA rules."],
+pad:[
+ "The ankle-brachial pressure index (ABPI) compares ankle BP with arm BP using a Doppler. 0.9 or less means narrowed arteries. Above 1.4 suggests stiff, calcified vessels (e.g. in diabetes), so the reading is unreliable.",
+ "PAD counts as cardiovascular disease, so treat it like a heart attack for prevention. Stop smoking, and take clopidogrel 75 mg (antiplatelet) and atorvastatin 80 mg (high-intensity statin). Control BP and diabetes too.",
+ "Intermittent claudication is calf pain on walking that settles with rest. Supervised exercise (walking until the pain is bad, about 2 hours a week for 3 months) builds new small blood vessels and is the most effective first treatment.",
+ "If exercise hasn't helped enough, naftidrofuryl (a vasodilator) can be tried. Stop it if there's no benefit after 3–6 months. Alternatively, refer routinely to vascular surgeons for angioplasty or bypass.",
+ "Critical limb ischaemia (pain at rest, often at night, ulcers or gangrene) means the limb is at risk: refer urgently. Acute ischaemia shows the 6 Ps: pain, pallor, pulseless, perishing cold, paraesthesia, paralysis. Call 999."],
+vte:[
+ "The Wells score combines clinical features into a probability of a clot. Two-level means 'likely' or 'unlikely'. PERC is 8 simple checks that can rule out PE without any tests, but only when you already think PE is unlikely.",
+ "A likely DVT needs a leg ultrasound (proximal veins) within 4 hours. A likely PE needs a CT pulmonary angiogram (CTPA), arranged the same day through hospital referral.",
+ "When a clot is unlikely, a D-dimer blood test (a clot breakdown product) is done first. Negative means no clot. Positive needs imaging, because D-dimer also rises with infection, pregnancy, cancer and age.",
+ "If results will take longer than 4 hours, or a clot is confirmed, start a DOAC that can be continued (apixaban or rivaroxaban). In pregnancy use LMWH (low molecular weight heparin): DOACs and warfarin can harm the baby.",
+ "A provoked clot has a temporary cause (surgery, plaster cast, immobility); once it has gone, 3 months is enough. An unprovoked clot has no clear cause and a higher chance of coming back, so consider continuing longer."],
+rosacea:[
+ "Rosacea is diagnosed by its look: flushing, central facial redness, sometimes spots, without blackheads. Avoid triggers (sun, heat, alcohol, spicy food) and use sunscreen daily. Topical steroids make rosacea worse.",
+ "Papules and pustules are red bumps and pus spots. Topical ivermectin 1% once daily is first line; azelaic acid or metronidazole gels are alternatives.",
+ "If spots are widespread or don't respond, add an oral tetracycline antibiotic (doxycycline or lymecycline). It works as an anti-inflammatory and is usually given for several weeks.",
+ "Redness without spots doesn't respond to antibiotics. Brimonidine gel narrows the vessels for some hours. Make-up camouflage or laser treatment (privately or by referral) are other options.",
+ "Ocular rosacea can affect the cornea (keratitis), which threatens sight: a painful red eye or light sensitivity needs urgent eye review. Rhinophyma (a thickened, bulbous nose) can be treated by a specialist."],
+psoriasis:[
+ "Check how much skin is involved, any high-impact sites (face, hands, feet, nails, genitals, scalp), and the effect on mood and life. PEST is a short questionnaire to spot psoriatic arthritis: use it every year.",
+ "For plaques on the body and limbs, combine a potent steroid (e.g. betamethasone) and a vitamin D analogue (e.g. calcipotriol), each once a day at different times, for up to 4 weeks. Then use the vitamin D analogue alone if needed.",
+ "Facial and flexural skin (groin, armpits, under the breasts) is thin and absorbs more steroid. Use only mild or moderate strength, for no more than 2 weeks at a time.",
+ "BSA is body surface area: your palm is about 1%. More than 10%, uncontrolled disease or a big impact on life means referral for UV phototherapy or systemic drugs (methotrexate, ciclosporin, biologics).",
+ "Pustular psoriasis (sheets of pus spots) and erythrodermic psoriasis (red over almost all the skin) are emergencies: the person can lose fluid and heat and get infections. A PEST score of 3 or more suggests arthritis: refer to rheumatology."],
+lichen:[
+ "Lichen simplex, lichen planus and lichen sclerosus are different conditions with similar names. Biopsy anything unusual, such as a lump, ulcer or thickened area that won't heal, to rule out skin cancer.",
+ "Lichen simplex is thickened skin caused by repeated rubbing or scratching. It keeps going because the itch leads to more scratching. Covering the area, keeping nails short, emollients and a potent steroid break the cycle.",
+ "Lichen planus has itchy purple flat-topped bumps and white lacy streaks in the mouth. Some medicines (e.g. ACE inhibitors, beta-blockers, NSAIDs) can trigger it. Painful erosive mouth disease goes to oral medicine.",
+ "Lichen sclerosus, usually on the vulva, causes white, fragile, itchy skin. Clobetasol (a very potent steroid) daily for 4 weeks, then alternate days for 4 weeks, then twice weekly for 4 weeks, then as needed to keep it controlled.",
+ "Lichen sclerosus has a small lifetime risk of squamous cell skin cancer. Review at least yearly for life. Any new lump, ulcer or area that won't heal needs an urgent biopsy."],
+scabies:[
+ "Scabies is diagnosed by the story and look: itch worse at night, burrows (short grey lines, often between fingers and on wrists), and other people at home itching too. No test is usually needed.",
+ "Permethrin 5% cream goes over the whole body, including the scalp, face, ears and under the nails, and is washed off after 8–12 hours. A second application after 7 days kills mites that hatch from eggs.",
+ "Everyone in the household and any close or sexual contacts are treated on the same day, even without itch. Otherwise the mites pass back and forth.",
+ "Mites can live a few days away from skin. Washing clothes and bedding at 60°C, or sealing them in a bag for 3 days, kills them.",
+ "The itch is an allergic reaction and can last 2–6 weeks after successful treatment. Only retreat if new burrows appear. Crusted (Norwegian) scabies is very contagious and needs specialist advice the same day."],
+acne:[
+ "Severity means the number and type of spots (blackheads, inflamed spots, nodules), plus scarring and pigmentation. Ask about mood: acne can seriously affect mental health. Advise non-oily products and not picking.",
+ "For mild to moderate acne, offer a fixed combination gel for 12 weeks, such as adapalene with benzoyl peroxide (BPO). It treats blackheads and inflammation, and BPO reduces bacteria without causing antibiotic resistance.",
+ "For moderate to severe acne, add an oral tetracycline (doxycycline or lymecycline) to the topical combination. Never use an oral antibiotic alone, because resistance develops.",
+ "Judge the response at 12 weeks. Stop oral antibiotics by 6 months at most to limit resistance; continue a topical retinoid to keep acne away.",
+ "Nodules, cysts or scarring mean referral to dermatology, usually for isotretinoin. Acne fulminans (sudden painful ulcerating nodules with fever and joint pain) needs same-day specialist advice."],
+eczema:[
+ "Emollients repair the skin barrier and reduce flares. Use plenty (adults up to 500 g a week) all over, every day, and as soap substitutes, even when the skin looks clear.",
+ "Use the weakest steroid that works: mild (hydrocortisone) for the face and mild flares, moderate or potent for the body in worse flares. Apply once or twice daily until the flare settles, usually 1–2 weeks.",
+ "If flares keep returning at the same sites, applying the steroid on 2 days a week (for example at weekends) prevents them. This is called weekend or proactive therapy.",
+ "Eczema often looks crusted or weepy without needing antibiotics. If the person is well, don't routinely give antibiotics. Use oral flucloxacillin for widespread infection.",
+ "Eczema herpeticum is herpes simplex spreading over eczema: painful punched-out sores, often with fever. It can be life-threatening. Start oral aciclovir and refer the same day. Eczema not controlled in primary care goes to dermatology."],
+contact:[
+ "Contact dermatitis comes from something touching the skin. Ask about work tasks, hand washing, gloves, cosmetics, jewellery (nickel) and hair dye, and whether it improves on holiday.",
+ "Irritant dermatitis is caused by repeated exposure, e.g. water and soap. Avoid or reduce the cause, wash with a soap substitute, moisturise often, and wear suitable gloves (cotton liners under them).",
+ "Steroid strength depends on where the rash is: mild on the face and eyelids (thin skin), potent on the hands (thick skin). Use short courses.",
+ "Allergic contact dermatitis is an immune reaction to a specific substance. Patch testing in dermatology identifies it, so the person knows exactly what to avoid.",
+ "If it's caused by work, refer and give a written diagnosis. RIDDOR is the health and safety reporting rule: the employer must report occupational dermatitis to the HSE."],
+ie:[
+ "Endocarditis is infection of the heart valves or lining. Suspect it when fever comes with a murmur, or in anyone with a prosthetic valve, previous endocarditis, or who injects drugs (IVDU).",
+ "Refer the same day; call 999 if they show signs of sepsis. Don't start oral antibiotics in the community, because they can make blood cultures negative and hide the organism that needs targeted treatment.",
+ "In hospital they take 3 sets of blood cultures from separate sites before antibiotics. TTE is a scan through the chest wall; TOE uses a probe in the oesophagus to see valves better. The Duke criteria combine these results to make the diagnosis.",
+ "Treatment is weeks of IV antibiotics chosen from the cultures. Surgery is needed when the valve is destroyed causing heart failure, infection can't be controlled (such as an abscess), or large vegetations risk breaking off as emboli.",
+ "High risk means a prosthetic valve (including TAVI) or previous endocarditis. Before an extraction or oral surgery, the dentist gives one dose of amoxicillin 2 g (or clarithromycin or azithromycin if allergic). Native valve disease is moderate risk: no antibiotics."],
+pericarditis:[
+ "Pericarditis is inflammation of the sac around the heart. The pain is sharp, worse lying flat and on breathing in, better leaning forward. The ECG shows ST elevation across many leads with a concave 'saddle' shape, and PR depression.",
+ "ST elevation could be a heart attack, so in primary care send them for the same-day tests: troponin (heart muscle damage) and echo (fluid around the heart). Tamponade is fluid squeezing the heart (low BP, raised JVP, quiet heart sounds): call 999.",
+ "Higher-risk features mean a serious cause or complication is more likely: fever over 38°C, onset over days to weeks, an effusion, raised troponin (myopericarditis), immunosuppression, or taking anticoagulants. These patients are admitted.",
+ "First-line treatment is an anti-inflammatory (ibuprofen, or aspirin after an MI) with a PPI to protect the stomach, plus colchicine to cut recurrence. Colchicine is 500 micrograms once daily under 70 kg, twice daily at 70 kg or more.",
+ "Exercise can bring back inflammation. Avoid strenuous activity until the pain has gone and CRP (an inflammation blood test) is normal. Review at about a week to check pain and CRP before tapering the anti-inflammatory."],
+rheumatic:[
+ "Rheumatic fever is an immune reaction after a group A strep throat infection. Jones criteria: major (carditis, migratory arthritis, chorea, erythema marginatum rash, skin nodules) and minor (fever, raised ESR or CRP, joint pain, long PR interval). You also need evidence of strep, such as a raised ASO titre.",
+ "Children with suspected rheumatic fever need paediatric assessment the same day. Everyone has an echocardiogram, because heart inflammation can be present without a murmur.",
+ "Penicillin V (phenoxymethylpenicillin) for 10 days clears any remaining strep. NSAIDs or aspirin treat the painful arthritis, which usually responds quickly.",
+ "Regular penicillin (secondary prophylaxis) prevents new strep infections and further attacks, which cause most valve damage. Duration: no heart involvement, 5 years or until 21; heart involvement that healed, 10 years or until 21; lasting valve damage, 10 years or until 40. Whichever is longer.",
+ "Years later the mitral valve can narrow (mitral stenosis), causing breathlessness and AF. With mitral stenosis and AF, use warfarin, because DOACs aren't proven here. Rheumatic valve disease is moderate risk for endocarditis, so no routine antibiotics before dental work."]
+};
