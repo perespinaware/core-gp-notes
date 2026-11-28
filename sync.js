@@ -40,7 +40,7 @@ const MERGE={
    Object.assign(grp,{days,plans:lat(ga.plans,gb.plans),debriefs:lat(ga.debriefs,gb.debriefs),teach:by(ga.teach,gb.teach,x=>String(x.t)).sort((x,y)=>x.t-y.t),calls})}
   return {...a,...b,q,cases,studied,...(a.group||b.group?{group:grp}:{}),...(si<Infinity?{studiedInit:si}:{}),log:by(a.log,b.log,x=>x.t+"|"+x.id).sort((x,y)=>x.t-y.t),mocks:by(a.mocks,b.mocks,x=>String(x.t)).sort((x,y)=>x.t-y.t)}},
  "cgn-time":(a,b)=>{const d={...(a.d||{})};for(const day in (b.d||{})){d[day]={...(d[day]||{})};for(const p in b.d[day])d[day][p]=Math.max(d[day][p]||0,b.d[day][p])}return {...a,...b,d}},
- "sca-progress":(a,b)=>({...a,...b,read:{...(a.read||{}),...(b.read||{})}}),
+ "sca-progress":(a,b)=>{const live={...(a.live||{})};for(const k in (b.live||{}))live[k]=Math.max(live[k]||0,b.live[k]);return {...a,...b,read:{...(a.read||{}),...(b.read||{})},live}},
  "cgn-steps":(a,b)=>{const t={...(a.t||{})};for(const k in (b.t||{}))t[k]=pickN(t[k],b.t[k]);const days={...(a.days||{})};for(const k in (b.days||{}))days[k]=Math.max(days[k]||0,b.days[k]);return {...a,...b,t,days}},
  "cgn-mybank":(a,b)=>{const del={...(a.del||{})};for(const k in (b.del||{}))del[k]=Math.max(del[k]||0,b.del[k]);
   const q={...(a.q||{})};for(const k in (b.q||{}))q[k]=!q[k]||(b.q[k].it||0)>=(q[k].it||0)?b.q[k]:q[k];

@@ -276,7 +276,8 @@ Return ONLY JSON:
 {"DG":{"score":0-3,"did":["..."],"missed":["..."]},"CM":{"score":0-3,"did":["..."],"missed":["..."]},"RTO":{"score":0-3,"did":["..."],"missed":["..."]},"better":[{"yours":"exact doctor line from transcript","better":"a stronger phrasing","why":"short reason"}],"top_tip":"one sentence","hypotheses":"2 sentences: were the written hypotheses sensible, and which were tested or left untested in the consultation?"}
 Give 2–4 "better" items, choosing the doctor's weakest lines. Keep each list item under 15 words.`;
  let j=null;try{const r=await sample(prompt,{modelTier:"complex",cache:false});j=parse(r.text)}catch(e){}
- try{const h=JSON.parse(localStorage.getItem("sca-live-htn")||"[]");if(j)h.push({d:Date.now(),s:[j.DG.score,j.CM.score,j.RTO.score]});localStorage.setItem("sca-live-htn",JSON.stringify(h.slice(-20)));S.prev=h}catch(e){}
+ try{const P=JSON.parse(localStorage.getItem("sca-progress")||"{}");P.live=P.live||{};P.live[CID||"htn"]=Date.now();localStorage.setItem("sca-progress",JSON.stringify(P))}catch(e){}
+ try{const h=JSON.parse(localStorage.getItem("sca-live-"+(CID||"htn"))||"[]");if(j)h.push({d:Date.now(),s:[j.DG.score,j.CM.score,j.RTO.score]});localStorage.setItem("sca-live-"+(CID||"htn"),JSON.stringify(h.slice(-20)));S.prev=h}catch(e){}
  const GL=["Clear fail","Fail","Pass","Clear pass"],GC=["var(--red)","var(--red)","var(--amber)","var(--teal)"];
  const dm=(k,n)=>{const d=j&&j[k];if(!d)return"";const v=Math.max(0,Math.min(3,+d.score||0));return `<div class="dm"><b style="color:${GC[v]}">${n}</b><div class="n" style="color:${GC[v]}">${v}<span style="font-size:18px">/3</span></div><b>${GL[v]}</b><ul>${(d.did||[]).map(x=>`<li>${esc(x)}</li>`).join("")}${(d.missed||[]).map(x=>`<li class="m">Missed: ${esc(x)}</li>`).join("")}</ul></div>`};
  const tplDone=STAGES.map(([n,ks])=>`<h3>${esc(n)}</h3>${ks.map(k=>`<span class="${S.tags.has(k)?"y":"x"}">${S.tags.has(k)?"✓":"✗"} ${esc(TAGS[k])}</span>`).join("")}`).join("");

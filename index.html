@@ -49,6 +49,22 @@
 @media(prefers-reduced-motion:reduce){.tile{transition:none}}
 </style>
 <script src="/sync.js"></script>
+<style>
+.today-bar{background:var(--card,#fff);border:1px solid var(--line,#dde3e7);border-radius:18px;padding:14px 16px;margin:0 0 18px}
+.today-bar .th{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.today-bar h2{font:800 20px "Bricolage Grotesque",sans-serif;margin:0}
+.today-bar .tp{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--mut,#576470)}.today-bar .tp .b{width:140px;height:8px;border-radius:4px;background:var(--line,#dde3e7);overflow:hidden}.today-bar .tp .b i{display:block;height:100%;background:#0b8577}
+.today-bar .tl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}@media(max-width:900px){.today-bar .tl{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){.today-bar .tl{grid-template-columns:minmax(0,1fr)}}
+.today-bar .tk{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;align-items:center;text-decoration:none;color:inherit;border:1px solid var(--line,#dde3e7);border-radius:12px;padding:10px 12px;background:var(--bg,#f4f7f8)}
+.today-bar .tk:hover{border-color:#0b5f86}
+.today-bar .ck{width:28px;height:28px;border-radius:50%;border:2px solid var(--line,#c5ced4);display:grid;place-items:center;font-weight:800;color:#fff;flex:none}
+.today-bar .tk.done{background:color-mix(in srgb,#0b8577 8%,var(--card,#fff));border-color:color-mix(in srgb,#0b8577 40%,var(--line,#dde3e7))}
+.today-bar .tk.done .ck{background:#0b8577;border-color:#0b8577}
+.today-bar .tk.done b{text-decoration:line-through;text-decoration-color:color-mix(in srgb,#0b8577 60%,transparent)}
+.today-bar .tk b{display:block;font-size:15.5px;line-height:1.3}.today-bar .tk span{display:block;font-size:13px;color:var(--mut,#576470);line-height:1.35}
+.today-bar .tk .mini{height:4px;border-radius:2px;background:var(--line,#dde3e7);margin-top:5px;overflow:hidden}.today-bar .tk .mini i{display:block;height:100%;background:#0b8577}
+.today-bar .all{font-size:15px;color:#0b8577;font-weight:700}
+</style>
 </head>
 <body>
 <header class="band"><div class="in">
@@ -62,6 +78,7 @@
  <div class="train" id="train"></div>
 </div></header>
 <main><div class="in">
+ <section class="today-bar" id="today" aria-label="Today's tasks"></section>
 
  <section class="sec" aria-labelledby="s1">
   <div class="sec-h"><span class="num">1</span><h2 id="s1">Plan</h2><p>What to study this week, how ready you are, and your portfolio</p></div>
@@ -87,6 +104,7 @@
 <script src="wpba/data.js"></script>
 <script src="steps/data.js"></script>
 <script src="/studied.js"></script>
+<script src="/today.js"></script>
 <script>
 {
 const $=id=>document.getElementById(id),DAY=864e5;
@@ -94,6 +112,13 @@ const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 const get=k=>{try{return JSON.parse(localStorage.getItem(k)||"null")}catch(e){return null}};
 const fmt=d=>d.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"});
 
+
+/* ---------- today's workflow ---------- */
+function drawToday(){if(!window.RTG_TODAY)return;const T=RTG_TODAY.tasks(),n=T.filter(t=>t.done).length,d=new Date();
+ $("today").innerHTML=`<div class="th"><h2>Today · ${d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"})}</h2><div class="tp"><div class="b"><i style="width:${n/T.length*100}%"></i></div><span>${n} of ${T.length} done</span></div></div>
+ <div class="tl">${T.map(t=>`<a class="tk ${t.done?"done":""}" href="${t.href.replace(/^\//,"")}"><span class="ck" aria-hidden="true">${t.done?"✓":""}</span><span><b>${esc(t.label)}</b><span>${esc(t.detail)}</span>${t.prog&&!t.done&&t.prog[0]?`<div class="mini"><i style="width:${t.prog[0]/t.prog[1]*100}%"></i></div>`:""}</span></a>`).join("")}</div>
+ ${n===T.length?`<p class="all" style="margin:10px 0 0">Everything done for today. Well done. 🎉</p>`:""}`}
+drawToday();addEventListener("storage",drawToday);addEventListener("pageshow",drawToday);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")drawToday()});
 /* ---------- GP training progress: 36 months from 5 Aug 2026 ---------- */
 const T0=new Date("2026-08-05T00:00:00"),addM=(d,m)=>{const x=new Date(d);x.setMonth(x.getMonth()+m);return x};
 const END=addM(T0,36),now=new Date();

@@ -13,7 +13,7 @@
  /* auto-count, except while the study timer is running (so the same time isn't counted twice) */
  setInterval(function(){if(document.visibilityState!=="visible"||timer())return;var talk=window.speechSynthesis&&speechSynthesis.speaking;
   if(!talk&&Date.now()-last>IDLE)return;
-  var D=get(K)||{};D.d=D.d||{};var k=day();D.d[k]=D.d[k]||{};D.d[k][P]=(D.d[k][P]||0)+STEP;put(K,D);draw()},STEP*1000);
+  var D=get(K)||{};D.d=D.d||{};var k=day();D.d[k]=D.d[k]||{};D.d[k][P]=(D.d[k][P]||0)+STEP;put(K,D);if(!open)draw()},STEP*1000);
 
  /* ---------- the study-time button ---------- */
  function todaySecs(){var D=(get(K)||{}).d||{},t=D[day()]||{},s=0;for(var p in t)s+=t[p];var T=timer();if(T&&day(T.t0)===day())s+=Math.min(CAP,(Date.now()-T.t0)/1000);return s}
@@ -27,6 +27,9 @@
  function stop(){var S=prog();if(!S||!S.timer)return;var t=S.timer,secs=Math.min(CAP,Math.round((Date.now()-t.t0)/1000));
   if(secs>=30){var D=get(K)||{};D.d=D.d||{};var k=day(t.t0);D.d[k]=D.d[k]||{};D.d[k]["timer:"+t.what]=(D.d[k]["timer:"+t.what]||0)+secs;put(K,D)}
   S.timer=null;put(PK,S);draw()}
+ function todayCount(){if(!window.RTG_TODAY)return "";var T=RTG_TODAY.tasks();return T.filter(function(t){return t.done}).length+"/"+T.length}
+ function todayList(){if(!window.RTG_TODAY)return "";var T=RTG_TODAY.tasks(),n=T.filter(function(t){return t.done}).length;
+  return '<h4>Today <span class="k" style="font-weight:400">'+n+' of '+T.length+' done</span></h4><div class="tdl">'+T.map(function(t){return '<a class="tdi'+(t.done?" ok":"")+'" href="'+esc(t.href)+'"><span class="tck">'+(t.done?"✓":"")+'</span><span><b>'+esc(t.label)+'</b><small>'+esc(t.detail)+'</small></span></a>'}).join("")+'</div><hr>'}
  var open=false,box=null,css=document.createElement("style");
  css.textContent=".rtg-tm{position:fixed;right:14px;bottom:14px;z-index:9999;font:15px/1.4 'Atkinson Hyperlegible',system-ui,sans-serif;color:#16212a}"+
  ".rtg-tm .pill{display:flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:9px 14px;background:#16212a;color:#fff;font:inherit;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.25)}"+
@@ -38,10 +41,15 @@
  ".rtg-tm select{width:100%;font:inherit;font-size:14px;padding:7px 8px;border:1px solid #dde3e7;border-radius:10px;margin-top:6px;background:#fff;color:#16212a}"+
  ".rtg-tm hr{border:0;border-top:1px solid #dde3e7;margin:10px 0}.rtg-tm a{color:#0b5f86}"+
  "@media(prefers-color-scheme:dark){.rtg-tm .pn{background:#172128;border-color:#2a3a44;color:#e8eef0}.rtg-tm .k{color:#9aabb4}.rtg-tm select,.rtg-tm .b.g{background:#1c2a33;color:#e8eef0;border-color:#2a3a44}.rtg-tm hr{border-color:#2a3a44}.rtg-tm a{color:#5cc1ec}}"+
+ ".rtg-tm .tdc{background:#0b8577;border-radius:999px;padding:1px 8px;font-size:13px;margin-right:2px}"+
+ ".rtg-tm .tdl{display:flex;flex-direction:column;gap:5px;max-height:44vh;overflow:auto}.rtg-tm .tdi{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;align-items:center;text-decoration:none;color:inherit;border:1px solid #dde3e7;border-radius:10px;padding:6px 8px}"+
+ ".rtg-tm .tdi b{display:block;font-size:14px;line-height:1.25}.rtg-tm .tdi small{display:block;font-size:12px;color:#576470;line-height:1.3}.rtg-tm .tck{width:22px;height:22px;border-radius:50%;border:2px solid #c5ced4;display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff}"+
+ ".rtg-tm .tdi.ok .tck{background:#0b8577;border-color:#0b8577}.rtg-tm .tdi.ok b{text-decoration:line-through}.rtg-tm .pn{max-height:calc(100vh - 90px);overflow:auto}"+
+ "@media(prefers-color-scheme:dark){.rtg-tm .tdi{border-color:#2a3a44}.rtg-tm .tdi small{color:#9aabb4}}"+
  "@media print{.rtg-tm{display:none}}";
  function draw(){if(!box)return;var T=timer(),S=prog(),run=!!T;
-  var pill='<button class="pill'+(run?" run":"")+'" aria-expanded="'+open+'" aria-label="Study time">'+(run?'<span class="dot"></span>'+clock(Math.min(CAP,(Date.now()-T.t0)/1000)):"⏱ "+fm(todaySecs())+" today")+'</button>';
-  var pn="";if(open){pn='<div class="pn" role="dialog" aria-label="Study time"><h4>Study time</h4><div class="k">Today on Road to GP</div><div class="big">'+fm(todaySecs())+'</div><div class="k">This page today: '+fm(pageSecs())+'. Counted automatically while you\'re active on a study page.</div><hr>';
+  var pill='<button class="pill'+(run?" run":"")+'" aria-expanded="'+open+'" aria-label="Study time">'+(run?'<span class="dot"></span>'+clock(Math.min(CAP,(Date.now()-T.t0)/1000)):(todayCount()?'<span class="tdc">✓ '+todayCount()+'</span>':"")+"⏱ "+fm(todaySecs())+" today")+'</button>';
+  var pn="";if(open){pn='<div class="pn" role="dialog" aria-label="Today and study time">'+todayList()+'<h4>Study time</h4><div class="k">Today on Road to GP</div><div class="big">'+fm(todaySecs())+'</div><div class="k">This page today: '+fm(pageSecs())+'. Counted automatically while you\'re active on a study page.</div><hr>';
    if(run){var lab=String(T.what).replace(/^week:(\d+)$/,"Week $1 programme work").replace(/^(stats|admin|topic):/,"");
     pn+='<div class="k">Study timer running</div><div><b>'+esc(lab)+'</b></div><div class="big" id="rtg-clk">'+clock(Math.min(CAP,(Date.now()-T.t0)/1000))+'</div><button class="b stop" id="rtg-stop">Stop and count it</button><div class="k" style="margin-top:6px">Keeps running if you close the page. Stops counting after 3 hours.</div>'}
    else if(S){var w=curWeek(S),t=title();
@@ -52,10 +60,11 @@
   box.querySelector(".pill").onclick=function(){open=!open;draw()};
   var g=document.getElementById("rtg-go");if(g)g.onclick=function(){start(document.getElementById("rtg-what").value)};
   var st=document.getElementById("rtg-stop");if(st)st.onclick=stop}
- function mount(){document.head.appendChild(css);box=document.createElement("div");box.className="rtg-tm";document.body.appendChild(box);draw();
+ function mount(){if(!window.RTG_TODAY){var sc=document.createElement("script");sc.src="/today.js";sc.onload=function(){draw()};document.head.appendChild(sc)}
+  document.head.appendChild(css);box=document.createElement("div");box.className="rtg-tm";document.body.appendChild(box);draw();
   setInterval(function(){var T=timer();if(!T)return;var c=clock(Math.min(CAP,(Date.now()-T.t0)/1000)),p=box.querySelector(".pill"),k=document.getElementById("rtg-clk");
    if(p&&!p.classList.contains("run")){draw();return}if(p)p.innerHTML='<span class="dot"></span>'+c;if(k)k.textContent=c},1000);
   document.addEventListener("click",function(e){if(open&&box&&e.target.isConnected&&!box.contains(e.target)){open=false;draw()}});
-  addEventListener("storage",function(e){if(e.key===PK||e.key===K)draw()})}
+  addEventListener("storage",function(){draw()});document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")draw()})}
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",mount);else mount();
 })();
