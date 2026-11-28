@@ -227,6 +227,27 @@ function topicSection(ts){
  $("tst").onchange=e=>{TV.status=e.target.value;tShown=12;save();draw()};
  $("tso").onchange=e=>{TV.sort=e.target.value;tShown=12;save();draw()};
  selBar();draw()}
+/* ---- AKT domains: 80% clinical medicine, 10% evidence-based practice, 10% organisation and management ---- */
+const DOMS=[["clin","Clinical medicine",.8],["ebp","Evidence-based practice",.1],["org","Organisation and management",.1]];
+const domainOf=q=>{if(q.cat==="statistics"||q.cat==="calc")return "ebp";if(q.cat==="admin")return "org";
+ if(q.cat==="mybank"||q.stars){const a=String(q.area||"");if(/evidence|statist|research|apprais|epidem/i.test(a))return "ebp";if(/organis|organiz|manage|admin|ethic|law|legal|contract|governance|leadership|safeguard/i.test(a))return "org"}return "clin"};
+function mockPick(n,pool){const by={clin:[],ebp:[],org:[]};shuffle(pool.slice()).forEach(q=>by[domainOf(q)].push(q));
+ const want={clin:Math.round(n*.8),ebp:Math.round(n*.1)};want.org=n-want.clin-want.ebp;
+ const take={};let short=0;DOMS.forEach(([k])=>{take[k]=by[k].slice(0,want[k]);short+=want[k]-take[k].length});
+ const extra=[];if(short>0)DOMS.forEach(([k])=>{const rest=by[k].slice(take[k].length);while(short>0&&rest.length){extra.push(rest.shift());short--}});
+ return {qs:shuffle([...take.clin,...take.ebp,...take.org,...extra]),want,got:{clin:take.clin.length,ebp:take.ebp.length,org:take.org.length},extra:extra.length,avail:{clin:by.clin.length,ebp:by.ebp.length,org:by.org.length}}}
+
+/* ---- Daily review: today's 20 questions, split into 3 short sessions (7, 7, 6). Saved in cgn-v1 so it carries across devices. ---- */
+const DSPLIT=[[0,7],[7,14],[14,20]];
+const todayKey=()=>{const t=new Date();return t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0")};
+function dailyPlan(){const d=load();let p=d.daily;
+ if(!p||p.date!==todayKey()){p={date:todayKey(),ids:pickDaily(20).map(q=>q.id),done:[false,false,false]};d.daily=p;save(d)}return p}
+const byIdQ=id=>BANK.find(q=>q.id===id)||(/^gen-/.test(id)?TOPICS.find(t=>t.gen).qs.find(q=>q.id===id):null);
+function dailyNext(){const p=dailyPlan();const k=p.done.indexOf(false);return k<0?null:k}
+function startDaily(k){const p=dailyPlan();const [a,b]=DSPLIT[k];let qs=p.ids.slice(a,b).map(byIdQ).filter(q=>q&&(q.gen?statsStudied():inSrc(q)));
+ if(!qs.length){qs=pickDaily(b-a)}start(`Daily review · session ${k+1} of 3`,qs,{daily:k})}
+function markDaily(k){const d=load();if(d.daily&&d.daily.date===todayKey()){d.daily.done[k]=true;save(d)}}
+
 function home(){stopTimers();document.onkeydown=null;const d=load(),ts=topicStats(d),now=Date.now();
  const due=BANK.filter(q=>inSrc(q)&&d.q[q.id]&&d.q[q.id].due<=now).length,today=d.log.filter(x=>new Date(x.t).toDateString()===new Date().toDateString()).length;
  const last=d.log.slice(-100),acc=last.length?Math.round(last.filter(x=>x.ok).length/last.length*100):null,mis=mistakes(d).length;
@@ -236,9 +257,10 @@ function home(){stopTimers();document.onkeydown=null;const d=load(),ts=topicStat
  <div class="row" style="margin:0 0 14px"><a class="btn ghost" href="../retention/">Retention →</a><a class="btn ghost" href="../mistakes/">Mistakes tracker →</a></div>
  <div class="kpis"><div class="kpi"><b>${due}</b><span>due for review</span></div><div class="kpi"><b>${today}</b><span>answered today${streak(d)>1?` · ${streak(d)}-day streak`:""}</span></div><div class="kpi"><b>${acc===null?"–":acc+"%"}</b><span>accuracy, last 100</span></div><div class="kpi"><b>${BANK.filter(q=>inSrc(q)&&d.q[q.id]&&d.q[q.id].box>=4).length}</b><span>mastered</span></div></div>
  <div class="modes">
-  <button class="mode r" id="m-daily"><b>Daily review</b><span>20 questions: overdue first, then your weakest topics, then new.</span></button>
+  ${(()=>{const p=real_n?dailyPlan():null,k=p?p.done.indexOf(false):-1,dots=p?p.done.map((x,i)=>`<i style="display:inline-block;width:22px;height:6px;border-radius:3px;margin-right:4px;background:${x?"var(--teal)":i===k?"var(--red)":"var(--line)"}"></i>`).join(""):"";
+   return `<button class="mode r" id="m-daily"><b>Daily review${p&&k<0?" ✓":""}</b><span>${!p?"20 questions a day, in 3 short sessions.":k<0?"All 3 sessions done today. Tap for a bonus 7.":`Session ${k+1} of 3 · ${DSPLIT[k][1]-DSPLIT[k][0]} questions, about ${DSPLIT[k][1]-DSPLIT[k][0]} minutes. Overdue first, then weakest topics, then new.`}</span>${p?`<span style="display:block;margin-top:6px">${dots}</span>`:""}</button>`})()}
   <button class="mode" id="m-quick"><b>Quick-fire</b><span>Tick topics below (or none for a mix), then go. Instant feedback.</span></button>
-  <button class="mode a" id="m-mock"><b>Mock exam</b><span>Timed, mixed, no feedback until the end. 1 minute per question.</span></button>
+  <button class="mode a" id="m-mock"><b>Mock exam</b><span>Timed, 80% clinical, 10% evidence-based practice, 10% organisation, like the real AKT. 1 minute per question.</span></button>
   <a class="mode" style="border-top-color:#7b46c7;text-decoration:none" href="case.html"><b>Cases</b><span>Short patient stories: gather clues, decide, see what happens. ${typeof CASES!=="undefined"?Object.keys(CASES).length:0} so far.</span></a>
   ${statsStudied()?"":"<!--"}<button class="mode t" id="m-calc"><b>Calculation drill</b><span>Endless stats, ABPI and postural BP with new numbers.</span></button>${statsStudied()?"":"-->"}
  </div>
@@ -250,7 +272,7 @@ function home(){stopTimers();document.onkeydown=null;const d=load(),ts=topicStat
   return `<details class="card" style="margin-top:14px"><summary style="cursor:pointer"><b>Not studied yet (${un.length})</b> <span class="note">Your reading list. Their questions and cases unlock once studied.</span></summary>
   <div style="display:flex;flex-direction:column;gap:6px;margin-top:10px">${un.map(t=>`<div class="row" style="justify-content:space-between;margin:0;padding:6px 0;border-bottom:1px solid var(--line)"><span><span class="dot" style="background:${COLORS[t.cat]||"#888"}"></span>${esc(t.name)}</span><span class="row" style="margin:0">${t.link?`<a class="note" href="${esc(t.link)}">Open lesson</a>`:""}<button class="go" data-mark="${esc(t.name)}">Mark studied</button></span></div>`).join("")}</div></details>`})()}
  <p class="note">Progress is saved in this browser. Your lesson quizzes count towards it too. <a href="#" id="reset">Reset progress</a></p>`;
- $("m-daily").onclick=()=>start("Daily review",pickDaily(20));
+ $("m-daily").onclick=()=>{const k=dailyNext();k===null?start("Daily review · bonus",pickDaily(7)):startDaily(k)};
  $("m-quick").onclick=()=>{const qs=(selTopics.size?[...selTopics].flatMap(i=>TOPICS[i].qs):BANK.filter(q=>!q.gen)).filter(inSrc);start("Quick-fire",pickQuick(qs,20))};
  $("m-mock").onclick=mockSetup;if($("m-calc"))$("m-calc").onclick=()=>start("Calculation drill",Array.from({length:20},(_,i)=>TOPICS.find(t=>t.gen).qs[i%4]).sort(()=>Math.random()-.5),{endless:true});
  if($("m-miss"))$("m-miss").onclick=()=>start("Mistakes",shuffle(mistakes(load())).slice(0,20));
@@ -268,7 +290,7 @@ function pickQuick(qs,n){const d=load(),now=Date.now();return shuffle(qs.slice()
 /* ---------------- session ---------------- */
 let S=null,paceT=null,mockT=null;
 function stopTimers(){clearInterval(paceT);clearInterval(mockT)}
-function start(title,qs,opt={}){if(!qs.length){alert("No questions here yet.");return}S={title,qs:qs.map(real),i:0,ans:[],t0:Date.now(),endless:!!opt.endless,mock:!!opt.mock,flags:new Set(),qt:Date.now()};
+function start(title,qs,opt={}){if(!qs.length){alert("No questions here yet.");return}S={title,qs:qs.map(real),i:0,ans:[],t0:Date.now(),endless:!!opt.endless,mock:!!opt.mock,daily:opt.daily,flags:new Set(),qt:Date.now()};
  if(S.mock){S.end=Date.now()+S.qs.length*60000;mockT=setInterval(mockTick,1000)}show()}
 function record(q,ok,ms){const d=load(),c=d.q[q.id]||{box:0,due:0,n:0,ok:0};c.n++;if(ok){c.ok++;c.box=Math.min(GAPS.length-1,c.box+1);c.due=Date.now()+GAPS[c.box]*DAY}else{c.box=0;c.due=Date.now()+10*60000}d.q[q.id]=c;
  d.log.push(Object.assign({t:Date.now(),theme:q.topic,ok,id:q.id,ms},SET.recall&&!S.mock?{r:1}:{}));if(d.log.length>5000)d.log=d.log.slice(-5000);save(d);return c}
@@ -302,24 +324,32 @@ function next(){S.revealed=false;if(S.mock){if(S.i<S.qs.length-1){S.i++;show()}e
  if(S.i<S.qs.length-1){S.i++;show()}else results()}
 function results(){stopTimers();document.onkeydown=null;const n=S.ans.filter(a=>a!==undefined).length,right=S.ans.filter((a,i)=>a===S.qs[i].a).length,secs=Math.round((Date.now()-S.t0)/1000);
  if(!n){home();return}
+ if(S.daily!==undefined&&S.daily!==null&&n===S.qs.length)markDaily(S.daily);
+ const byD={};if(S.wasMock)S.qs.forEach((q,i)=>{const k=domainOf(q);byD[k]=byD[k]||[0,0];byD[k][1]++;if(S.ans[i]===q.a)byD[k][0]++});
+ const nk=S.daily!==undefined&&S.daily!==null?dailyNext():undefined;
  const byT={};S.qs.forEach((q,i)=>{if(S.ans[i]===undefined)return;(byT[q.topic]=byT[q.topic]||[0,0]);byT[q.topic][1]++;if(S.ans[i]===q.a)byT[q.topic][0]++});
  $("app").innerHTML=`<h1>${esc(S.title)}: done</h1><div class="card"><div class="row" style="gap:24px;align-items:flex-end"><div><div class="big" style="color:${right/n>=.7?"var(--teal)":right/n>=.5?"var(--amber)":"var(--red)"}">${right}/${n}</div><div class="note">${Math.round(right/n*100)}% correct</div></div><div><b>${Math.round(secs/n)} s</b><div class="note">average per question (exam pace 60 s)</div></div></div>
+ ${S.wasMock?`<h2 style="margin-top:14px">By AKT domain</h2>${DOMS.filter(([k])=>byD[k]).map(([k,l,f])=>{const [a,b]=byD[k];return `<div class="row" style="justify-content:space-between;border-bottom:1px solid var(--line);padding:6px 0"><span>${l} <span class="note">${b} questions · target ${Math.round(f*100)}%</span></span><b style="color:${a/b>=.7?"var(--teal)":a/b>=.5?"var(--amber)":"var(--red)"}">${a}/${b} · ${Math.round(a/b*100)}%</b></div>`}).join("")}`:""}
  <h2 style="margin-top:14px">By topic</h2>${Object.entries(byT).map(([t,[a,b]])=>`<div class="row" style="justify-content:space-between;border-bottom:1px solid var(--line);padding:6px 0"><span>${esc(t)}</span><b style="color:${a/b>=.7?"var(--teal)":a/b>=.5?"var(--amber)":"var(--red)"}">${a}/${b}</b></div>`).join("")}
- <div class="row" style="margin-top:14px"><button class="btn" id="again">Another 20</button><button class="btn ghost" id="hm">Back to AKT practice</button></div></div>
+ <div class="row" style="margin-top:14px">${nk===undefined?(S.wasMock?"":`<button class="btn" id="again">Another 20</button>`):nk===null?`<span class="note" style="font-size:15px">✓ All 3 daily sessions done today.</span>`:`<button class="btn" id="again">Start session ${nk+1} of 3 now</button><span class="note">or come back later: your place is saved.</span>`}<button class="btn ghost" id="hm">Back to AKT practice</button></div></div>
  ${reviewList()}`;
- $("again").onclick=()=>start("Daily review",pickDaily(20));$("hm").onclick=home}
+ if($("again"))$("again").onclick=()=>nk!==undefined&&nk!==null?startDaily(nk):start("Daily review",pickDaily(20));$("hm").onclick=home}
 function reviewList(){const wrong=S.qs.map((q,i)=>[q,i]).filter(([q,i])=>S.ans[i]!==undefined&&S.ans[i]!==q.a);if(!wrong.length)return"";
  return `<div class="card"><h2>Review your wrong answers</h2><div class="rev">${wrong.map(([q,i])=>`<details><summary>${esc(q.topic)}: <span class="w">${S.ans[i]<0?"not answered":"you chose "+L[S.ans[i]]}</span>, <span class="c">answer ${L[q.a]}</span></summary><div class="stem" style="font-size:16px">${q.s}</div><p><b>${L[q.a]}. ${esc(q.o[q.a])}</b><br>${esc(q.e)}</p></details>`).join("")}</div></div>`}
 /* mock */
-function mockSetup(){ALLSCOPE=!!SET.mockAll;const pool=BANK.filter(q=>!q.gen&&inSrc(q)).length;ALLSCOPE=false;
- $("app").innerHTML=`<h1>Mock exam</h1><div class="card"><p style="margin-top:0">Mixed questions from all your topics, timed at the real AKT pace of 1 minute per question. No feedback until you finish; you can flag questions and go back.</p>
- <div class="row">${[20,40,80,160].map(n=>`<button class="btn ${n===40?"":"ghost"}" data-n="${n}" ${n>pool?"disabled":""}>${n} questions · ${n} min</button>`).join("")}</div>
- <p class="note">You have ${pool} questions ${SET.mockAll?"across every topic":"from topics you've studied"}${pool<160?", so the full 160-question mock unlocks as you add topics":""}.</p>
+function mockSetup(){ALLSCOPE=!!SET.mockAll;const pool=BANK.filter(q=>!q.gen&&inSrc(q));ALLSCOPE=false;
+ const sizes=[20,40,80,160].filter(n=>n<=pool.length),pick=n=>mockPick(n,pool),ex=pick(Math.min(40,pool.length)||0);
+ $("app").innerHTML=`<h1>Mock exam</h1><div class="card"><p style="margin-top:0">Timed at the real AKT pace of 1 minute per question, with the real exam's mix: <b>80% clinical medicine, 10% evidence-based practice, 10% organisation and management</b>. No feedback until you finish; you can flag questions and go back.</p>
+ <div class="row">${[20,40,80,160].map(n=>`<button class="btn ${n===40?"":"ghost"}" data-n="${n}" ${n>pool.length?"disabled":""}>${n} questions · ${n} min</button>`).join("")}</div>
+ <table style="width:100%;border-collapse:collapse;font-size:15px;margin-top:12px"><thead><tr><th style="text-align:left;padding:6px 4px;border-bottom:1px solid var(--line)">Domain</th><th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--line)">Share</th><th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--line)">In a 40-question mock</th><th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--line)">Questions available</th></tr></thead>
+ <tbody>${DOMS.map(([k,l,f])=>{const w=Math.round(40*f),g=ex.avail[k];return `<tr><td style="padding:6px 4px;border-bottom:1px solid var(--line)">${l}</td><td style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--line)">${f*100}%</td><td style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--line)">${w}</td><td style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--line);color:${g<w?"var(--red)":"inherit"}">${g}${g<w?" (short)":""}</td></tr>`}).join("")}</tbody></table>
+ ${DOMS.some(([k,l,f])=>ex.avail[k]<Math.round(40*f))?`<p class="note" style="color:var(--amber)">Not enough studied questions in every domain yet. Where a domain is short, the gap is filled from the others and the results show the real split. Study more statistics and admin topics, or tick the option below, to get the full 80/10/10.</p>`:""}
+ <p class="note">You have ${pool.length} questions ${SET.mockAll?"across every topic":"from topics you've studied"}${pool.length<160?", so the full 160-question mock unlocks as you add topics":""}.</p>
  <label class="set" style="display:flex;gap:8px;align-items:flex-start;margin:8px 0 12px"><input type="checkbox" id="mall" ${SET.mockAll?"checked":""}> <span><b>Include topics I haven't studied</b>: full exam rehearsal. These answers still count in your progress.</span></label><button class="btn ghost" id="hm">Back</button></div>`;
  $("mall").onchange=e=>{SET.mockAll=e.target.checked;saveSet();mockSetup()};
- document.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{ALLSCOPE=!!SET.mockAll;const qs=shuffle(BANK.filter(q=>!q.gen&&inSrc(q))).slice(0,+b.dataset.n);ALLSCOPE=false;start("Mock exam",qs,{mock:true})});$("hm").onclick=home}
+ document.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{const m=pick(+b.dataset.n);start("Mock exam",m.qs,{mock:true})});$("hm").onclick=home}
 function mockTick(){const left=Math.max(0,Math.round((S.end-Date.now())/1000)),el=$("mclk");if(el){el.textContent=`${Math.floor(left/60)}:${String(left%60).padStart(2,"0")}`;el.style.color=left<300?"var(--red)":""}if(left<=0)finishMock()}
-function finishMock(){stopTimers();S.qs.forEach((q,i)=>{if(S.ans[i]!==undefined)record(q,S.ans[i]===q.a,0)});try{const d=load();d.mocks=d.mocks||[];d.mocks.push({t:Date.now(),q:S.qs.length,c:S.qs.filter((q,i)=>S.ans[i]===q.a).length,mins:Math.round((Date.now()-S.t0)/60000)});save(d)}catch(e){}S.mock=false;const unanswered=S.qs.length-S.ans.filter(a=>a!==undefined).length;
+function finishMock(){stopTimers();S.qs.forEach((q,i)=>{if(S.ans[i]!==undefined)record(q,S.ans[i]===q.a,0)});try{const d=load();d.mocks=d.mocks||[];d.mocks.push({t:Date.now(),q:S.qs.length,c:S.qs.filter((q,i)=>S.ans[i]===q.a).length,mins:Math.round((Date.now()-S.t0)/60000)});save(d)}catch(e){}S.mock=false;S.wasMock=true;const unanswered=S.qs.length-S.ans.filter(a=>a!==undefined).length;
  S.ans=S.qs.map((q,i)=>S.ans[i]===undefined?-1:S.ans[i]);results();if(unanswered)$("app").insertAdjacentHTML("afterbegin",`<p class="note">${unanswered} unanswered question${unanswered>1?"s":""} counted as wrong.</p>`)}
 
 buildBank().then(()=>{home();const u=new URLSearchParams(location.search);const pt=u.get("practise");if(pt){const t=TOPICS.find(x=>x.name===pt);history.replaceState(null,"",location.pathname);if(t&&t.qs.length)start(t.name,pickQuick(t.qs.filter(inSrc),t.qs.length));}else if(u.get("retry")==="mistakes"){const t=u.get("topic");const m=shuffle(mistakes(load()).filter(q=>!t||q.topic===t)).slice(0,20);history.replaceState(null,"",location.pathname);if(m.length)start(t?"Mistakes: "+t:"Mistakes",m)}}).catch(()=>{$("app").innerHTML=`<p>Couldn't load the questions. Please refresh.</p>`});
