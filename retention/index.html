@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Retention · Road to GP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#eef2f4,#0f1519);--card:light-dark(#fff,#172128);--ink:light-dark(#16212a,#e8eef0);--mut:light-dark(#576470,#9aabb4);--line:light-dark(#dde3e7,#2a3a44);--soft:light-dark(#f4f7f8,#1c2a33);--acc:light-dark(#0b5f86,#5cc1ec);--red:light-dark(#b3263a,#ff7385);--teal:light-dark(#0b8577,#3cc7b3);--amber:light-dark(#b86e00,#f1aa45);--ok:light-dark(#e3f4f0,#123630);--bad:light-dark(#fbe6e9,#3d1820)}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif;overflow-x:clip}
+.wrap{max-width:900px;margin:0 auto;padding:18px 16px 70px}
+a{color:var(--acc)}
+h1{font:800 clamp(26px,3.6vw,36px)/1.08 "Bricolage Grotesque",sans-serif;margin:6px 0 4px}
+h2{font:800 20px "Bricolage Grotesque",sans-serif;margin:0 0 8px}
+.sub{color:var(--mut);margin:0 0 14px}
+.note{font-size:13px;color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}@media(max-width:620px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}.kpi b{display:block;font:800 28px/1.1 "Bricolage Grotesque",sans-serif}.kpi span{font-size:13px;color:var(--mut)}
+.btn{font:inherit;font-weight:700;border:0;background:var(--acc);color:#fff;border-radius:12px;padding:10px 16px;min-height:44px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+.btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tools{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;font:inherit;font-size:14px;white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.chip i{width:9px;height:9px;border-radius:50%}.chip span{color:var(--mut);font-size:12.5px}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}.chip[aria-pressed=true] span{color:inherit;opacity:.75}
+.r2{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.r2 input,.r2 select{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 10px;min-height:42px}.r2 input{flex:1 1 200px}
+@media(max-width:560px){.r2{display:grid;grid-template-columns:1fr 1fr}.r2 input{grid-column:1/-1}}
+.list{display:flex;flex-direction:column;gap:8px}
+.mi{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:grid;grid-template-columns:5px minmax(0,1fr)}
+.mi>i{display:block}
+.mi details{padding:10px 14px}
+.mi summary{cursor:pointer;list-style:none}.mi summary::-webkit-details-marker{display:none}
+.mi .st{font-size:15.5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mi details[open] .st{-webkit-line-clamp:unset;display:block}
+.meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--mut);margin-top:4px}
+.pill{font-size:12px;font-weight:700;border-radius:999px;padding:2px 9px;white-space:nowrap}
+.pill.act{background:var(--bad);color:var(--red)}.pill.fix{background:var(--ok);color:var(--teal)}.pill.rep{background:var(--soft);color:var(--amber);border:1px solid var(--amber)}
+.opts{list-style:none;padding:0;margin:10px 0;display:flex;flex-direction:column;gap:5px}.opts li{padding:7px 10px;border-radius:9px;background:var(--soft);font-size:15px}.opts li.r{background:var(--ok);font-weight:700}
+.ex{background:var(--soft);border-left:4px solid var(--acc);border-radius:10px;padding:10px 12px;font-size:15px}
+.more{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+.empty{text-align:center;color:var(--mut);padding:28px 10px}
+.hot{display:flex;flex-direction:column;gap:6px}.hot button{font:inherit;text-align:left;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 12px;cursor:pointer}
+.hot .bar{height:6px;border-radius:3px;background:var(--line);margin-top:4px;overflow:hidden}.hot .bar i{display:block;height:100%;background:var(--red)}
+
+.curve{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;align-items:end;height:170px;margin-top:10px}
+.curve div{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;gap:4px}
+.curve .b{width:100%;border-radius:8px 8px 3px 3px;min-height:3px}.curve b{font-size:14px}.curve span{font-size:12px;color:var(--mut);text-align:center;line-height:1.2}
+.curve div.e .b{background:var(--line)!important}
+.tl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}@media(max-width:700px){.tl{grid-template-columns:minmax(0,1fr)}}
+.ti{display:grid;grid-template-columns:5px minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px 10px 0;overflow:hidden}
+.ti>i{align-self:stretch;margin:-10px 0}
+.ti b{display:block;font-size:15.5px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ti .big{font:800 22px "Bricolage Grotesque",sans-serif;text-align:right;line-height:1}.ti .big small{display:block;font:400 11px "Atkinson Hyperlegible",sans-serif;color:var(--mut)}
+.mbar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;max-width:180px;margin-top:5px}.mbar i{display:block;height:100%}
+.tag{font-size:11.5px;font-weight:700;border-radius:999px;padding:1px 8px;background:var(--soft);border:1px solid var(--line);color:var(--mut)}
+.tag.slip{color:var(--red);border-color:var(--red)}.tag.due{color:var(--amber);border-color:var(--amber)}
+.lnk{font:inherit;font-size:13px;background:none;border:0;color:var(--acc);text-decoration:underline;cursor:pointer;padding:0}
+</style>
+<script src="/sync.js"></script>
+</head>
+<body>
+<div class="wrap">
+<nav class="note" aria-label="Breadcrumb" style="font-size:14px"><a href="../" style="text-decoration:none">← Home</a> › <a href="../akt/" style="text-decoration:none">AKT practice</a></nav>
+<div id="app"><p>Loading your retention…</p></div>
+</div>
+<script src="../lessons.js"></script>
+<script src="../akt/cases.js"></script>
+<script src="/studied.js"></script>
+<script src="../akt/qload.js"></script>
+<script>
+{
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const STU=window.RTG_STUDIED,DAY=864e5,now=Date.now();
+const AREA={cardiology:"Cardiology",dermatology:"Dermatology",statistics:"Statistics",admin:"Admin",prescribing:"Prescribing",mybank:"My bank"};
+const COL={mybank:"#c28a00"};(typeof CATS!=="undefined"?CATS:[]).forEach(c=>COL[c.id]=c.c);
+const day=t=>new Date(t).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"});
+const pc=(a,b)=>b?Math.round(a/b*100):null;
+const colr=p=>p===null?"var(--mut)":p>=80?"var(--teal)":p>=60?"var(--amber)":"var(--red)";
+const BK=[["Same day",0,1],["1–2 days",1,3],["3–6 days",3,7],["1–2 weeks",7,14],["2–4 weeks",14,30],["30+ days",30,1e9]];
+const VK="rtg-retention-view";let V={area:"all",sort:"weak",q:""},shown=12;try{V=Object.assign(V,JSON.parse(localStorage.getItem(VK))||{});V.q=""}catch(e){}
+const save=()=>{try{localStorage.setItem(VK,JSON.stringify({area:V.area,sort:V.sort}))}catch(e){}};
+
+RTG_loadQuestions("../").then(({byId,topics})=>render(byId,topics)).catch(()=>{$("app").innerHTML="<p>Couldn't load your progress. Please refresh.</p>"});
+window.addEventListener("rtg-studied",()=>RTG_loadQuestions("../").then(({byId,topics})=>render(byId,topics)));
+
+function render(byId,topics){
+ let d={};try{d=JSON.parse(localStorage.getItem("cgn-v1"))||{}}catch(e){}
+ const st=STU.all();const S={};st.forEach(s=>S[s.name]=s);
+ const themeOf=x=>{const q=byId[x.id];return q?q.topic:x.theme};
+ /* attempts on studied topics only, each with the gap since you last saw that question */
+ const lastSeen={},A=[];(d.log||[]).slice().sort((a,b)=>a.t-b.t).forEach(x=>{if(!x.id||/^gen-/.test(x.id))return;const th=themeOf(x);const prev=lastSeen[x.id];lastSeen[x.id]=x.t;
+  if(!S[th])return;A.push({...x,th,gap:prev===undefined?null:(x.t-prev)/DAY})});
+ const rev=A.filter(a=>a.gap!==null),longR=rev.filter(a=>a.gap>=7),shortR=rev.filter(a=>a.gap>=1&&a.gap<7);
+ const idTopic={};Object.keys(lastSeen).forEach(id=>{const q=byId[id];if(q)idTopic[id]=q.topic});
+ const dueIds=Object.keys(d.q||{}).filter(id=>idTopic[id]&&S[idTopic[id]]&&d.q[id].due<=now);
+ const secure=Object.keys(d.q||{}).filter(id=>idTopic[id]&&S[idTopic[id]]&&d.q[id].box>=5).length;
+ const R=pc(longR.filter(a=>a.ok).length,longR.length),Rs=pc(shortR.filter(a=>a.ok).length,shortR.length);
+ const curve=BK.map(([l,lo,hi])=>{const x=rev.filter(a=>a.gap>=lo&&a.gap<hi);return {l,n:x.length,p:pc(x.filter(a=>a.ok).length,x.length)}});
+ const T=st.map(s=>{const meta=topics[s.name]||{};const a=A.filter(x=>x.th===s.name),r=a.filter(x=>x.gap!==null&&x.gap>=7),last=a.slice(-10),prev=a.slice(-20,-10);
+  const p10=pc(last.filter(x=>x.ok).length,last.length),pp=pc(prev.filter(x=>x.ok).length,prev.length),rr=pc(r.filter(x=>x.ok).length,r.length);
+  const due=dueIds.filter(id=>idTopic[id]===s.name).length,seen=new Set(a.map(x=>x.id)).size,total=Object.values(byId).filter(q=>q.topic===s.name).length;
+  return {...s,cat:meta.cat||"mybank",link:meta.link,stars:meta.stars||0,n:a.length,rn:r.length,rr,p10,due,seen,total,days:Math.floor((now-s.t)/DAY),slip:(rr!==null&&rr<60&&r.length>=3)||(pp!==null&&p10!==null&&prev.length>=5&&pp-p10>=20)}});
+ const slipping=T.filter(t=>t.slip),hist=T.filter(t=>t.via==="history");
+ const areas=[...new Set(T.map(t=>t.cat))];if(V.area!=="all"&&!areas.includes(V.area))V.area="all";
+ $("app").innerHTML=`<h1>Retention</h1><p class="sub">How well what you've studied is sticking. Only the ${st.length} topic${st.length===1?"":"s"} you've studied count, and only answers given after a gap: a question you saw minutes ago tests memory, not retention.</p>
+ ${!st.length?`<div class="card" style="border-left:5px solid var(--amber)"><b>No studied topics yet.</b> Finish an interactive lesson, or press <b>Mark as studied</b> on it, and it will be tracked here. The <a href="../akt/">AKT practice</a> page lists topics you haven't studied yet.</div>`:`
+ <div class="kpis"><div class="kpi"><b style="color:${colr(R)}">${R===null?"–":R+"%"}</b><span>long-term retention: correct after 7+ days${longR.length?` (${longR.length} answers)`:""}</span></div>
+ <div class="kpi"><b style="color:${colr(Rs)}">${Rs===null?"–":Rs+"%"}</b><span>short-term: correct after 1–6 days</span></div>
+ <div class="kpi"><b style="color:${dueIds.length?"var(--amber)":"var(--teal)"}">${dueIds.length}</b><span>due for review now</span></div>
+ <div class="kpi"><b>${secure}</b><span>secured (30-day interval or longer)</span></div></div>
+ <div class="row" style="margin-bottom:12px">${dueIds.length?`<a class="btn" href="../akt/">Do my due reviews (Daily review)</a>`:""}<a class="btn ghost" href="../mistakes/">Mistakes tracker →</a></div>
+ <div class="card"><h2>Your forgetting curve</h2><p class="note" style="margin:0">Percentage correct, grouped by how long since you last saw the question. A gentle slope means it's sticking; a steep drop shows where you forget.</p>
+ <div class="curve">${curve.map(c=>`<div class="${c.n?"":"e"}"><b style="color:${colr(c.p)}">${c.p===null?"–":c.p+"%"}</b><div class="b" style="height:${c.p===null?3:Math.max(4,c.p*1.1)}px;background:${colr(c.p)}"></div><span>${c.l}<br>${c.n} ans</span></div>`).join("")}</div></div>
+ ${slipping.length?`<div class="card" style="border-left:5px solid var(--red)"><h2>Slipping</h2><p class="note" style="margin:0 0 8px">Retention under 60% after a week, or recent scores 20 points below your earlier ones. Re-read these, then practise.</p>${slipping.map(t=>`<div class="row" style="justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--line)"><span>${esc(t.name)}</span><span class="row">${t.link?`<a class="note" href="${esc(t.link)}">Re-read lesson</a>`:""}<a class="note" href="../akt/?practise=${encodeURIComponent(t.name)}">Practise</a></span></div>`).join("")}</div>`:""}
+ ${hist.length?`<div class="card"><p class="note" style="margin:0">${hist.length} topic${hist.length===1?" was":"s were"} counted as studied from questions you answered before this tracker started (tagged <span class="tag">from past answers</span>). If you haven't really studied one, press <b>Not studied</b> on it.</p></div>`:""}
+ <h2 style="margin-top:20px">Topics you've studied</h2>
+ <div class="tools"><div class="chips" role="group" aria-label="Area">${[["all","All",T.length,""],...areas.map(a=>[a,AREA[a]||a,T.filter(t=>t.cat===a).length,COL[a]||"#888"])].map(([v,l,n,c])=>`<button class="chip" data-a="${v}" aria-pressed="${V.area===v}">${c?`<i style="background:${c}"></i>`:""}${esc(l)} <span>${n}</span></button>`).join("")}</div>
+ <div class="r2"><input id="q" type="search" placeholder="Search topics" aria-label="Search topics"><select id="so" aria-label="Sort"><option value="weak">Weakest retention</option><option value="due">Most due</option><option value="old">Studied longest ago</option><option value="new">Recently studied</option><option value="az">A to Z</option></select></div></div>
+ <div id="tl"></div>`}`;
+ if(!st.length)return;
+ $("so").value=V.sort;
+ function draw(){const q=V.q.trim().toLowerCase(),rv=t=>t.rr===null?(t.p10===null?101:t.p10+0.5):t.rr;
+  let X=T.filter(t=>(V.area==="all"||t.cat===V.area)&&(!q||t.name.toLowerCase().includes(q)));
+  X.sort(V.sort==="az"?(a,b)=>a.name.localeCompare(b.name):V.sort==="due"?(a,b)=>b.due-a.due||rv(a)-rv(b):V.sort==="old"?(a,b)=>a.t-b.t:V.sort==="new"?(a,b)=>b.t-a.t:(a,b)=>rv(a)-rv(b)||b.due-a.due);
+  const vis=X.slice(0,shown);
+  $("tl").innerHTML=!X.length?`<div class="card empty">No topics match.</div>`:`<div class="tl">${vis.map(t=>{const shown_p=t.rr!==null?t.rr:t.p10;return `<div class="ti"><i style="background:${COL[t.cat]||"#888"}"></i><div><b title="${esc(t.name)}">${esc(t.name)}</b>
+   <div class="note">Studied ${day(t.t)} · ${t.days} day${t.days===1?"":"s"} ago${t.total?` · seen ${t.seen} of ${t.total}`:""}</div>
+   <div class="mbar"><i style="width:${shown_p||0}%;background:${colr(shown_p)}"></i></div>
+   <div class="row" style="margin-top:5px;gap:6px">${t.slip?`<span class="tag slip">slipping</span>`:""}${t.due?`<span class="tag due">${t.due} due</span>`:""}${t.via==="history"?`<span class="tag">from past answers</span>`:""}${t.link?`<a class="note" href="${esc(t.link)}">lesson</a>`:""}<a class="note" href="../akt/?practise=${encodeURIComponent(t.name)}">practise</a><button class="lnk" data-un="${esc(t.name)}">Not studied</button></div></div>
+   <div class="big" style="color:${colr(shown_p)}">${t.rr!==null?t.rr+"%":t.p10!==null?t.p10+"%":"–"}<small>${t.rr!==null?`after 7+ days (${t.rn})`:t.p10!==null?"so far, no 7-day review yet":"not practised yet"}</small></div></div>`}).join("")}</div>
+   <div class="more"><span class="note">Showing ${vis.length} of ${X.length}</span>${X.length>shown?`<button class="btn ghost" id="mo">Show ${Math.min(12,X.length-shown)} more</button>`:""}</div>`;
+  if($("mo"))$("mo").onclick=()=>{shown+=12;draw()};
+  document.querySelectorAll("[data-un]").forEach(b=>b.onclick=()=>{if(confirm(`Remove “${b.dataset.un}” from your studied topics? Its questions and case leave practice until you study it.`))STU.unmark(b.dataset.un)})}
+ document.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{V.area=b.dataset.a;document.querySelectorAll("[data-a]").forEach(x=>x.setAttribute("aria-pressed",x===b));shown=12;save();draw()});
+ $("q").oninput=e=>{V.q=e.target.value;shown=12;draw()};
+ $("so").onchange=e=>{V.sort=e.target.value;shown=12;save();draw()};
+ draw()}
+}
+</script>
+</body>
+</html>

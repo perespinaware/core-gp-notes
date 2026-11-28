@@ -119,6 +119,7 @@ kbd{font:600 12px ui-monospace,monospace;border:1px solid var(--line);border-bot
 <script src="bank-static.js"></script>
 <script src="bank-derm.js"></script>
 <script src="cases.js"></script>
+<script src="/studied.js"></script>
 <script>
 {
 const $=id=>document.getElementById(id);
@@ -130,8 +131,13 @@ const save=d=>{try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}};
 let SET={recall:false,pace:true,src:"all"};try{SET=Object.assign(SET,JSON.parse(localStorage.getItem(SKEY))||{})}catch(e){}
 const saveSet=()=>{try{localStorage.setItem(SKEY,JSON.stringify(SET))}catch(e){}};
 {const u=new URLSearchParams(location.search).get("src");if(["all","5","3","site","mine"].includes(u))SET.src=u}
+let ALLSCOPE=false;const STU=window.RTG_STUDIED;
+const statsStudied=()=>(typeof CATS!=="undefined"?CATS:[]).some(c=>c.id==="statistics"&&c.lessons.some(l=>STU.is(l[0])));
+/* only topics you have studied are used, unless ALLSCOPE (mock exam option). Your own My bank topics always count. */
+const studiedTopic=(name,cat)=>!STU||ALLSCOPE||cat==="mybank"||(cat==="calc"?statsStudied():STU.is(name));
 const SRC_LABEL={all:"All questions",5:"★5 only",3:"★3 only",site:"Site questions only",mine:"My bank only"};
-const inSrc=q=>q.gen?SET.src==="all"||SET.src==="site":SET.src==="all"?true:SET.src==="5"?q.stars===5:SET.src==="3"?q.stars===3:SET.src==="site"?!q.stars:!!q.stars;
+const srcOK=q=>q.gen?SET.src==="all"||SET.src==="site":SET.src==="all"?true:SET.src==="5"?q.stars===5:SET.src==="3"?q.stars===3:SET.src==="site"?!q.stars:!!q.stars;
+const inSrc=q=>srcOK(q)&&studiedTopic(q.topic,q.cat);
 
 /* ---------------- bank ---------------- */
 const COLORS={};(typeof CATS!=="undefined"?CATS:[]).forEach(c=>COLORS[c.id]=c.c);COLORS.calc="#5b4fc4";COLORS.mybank="#c28a00";
@@ -175,7 +181,7 @@ const real=q=>q.gen?Object.assign({},q,GEN[q.gen]()):q;
 /* ---------------- stats ---------------- */
 function topicStats(d){const m={};TOPICS.forEach(t=>{const l=d.log.filter(x=>x.theme===t.name).slice(-10);m[t.name]={p:l.length?Math.round(l.filter(x=>x.ok).length/l.length*100):null,n:d.log.filter(x=>x.theme===t.name).length,due:t.qs.filter(q=>d.q[q.id]&&d.q[q.id].due<=Date.now()).length}});return m}
 function streak(d){const days=new Set(d.log.map(x=>new Date(x.t).toDateString()));let s=0,t=new Date();if(!days.has(t.toDateString()))t.setDate(t.getDate()-1);while(days.has(t.toDateString())){s++;t.setDate(t.getDate()-1)}return s}
-function mistakes(d){const last={};d.log.forEach(x=>{if(x.id)last[x.id]=x.ok});return BANK.filter(q=>!q.gen&&last[q.id]===false)}
+function mistakes(d){const last={};d.log.forEach(x=>{if(x.id)last[x.id]=x.ok});return BANK.filter(q=>!q.gen&&inSrc(q)&&last[q.id]===false)}
 
 /* ---------------- home ---------------- */
 let selTopics=new Set();
@@ -183,7 +189,7 @@ const TV_KEY="rtg-akt-view";let TV={area:"all",status:"all",sort:"yield",q:""},t
 function topicSection(ts){
  const AREA={cardiology:"Cardiology",dermatology:"Dermatology",statistics:"Statistics",admin:"Admin",prescribing:"Prescribing",mybank:"My bank",calc:"Calculations"};
  const yieldOf=t=>{try{if(t.cat==="calc")return 5;const cat=(CATS||[]).find(x=>x.id===t.cat);const f=(t.link||"").split("/").pop();const l=cat&&cat.lessons.find(x=>x[2]===f||x[0]===t.name);return l&&l[3]||0}catch(e){return 0}};
- const items=TOPICS.map((t,i)=>({t,i,s:ts[t.name],y:yieldOf(t)})).filter(({t})=>t.gen?(SET.src==="all"||SET.src==="site"):t.qs.some(inSrc));
+ const items=TOPICS.map((t,i)=>({t,i,s:ts[t.name],y:yieldOf(t)})).filter(({t})=>t.gen?(SET.src==="all"||SET.src==="site")&&statsStudied():t.qs.some(inSrc));
  const areas=[...new Set(items.map(x=>x.t.cat))];
  if(TV.area!=="all"&&!areas.includes(TV.area))TV.area="all";
  const save=()=>{try{localStorage.setItem(TV_KEY,JSON.stringify({area:TV.area,status:TV.status,sort:TV.sort}))}catch(e){}};
@@ -222,34 +228,40 @@ function topicSection(ts){
  $("tso").onchange=e=>{TV.sort=e.target.value;tShown=12;save();draw()};
  selBar();draw()}
 function home(){stopTimers();document.onkeydown=null;const d=load(),ts=topicStats(d),now=Date.now();
- const due=BANK.filter(q=>d.q[q.id]&&d.q[q.id].due<=now).length,today=d.log.filter(x=>new Date(x.t).toDateString()===new Date().toDateString()).length;
+ const due=BANK.filter(q=>inSrc(q)&&d.q[q.id]&&d.q[q.id].due<=now).length,today=d.log.filter(x=>new Date(x.t).toDateString()===new Date().toDateString()).length;
  const last=d.log.slice(-100),acc=last.length?Math.round(last.filter(x=>x.ok).length/last.length*100):null,mis=mistakes(d).length;
- const real_n=BANK.filter(q=>!q.gen).length;
- $("app").innerHTML=`<h1>AKT practice</h1><p class="sub">Free, fast repetition at exam pace: one minute a question. ${real_n} questions from your notes, plus calculations with new numbers every time.</p>
- <div class="kpis"><div class="kpi"><b>${due}</b><span>due for review</span></div><div class="kpi"><b>${today}</b><span>answered today${streak(d)>1?` · ${streak(d)}-day streak`:""}</span></div><div class="kpi"><b>${acc===null?"–":acc+"%"}</b><span>accuracy, last 100</span></div><div class="kpi"><b>${BANK.filter(q=>d.q[q.id]&&d.q[q.id].box>=4).length}</b><span>mastered</span></div></div>
+ const real_n=BANK.filter(q=>!q.gen&&inSrc(q)).length,nStud=TOPICS.filter(t=>!t.gen&&t.cat!=="mybank"&&STU.is(t.name)).length;
+ $("app").innerHTML=`<h1>AKT practice</h1><p class="sub">Free, fast repetition at exam pace: one minute a question. ${real_n} questions from the ${nStud} topic${nStud===1?"":"s"} you've studied${statsStudied()?", plus calculations with new numbers every time":""}. Finish a lesson, or mark it studied, to add its questions.</p>
+ ${!real_n?`<div class="card" style="border-left:5px solid var(--amber)"><b>Nothing to practise yet.</b> Practice uses only topics you've studied. Finish an interactive lesson (or press <b>Mark as studied</b> on it) and its questions appear here. See <b>Not studied yet</b> below.</div>`:""}
+ <div class="row" style="margin:0 0 14px"><a class="btn ghost" href="../retention/">Retention →</a><a class="btn ghost" href="../mistakes/">Mistakes tracker →</a></div>
+ <div class="kpis"><div class="kpi"><b>${due}</b><span>due for review</span></div><div class="kpi"><b>${today}</b><span>answered today${streak(d)>1?` · ${streak(d)}-day streak`:""}</span></div><div class="kpi"><b>${acc===null?"–":acc+"%"}</b><span>accuracy, last 100</span></div><div class="kpi"><b>${BANK.filter(q=>inSrc(q)&&d.q[q.id]&&d.q[q.id].box>=4).length}</b><span>mastered</span></div></div>
  <div class="modes">
   <button class="mode r" id="m-daily"><b>Daily review</b><span>20 questions: overdue first, then your weakest topics, then new.</span></button>
   <button class="mode" id="m-quick"><b>Quick-fire</b><span>Tick topics below (or none for a mix), then go. Instant feedback.</span></button>
   <button class="mode a" id="m-mock"><b>Mock exam</b><span>Timed, mixed, no feedback until the end. 1 minute per question.</span></button>
   <a class="mode" style="border-top-color:#7b46c7;text-decoration:none" href="case.html"><b>Cases</b><span>Short patient stories: gather clues, decide, see what happens. ${typeof CASES!=="undefined"?Object.keys(CASES).length:0} so far.</span></a>
-  <button class="mode t" id="m-calc"><b>Calculation drill</b><span>Endless stats, ABPI and postural BP with new numbers.</span></button>
+  ${statsStudied()?"":"<!--"}<button class="mode t" id="m-calc"><b>Calculation drill</b><span>Endless stats, ABPI and postural BP with new numbers.</span></button>${statsStudied()?"":"-->"}
  </div>
  <div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Settings</h2>${mis?`<button class="btn ghost" id="m-miss">Retry my mistakes (${mis})</button>`:""}</div>
- <div style="margin-top:8px"><div class="note" style="margin:0 0 6px">Questions to use</div><div class="row" role="group" aria-label="Questions to use">${["all","5","3","site","mine"].map(k=>{const n=BANK.filter(q=>!q.gen&&(k==="all"||(k==="5"?q.stars===5:k==="3"?q.stars===3:k==="site"?!q.stars:!!q.stars))).length;return (k==="all"||k==="site"||n)?`<button class="srcb ${SET.src===k?"on":""}" data-src="${k}">${SRC_LABEL[k]} <small>${n}</small></button>`:""}).join("")}</div></div>
+ <div style="margin-top:8px"><div class="note" style="margin:0 0 6px">Questions to use</div><div class="row" role="group" aria-label="Questions to use">${["all","5","3","site","mine"].map(k=>{const n=BANK.filter(q=>!q.gen&&studiedTopic(q.topic,q.cat)&&(k==="all"||(k==="5"?q.stars===5:k==="3"?q.stars===3:k==="site"?!q.stars:!!q.stars))).length;return (k==="all"||k==="site"||n)?`<button class="srcb ${SET.src===k?"on":""}" data-src="${k}">${SRC_LABEL[k]} <small>${n}</small></button>`:""}).join("")}</div></div>
  <div class="set" style="margin-top:8px"><label><input type="checkbox" id="s-recall" ${SET.recall?"checked":""}> <span><b>Recall first</b>: think of your answer before the options appear</span></label><label><input type="checkbox" id="s-pace" ${SET.pace?"checked":""}> <span><b>Pace bar</b>: 60 seconds per question</span></label></div></div>
- <h2 style="margin:22px 0 0">Topics</h2><div id="tsec"></div>
+ <h2 style="margin:22px 0 0">Topics you've studied</h2><div id="tsec"></div>
+ ${(()=>{const un=TOPICS.filter(t=>!t.gen&&t.cat!=="mybank"&&!STU.is(t.name)).sort((a,b)=>a.cat.localeCompare(b.cat)||a.name.localeCompare(b.name));if(!un.length)return "";
+  return `<details class="card" style="margin-top:14px"><summary style="cursor:pointer"><b>Not studied yet (${un.length})</b> <span class="note">Your reading list. Their questions and cases unlock once studied.</span></summary>
+  <div style="display:flex;flex-direction:column;gap:6px;margin-top:10px">${un.map(t=>`<div class="row" style="justify-content:space-between;margin:0;padding:6px 0;border-bottom:1px solid var(--line)"><span><span class="dot" style="background:${COLORS[t.cat]||"#888"}"></span>${esc(t.name)}</span><span class="row" style="margin:0">${t.link?`<a class="note" href="${esc(t.link)}">Open lesson</a>`:""}<button class="go" data-mark="${esc(t.name)}">Mark studied</button></span></div>`).join("")}</div></details>`})()}
  <p class="note">Progress is saved in this browser. Your lesson quizzes count towards it too. <a href="#" id="reset">Reset progress</a></p>`;
  $("m-daily").onclick=()=>start("Daily review",pickDaily(20));
  $("m-quick").onclick=()=>{const qs=(selTopics.size?[...selTopics].flatMap(i=>TOPICS[i].qs):BANK.filter(q=>!q.gen)).filter(inSrc);start("Quick-fire",pickQuick(qs,20))};
- $("m-mock").onclick=mockSetup;$("m-calc").onclick=()=>start("Calculation drill",Array.from({length:20},(_,i)=>TOPICS.find(t=>t.gen).qs[i%4]).sort(()=>Math.random()-.5),{endless:true});
+ $("m-mock").onclick=mockSetup;if($("m-calc"))$("m-calc").onclick=()=>start("Calculation drill",Array.from({length:20},(_,i)=>TOPICS.find(t=>t.gen).qs[i%4]).sort(()=>Math.random()-.5),{endless:true});
  if($("m-miss"))$("m-miss").onclick=()=>start("Mistakes",shuffle(mistakes(load())).slice(0,20));
  $("s-recall").onchange=e=>{SET.recall=e.target.checked;saveSet()};document.querySelectorAll("[data-src]").forEach(b=>b.onclick=()=>{SET.src=b.dataset.src;saveSet();home()});$("s-pace").onchange=e=>{SET.pace=e.target.checked;saveSet()};
- topicSection(ts);
+ if(document.getElementById("tsec"))topicSection(ts);
+ document.querySelectorAll("[data-mark]").forEach(b=>b.onclick=()=>{STU.mark(b.dataset.mark,"manual");home()});
  $("reset").onclick=e=>{e.preventDefault();if(confirm("Reset all your AKT progress in this browser?")){try{localStorage.removeItem(KEY)}catch(x){}home()}}}
 function pickDaily(n){const d=load(),now=Date.now(),ts=topicStats(d),w=q=>{const p=ts[q.topic]&&ts[q.topic].p;return p===null||p===undefined?50:p};
  const pool=BANK.filter(q=>!q.gen&&inSrc(q));const due=pool.filter(q=>d.q[q.id]&&d.q[q.id].due<=now).sort((a,b)=>w(a)-w(b));
  const fresh=shuffle(pool.filter(q=>!d.q[q.id])).sort((a,b)=>w(a)-w(b));const later=pool.filter(q=>d.q[q.id]&&d.q[q.id].due>now).sort((a,b)=>d.q[a.id].due-d.q[b.id].due);
- const out=[...due,...fresh.slice(0,Math.max(0,n-due.length-2)),...later];const calc=TOPICS.find(t=>t.gen).qs;if(SET.src==="all"||SET.src==="site"){out.splice(Math.min(out.length,7),0,calc[r(4)]);out.splice(Math.min(out.length,15),0,calc[r(4)])}
+ const out=[...due,...fresh.slice(0,Math.max(0,n-due.length-2)),...later];const calc=TOPICS.find(t=>t.gen).qs;if((SET.src==="all"||SET.src==="site")&&statsStudied()){out.splice(Math.min(out.length,7),0,calc[r(4)]);out.splice(Math.min(out.length,15),0,calc[r(4)])}
  return [...new Set(out)].slice(0,n)}
 function pickQuick(qs,n){const d=load(),now=Date.now();return shuffle(qs.slice()).sort((a,b)=>{const da=d.q[a.id],db=d.q[b.id];const sa=!da?1:da.due<=now?0:2,sb=!db?1:db.due<=now?0:2;return sa-sb}).slice(0,n)}
 
@@ -299,16 +311,18 @@ function results(){stopTimers();document.onkeydown=null;const n=S.ans.filter(a=>
 function reviewList(){const wrong=S.qs.map((q,i)=>[q,i]).filter(([q,i])=>S.ans[i]!==undefined&&S.ans[i]!==q.a);if(!wrong.length)return"";
  return `<div class="card"><h2>Review your wrong answers</h2><div class="rev">${wrong.map(([q,i])=>`<details><summary>${esc(q.topic)}: <span class="w">${S.ans[i]<0?"not answered":"you chose "+L[S.ans[i]]}</span>, <span class="c">answer ${L[q.a]}</span></summary><div class="stem" style="font-size:16px">${q.s}</div><p><b>${L[q.a]}. ${esc(q.o[q.a])}</b><br>${esc(q.e)}</p></details>`).join("")}</div></div>`}
 /* mock */
-function mockSetup(){const pool=BANK.filter(q=>!q.gen&&inSrc(q)).length;
+function mockSetup(){ALLSCOPE=!!SET.mockAll;const pool=BANK.filter(q=>!q.gen&&inSrc(q)).length;ALLSCOPE=false;
  $("app").innerHTML=`<h1>Mock exam</h1><div class="card"><p style="margin-top:0">Mixed questions from all your topics, timed at the real AKT pace of 1 minute per question. No feedback until you finish; you can flag questions and go back.</p>
  <div class="row">${[20,40,80,160].map(n=>`<button class="btn ${n===40?"":"ghost"}" data-n="${n}" ${n>pool?"disabled":""}>${n} questions · ${n} min</button>`).join("")}</div>
- <p class="note">You have ${pool} questions so far${pool<160?", so the full 160-question mock unlocks as you add topics":""}.</p><button class="btn ghost" id="hm">Back</button></div>`;
- document.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>start("Mock exam",shuffle(BANK.filter(q=>!q.gen&&inSrc(q))).slice(0,+b.dataset.n),{mock:true}));$("hm").onclick=home}
+ <p class="note">You have ${pool} questions ${SET.mockAll?"across every topic":"from topics you've studied"}${pool<160?", so the full 160-question mock unlocks as you add topics":""}.</p>
+ <label class="set" style="display:flex;gap:8px;align-items:flex-start;margin:8px 0 12px"><input type="checkbox" id="mall" ${SET.mockAll?"checked":""}> <span><b>Include topics I haven't studied</b>: full exam rehearsal. These answers still count in your progress.</span></label><button class="btn ghost" id="hm">Back</button></div>`;
+ $("mall").onchange=e=>{SET.mockAll=e.target.checked;saveSet();mockSetup()};
+ document.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{ALLSCOPE=!!SET.mockAll;const qs=shuffle(BANK.filter(q=>!q.gen&&inSrc(q))).slice(0,+b.dataset.n);ALLSCOPE=false;start("Mock exam",qs,{mock:true})});$("hm").onclick=home}
 function mockTick(){const left=Math.max(0,Math.round((S.end-Date.now())/1000)),el=$("mclk");if(el){el.textContent=`${Math.floor(left/60)}:${String(left%60).padStart(2,"0")}`;el.style.color=left<300?"var(--red)":""}if(left<=0)finishMock()}
 function finishMock(){stopTimers();S.qs.forEach((q,i)=>{if(S.ans[i]!==undefined)record(q,S.ans[i]===q.a,0)});try{const d=load();d.mocks=d.mocks||[];d.mocks.push({t:Date.now(),q:S.qs.length,c:S.qs.filter((q,i)=>S.ans[i]===q.a).length,mins:Math.round((Date.now()-S.t0)/60000)});save(d)}catch(e){}S.mock=false;const unanswered=S.qs.length-S.ans.filter(a=>a!==undefined).length;
  S.ans=S.qs.map((q,i)=>S.ans[i]===undefined?-1:S.ans[i]);results();if(unanswered)$("app").insertAdjacentHTML("afterbegin",`<p class="note">${unanswered} unanswered question${unanswered>1?"s":""} counted as wrong.</p>`)}
 
-buildBank().then(home).catch(()=>{$("app").innerHTML=`<p>Couldn't load the questions. Please refresh.</p>`});
+buildBank().then(()=>{home();const u=new URLSearchParams(location.search);const pt=u.get("practise");if(pt){const t=TOPICS.find(x=>x.name===pt);history.replaceState(null,"",location.pathname);if(t&&t.qs.length)start(t.name,pickQuick(t.qs.filter(inSrc),t.qs.length));}else if(u.get("retry")==="mistakes"){const t=u.get("topic");const m=shuffle(mistakes(load()).filter(q=>!t||q.topic===t)).slice(0,20);history.replaceState(null,"",location.pathname);if(m.length)start(t?"Mistakes: "+t:"Mistakes",m)}}).catch(()=>{$("app").innerHTML=`<p>Couldn't load the questions. Please refresh.</p>`});
 }
 </script>
 <script src="/time.js" defer></script>

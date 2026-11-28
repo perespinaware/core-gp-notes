@@ -57,6 +57,7 @@ kbd{font:600 12px ui-monospace,monospace;border:1px solid var(--line);border-bot
 </div>
 <script src="cases.js"></script>
 <script src="../lessons.js"></script>
+<script src="/studied.js"></script>
 <script>
 {
 const $=id=>document.getElementById(id);
@@ -72,7 +73,7 @@ function listCases(){
  const COL={};try{(CATS||[]).forEach(c=>COL[c.id]=c.c)}catch(e){}
  const stars=c=>{try{const cat=(CATS||[]).find(x=>x.id===c.cat);const f=(c.lesson||"").split("/").pop();const l=cat&&cat.lessons.find(x=>x[2]===f);return l&&l[3]||0}catch(e){return 0}};
  let D={};try{D=(JSON.parse(localStorage.getItem("cgn-v1"))||{}).cases||{}}catch(e){}
- const all=Object.entries(CASES).map(([k,c])=>({k,c,y:stars(c),done:D[k]}));
+ const STU=window.RTG_STUDIED,all=Object.entries(CASES).filter(([k,c])=>STU.is(c.topic)).map(([k,c])=>({k,c,y:stars(c),done:D[k]})),locked=Object.entries(CASES).filter(([k,c])=>!STU.is(c.topic)).map(([k,c])=>({k,c,y:stars(c)})).sort((p,q)=>q.y-p.y||p.c.topic.localeCompare(q.c.topic));
  const areas=[...new Set(all.map(x=>x.c.cat))];
  const PAGE=12,VK="rtg-cases-view";
  let V={area:"all",status:"all",sort:"yield",q:""};try{V=Object.assign(V,JSON.parse(localStorage.getItem(VK))||{})}catch(e){}
@@ -111,7 +112,7 @@ function listCases(){
  .cs-more{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
  .cs-empty{text-align:center;color:var(--mut);padding:28px 10px}
  </style>
- <div class="cs-top"><div><h1>Cases</h1><p class="sub" style="margin:0">${all.length} short patient stories: gather clues, decide, see what happens.</p>
+ <div class="cs-top"><div><h1>Cases</h1><p class="sub" style="margin:0">${all.length} case${all.length===1?"":"s"} from topics you've studied: gather clues, decide, see what happens.${locked.length?` ${locked.length} more unlock as you study.`:""}</p>
   <div class="cs-bar" aria-hidden="true"><i style="width:${pct}%"></i></div><div class="note" style="margin-top:4px">${done} of ${all.length} done${weak?` · ${weak} under 70%`:""}</div></div>
   ${next?`<a class="cs-next" href="#${next.k}"><small>${next.done?"Retry your weakest":"Up next"}</small><b>${esc(next.c.title)}</b></a>`:""}</div>
  <div class="cs-tools"><div class="cs-chips" role="group" aria-label="Area">
@@ -119,7 +120,10 @@ function listCases(){
   <div class="cs-row2"><input id="csq" type="search" placeholder="Search cases or topics" aria-label="Search cases" value="${esc(V.q)}">
   <select id="css" aria-label="Show"><option value="all">All cases</option><option value="new">Not tried</option><option value="weak">Under 70%</option><option value="done">Done</option></select>
   <select id="cso" aria-label="Sort"><option value="yield">Highest yield</option><option value="score">Lowest score</option><option value="az">A to Z</option></select></div></div>
- <div id="csl"></div>`;
+ <div id="csl"></div>
+ ${locked.length?`<details class="card" style="margin-top:14px"><summary style="cursor:pointer"><b>Locked until studied (${locked.length})</b> <span class="note">Finish the lesson, or mark it studied, to unlock its case.</span></summary>
+ <div style="display:flex;flex-direction:column;gap:6px;margin-top:10px">${locked.map(({c})=>`<div class="row" style="margin:0;padding:6px 0;border-bottom:1px solid var(--line)"><span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:${COL[c.cat]||"var(--acc)"}"></span>${esc(c.topic)}</span><span class="row" style="margin:0">${c.lesson?`<a class="note" href="${esc(c.lesson)}">Open lesson</a>`:""}<button class="btn ghost" style="min-height:34px;padding:5px 12px;font-size:14px" data-mk="${esc(c.topic)}">Mark studied</button></span></div>`).join("")}</div></details>`:""}`;
+ document.querySelectorAll("[data-mk]").forEach(b=>b.onclick=()=>{STU.mark(b.dataset.mk,"manual");listCases()});
  $("css").value=V.status;$("cso").value=V.sort;
  function draw(){
   const q=V.q.trim().toLowerCase();
@@ -129,7 +133,7 @@ function listCases(){
   const byYield=(p,q)=>q.y-p.y||(!!p.done-!!q.done)||p.c.title.localeCompare(q.c.title);
   L.sort(V.sort==="az"?(p,q)=>p.c.title.localeCompare(q.c.title):V.sort==="score"?(p,q)=>(!!q.done-!!p.done)||sc(p)-sc(q)||byYield(p,q):byYield);
   const vis=L.slice(0,shown);
-  $("csl").innerHTML=!L.length?`<div class="card cs-empty">No cases match. <button class="btn ghost" id="csr" style="margin-left:8px">Clear filters</button></div>`:
+  $("csl").innerHTML=!all.length?`<div class="card cs-empty">No cases yet. Cases unlock as you study topics: finish an interactive lesson, or mark it studied.</div>`:!L.length?`<div class="card cs-empty">No cases match. <button class="btn ghost" id="csr" style="margin-left:8px">Clear filters</button></div>`:
    `<div class="cs-list">${vis.map(({k,c,y,done})=>`<a class="cs-item" href="#${k}"><i style="background:${COL[c.cat]||"var(--acc)"}"></i><span><b>${esc(c.title)}</b><div class="note">${esc(c.topic)} · ${c.mins} min</div>${st(y)}</span>${pill(done)}</a>`).join("")}</div>
    <div class="cs-more"><span class="note">Showing ${vis.length} of ${L.length}</span>${L.length>shown?`<button class="btn ghost" id="csm">Show ${Math.min(PAGE,L.length-shown)} more</button>`:""}</div>`;
   const m=$("csm");if(m)m.onclick=()=>{shown+=PAGE;draw()};
@@ -143,6 +147,9 @@ function listCases(){
 function record(qid,ok){try{const K="cgn-v1",D=JSON.parse(localStorage.getItem(K)||"null")||{q:{},log:[],cases:{}},c=D.q[qid]||{box:0,due:0,n:0,ok:0};c.n++;if(ok){c.ok++;c.box=Math.min(6,c.box+1);c.due=Date.now()+GAPS[c.box]*DAY}else{c.box=0;c.due=Date.now()+6e5}D.q[qid]=c;D.log.push({t:Date.now(),theme:C.topic,ok,id:qid});localStorage.setItem(K,JSON.stringify(D))}catch(e){}}
 function saveCase(score){try{const K="cgn-v1",D=JSON.parse(localStorage.getItem(K)||"null")||{q:{},log:[],cases:{}};D.cases=D.cases||{};D.cases[id]={score,date:Date.now()};localStorage.setItem(K,JSON.stringify(D))}catch(e){}}
 function run(){window.onhashchange=()=>location.reload();document.title=C.title+" · AKT case";
+ const STU=window.RTG_STUDIED;if(STU&&!STU.is(C.topic)&&!run.ok){$("app").innerHTML=`<h1>${esc(C.title)}</h1><div class="card" style="border-left:5px solid var(--amber)"><p style="margin-top:0">This case is on <b>${esc(C.topic)}</b>, which you haven't studied yet. Cases unlock once you've finished the lesson or marked it studied.</p>
+  <div class="row" style="justify-content:flex-start">${C.lesson?`<a class="btn" href="${esc(C.lesson)}">Study the lesson</a>`:""}<button class="btn ghost" id="mk">I've studied it: start the case</button><a class="btn ghost" href="case.html">All cases</a></div></div>`;
+  $("mk").onclick=()=>{STU.mark(C.topic,"manual");run.ok=true;run()};return}
  const S={step:-1,res:[],seen:new Set(),found:[]};
  const N=C.steps.length;
  const bar=()=>`<div class="steps">${C.steps.map((x,i)=>`<span class="${S.res[i]===true?"d":S.res[i]===false?"w":""}"></span>`).join("")}</div>`;

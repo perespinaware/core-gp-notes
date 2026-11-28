@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mistakes tracker · Road to GP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#eef2f4,#0f1519);--card:light-dark(#fff,#172128);--ink:light-dark(#16212a,#e8eef0);--mut:light-dark(#576470,#9aabb4);--line:light-dark(#dde3e7,#2a3a44);--soft:light-dark(#f4f7f8,#1c2a33);--acc:light-dark(#0b5f86,#5cc1ec);--red:light-dark(#b3263a,#ff7385);--teal:light-dark(#0b8577,#3cc7b3);--amber:light-dark(#b86e00,#f1aa45);--ok:light-dark(#e3f4f0,#123630);--bad:light-dark(#fbe6e9,#3d1820)}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif;overflow-x:clip}
+.wrap{max-width:900px;margin:0 auto;padding:18px 16px 70px}
+a{color:var(--acc)}
+h1{font:800 clamp(26px,3.6vw,36px)/1.08 "Bricolage Grotesque",sans-serif;margin:6px 0 4px}
+h2{font:800 20px "Bricolage Grotesque",sans-serif;margin:0 0 8px}
+.sub{color:var(--mut);margin:0 0 14px}
+.note{font-size:13px;color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}@media(max-width:620px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}.kpi b{display:block;font:800 28px/1.1 "Bricolage Grotesque",sans-serif}.kpi span{font-size:13px;color:var(--mut)}
+.btn{font:inherit;font-weight:700;border:0;background:var(--acc);color:#fff;border-radius:12px;padding:10px 16px;min-height:44px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+.btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tools{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 8px}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;font:inherit;font-size:14px;white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.chip i{width:9px;height:9px;border-radius:50%}.chip span{color:var(--mut);font-size:12.5px}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}.chip[aria-pressed=true] span{color:inherit;opacity:.75}
+.r2{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.r2 input,.r2 select{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 10px;min-height:42px}.r2 input{flex:1 1 200px}
+@media(max-width:560px){.r2{display:grid;grid-template-columns:1fr 1fr}.r2 input{grid-column:1/-1}}
+.list{display:flex;flex-direction:column;gap:8px}
+.mi{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:grid;grid-template-columns:5px minmax(0,1fr)}
+.mi>i{display:block}
+.mi details{padding:10px 14px}
+.mi summary{cursor:pointer;list-style:none}.mi summary::-webkit-details-marker{display:none}
+.mi .st{font-size:15.5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mi details[open] .st{-webkit-line-clamp:unset;display:block}
+.meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--mut);margin-top:4px}
+.pill{font-size:12px;font-weight:700;border-radius:999px;padding:2px 9px;white-space:nowrap}
+.pill.act{background:var(--bad);color:var(--red)}.pill.fix{background:var(--ok);color:var(--teal)}.pill.rep{background:var(--soft);color:var(--amber);border:1px solid var(--amber)}
+.opts{list-style:none;padding:0;margin:10px 0;display:flex;flex-direction:column;gap:5px}.opts li{padding:7px 10px;border-radius:9px;background:var(--soft);font-size:15px}.opts li.r{background:var(--ok);font-weight:700}
+.ex{background:var(--soft);border-left:4px solid var(--acc);border-radius:10px;padding:10px 12px;font-size:15px}
+.more{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+.empty{text-align:center;color:var(--mut);padding:28px 10px}
+.hot{display:flex;flex-direction:column;gap:6px}.hot button{font:inherit;text-align:left;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 12px;cursor:pointer}
+.hot .bar{height:6px;border-radius:3px;background:var(--line);margin-top:4px;overflow:hidden}.hot .bar i{display:block;height:100%;background:var(--red)}
+</style>
+<script src="/sync.js"></script>
+</head>
+<body>
+<div class="wrap">
+<nav class="note" aria-label="Breadcrumb" style="font-size:14px"><a href="../" style="text-decoration:none">← Home</a> › <a href="../akt/" style="text-decoration:none">AKT practice</a></nav>
+<div id="app"><p>Loading your mistakes…</p></div>
+</div>
+<script src="../lessons.js"></script>
+<script src="../akt/cases.js"></script>
+<script src="/studied.js"></script>
+<script src="../akt/qload.js"></script>
+<script>
+{
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const L="ABCDE",STU=window.RTG_STUDIED;
+const AREA={cardiology:"Cardiology",dermatology:"Dermatology",statistics:"Statistics",admin:"Admin",prescribing:"Prescribing",mybank:"My bank"};
+const COL={mybank:"#c28a00"};(typeof CATS!=="undefined"?CATS:[]).forEach(c=>COL[c.id]=c.c);
+const day=t=>new Date(t).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+const VK="rtg-mistakes-view";let V={area:"all",status:"active",sort:"recent",q:"",topic:""},shown=12;try{V=Object.assign(V,JSON.parse(localStorage.getItem(VK))||{});V.q="";V.topic=""}catch(e){}
+const save=()=>{try{localStorage.setItem(VK,JSON.stringify({area:V.area,status:V.status,sort:V.sort}))}catch(e){}};
+let M=[];
+
+RTG_loadQuestions("../").then(({byId,topics})=>{
+ let d={};try{d=JSON.parse(localStorage.getItem("cgn-v1"))||{}}catch(e){}
+ const per={};(d.log||[]).forEach(x=>{if(!x.id||/^gen-/.test(x.id))return;(per[x.id]=per[x.id]||[]).push(x)});
+ const inScope=q=>q.cat==="mybank"||STU.is(q.topic);
+ M=Object.entries(per).map(([id,a])=>{const q=byId[id];if(!q||!inScope(q))return null;const wrong=a.filter(x=>!x.ok);if(!wrong.length)return null;
+  const last=a[a.length-1];return {id,q,n:a.length,w:wrong.length,lastWrong:wrong[wrong.length-1].t,lastT:last.t,active:!last.ok,repeat:wrong.length>=2}}).filter(Boolean);
+ render(topics)}).catch(()=>{$("app").innerHTML="<p>Couldn't load your mistakes. Please refresh.</p>"});
+
+function render(topics){
+ const act=M.filter(m=>m.active),fixed=M.filter(m=>!m.active),rep=M.filter(m=>m.repeat&&m.active);
+ const fixRate=M.length?Math.round(fixed.length/M.length*100):null;
+ const byTopic={};act.forEach(m=>{(byTopic[m.q.topic]=byTopic[m.q.topic]||{n:0,cat:m.q.cat}).n++});
+ const hot=Object.entries(byTopic).sort((a,b)=>b[1].n-a[1].n).slice(0,5),hmax=hot.length?hot[0][1].n:1;
+ const areas=[...new Set(M.map(m=>m.q.cat))];if(V.area!=="all"&&!areas.includes(V.area))V.area="all";
+ const nStud=STU.all().length;
+ $("app").innerHTML=`<h1>Mistakes tracker</h1><p class="sub">Every question you've got wrong in the ${nStud} topic${nStud===1?"":"s"} you've studied, from practice, lesson quizzes and cases. A mistake is <b>active</b> until you answer it right, then it's <b>fixed</b>.</p>
+ <div class="kpis"><div class="kpi"><b style="color:var(--red)">${act.length}</b><span>active mistakes</span></div><div class="kpi"><b style="color:var(--teal)">${fixed.length}</b><span>fixed since</span></div><div class="kpi"><b style="color:var(--amber)">${rep.length}</b><span>repeat mistakes (missed 2+ times, still wrong)</span></div><div class="kpi"><b>${fixRate===null?"–":fixRate+"%"}</b><span>of mistakes fixed</span></div></div>
+ ${act.length?`<div class="row" style="margin-bottom:12px"><a class="btn" href="../akt/?retry=mistakes">Retry ${act.length>20?"20 of my":"my"} ${act.length} active mistake${act.length===1?"":"s"}</a><a class="btn ghost" href="../retention/">Retention →</a></div>`:`<div class="row" style="margin-bottom:12px"><a class="btn ghost" href="../akt/">AKT practice</a><a class="btn ghost" href="../retention/">Retention →</a></div>`}
+ ${hot.length?`<div class="card"><h2>Where your active mistakes are</h2><div class="hot">${hot.map(([t,v])=>`<button data-tp="${esc(t)}"><span><b>${esc(t)}</b><div class="bar"><i style="width:${v.n/hmax*100}%"></i></div></span><span class="note">${v.n} active · <a href="../akt/?retry=mistakes&topic=${encodeURIComponent(t)}" onclick="event.stopPropagation()">retry</a></span></button>`).join("")}</div></div>`:""}
+ ${!M.length?`<div class="card empty">${nStud?"No mistakes yet in the topics you've studied. Keep practising: wrong answers will appear here so you can fix them.":"Nothing here yet. Mistakes are tracked only for topics you've studied: finish an interactive lesson, or mark it studied, then practise."}</div>`:
+ `<div class="tools"><div class="chips" role="group" aria-label="Area">${[["all","All",M.length,""],...areas.map(a=>[a,AREA[a]||a,M.filter(m=>m.q.cat===a).length,COL[a]||"#888"])].map(([v,l,n,c])=>`<button class="chip" data-a="${v}" aria-pressed="${V.area===v}">${c?`<i style="background:${c}"></i>`:""}${esc(l)} <span>${n}</span></button>`).join("")}</div>
+  <div class="r2"><input id="q" type="search" placeholder="Search questions or topics" aria-label="Search mistakes"><select id="st" aria-label="Show"><option value="active">Active</option><option value="repeat">Repeat mistakes</option><option value="fixed">Fixed</option><option value="all">All mistakes</option></select>
+  <select id="so" aria-label="Sort"><option value="recent">Most recent</option><option value="missed">Most missed</option><option value="topic">By topic</option></select></div><div id="tpf"></div></div><div id="ml"></div>`}`;
+ if(!M.length)return;
+ $("st").value=V.status;$("so").value=V.sort;
+ const tpf=()=>{$("tpf").innerHTML=V.topic?`<div class="row" style="margin-top:8px"><span class="note">Topic: <b>${esc(V.topic)}</b></span><button class="chip" id="tpx">Clear ×</button></div>`:"";if($("tpx"))$("tpx").onclick=()=>{V.topic="";tpf();shown=12;draw()}};
+ function draw(){const q=V.q.trim().toLowerCase();
+  let X=M.filter(m=>(V.area==="all"||m.q.cat===V.area)&&(!V.topic||m.q.topic===V.topic)&&(!q||(m.q.s+" "+m.q.topic).toLowerCase().includes(q))&&
+   (V.status==="all"||(V.status==="active"&&m.active)||(V.status==="fixed"&&!m.active)||(V.status==="repeat"&&m.repeat&&m.active)));
+  X.sort(V.sort==="missed"?(a,b)=>b.w-a.w||b.lastWrong-a.lastWrong:V.sort==="topic"?(a,b)=>a.q.topic.localeCompare(b.q.topic)||b.lastWrong-a.lastWrong:(a,b)=>b.lastWrong-a.lastWrong);
+  const vis=X.slice(0,shown);
+  $("ml").innerHTML=!X.length?`<div class="card empty">${V.status==="active"&&!V.q&&!V.topic&&V.area==="all"?"No active mistakes: everything you've got wrong has since been answered correctly.":"No mistakes match."}</div>`:
+   `<div class="list">${vis.map(m=>`<div class="mi"><i style="background:${COL[m.q.cat]||"#888"}"></i><details><summary><div class="st">${m.q.s}</div>
+   <div class="meta"><span class="pill ${m.active?"act":"fix"}">${m.active?"Active":"Fixed"}</span>${m.repeat?`<span class="pill rep">Missed ${m.w}×</span>`:""}<span>${esc(m.q.topic)}${m.q.isCase?" · case":""}</span><span>last wrong ${day(m.lastWrong)}</span></div></summary>
+   <ol class="opts">${(m.q.o||[]).map((o,k)=>`<li class="${k===m.q.a?"r":""}">${L[k]}. ${o}${k===m.q.a?" ✓":""}</li>`).join("")}</ol><div class="ex">${m.q.e||""}</div>
+   <div class="row" style="margin-top:10px">${m.q.link?`<a class="btn ghost" href="${esc(m.q.link)}">${m.q.isCase?"Open the case":"Open the lesson"}</a>`:""}<a class="btn ghost" href="../akt/?retry=mistakes&topic=${encodeURIComponent(m.q.topic)}">Retry this topic's mistakes</a></div></details></div>`).join("")}</div>
+   <div class="more"><span class="note">Showing ${vis.length} of ${X.length}</span>${X.length>shown?`<button class="btn ghost" id="mo">Show ${Math.min(12,X.length-shown)} more</button>`:""}</div>`;
+  if($("mo"))$("mo").onclick=()=>{shown+=12;draw()}}
+ document.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{V.area=b.dataset.a;document.querySelectorAll("[data-a]").forEach(x=>x.setAttribute("aria-pressed",x===b));shown=12;save();draw()});
+ document.querySelectorAll("[data-tp]").forEach(b=>b.onclick=()=>{V.topic=b.dataset.tp;V.status="active";$("st").value="active";tpf();shown=12;draw();$("ml").scrollIntoView({behavior:"smooth",block:"start"})});
+ $("q").oninput=e=>{V.q=e.target.value;shown=12;draw()};
+ $("st").onchange=e=>{V.status=e.target.value;shown=12;save();draw()};
+ $("so").onchange=e=>{V.sort=e.target.value;shown=12;save();draw()};
+ tpf();draw()}
+}
+</script>
+</body>
+</html>
