@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SCA clinic · Road to GP</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#f3f1f8,#110f18);--card:light-dark(#fff,#1b1825);--ink:light-dark(#1c1729,#ece8f5);--mut:light-dark(#5e5873,#a7a0bb);--line:light-dark(#e1dcec,#322b45);--soft:light-dark(#f6f3fc,#231f31);--pur:light-dark(#6d3fc0,#b393ff);--ok:light-dark(#e3f4f0,#123630);--teal:light-dark(#0b8577,#3cc7b3);--red:light-dark(#b3263a,#ff7385);--amber:light-dark(#b86e00,#f1aa45)}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif;overflow-x:clip}
+.wrap{max-width:900px;margin:0 auto;padding:18px 16px 80px}
+a{color:var(--pur)}
+h1{font:800 clamp(26px,3.6vw,38px)/1.08 Archivo,system-ui,sans-serif;margin:6px 0 4px;text-wrap:balance}
+h2{font:800 20px Archivo,sans-serif;margin:0 0 6px}
+h3{font:800 16px Archivo,sans-serif;margin:14px 0 6px;color:var(--pur)}
+.sub{color:var(--mut);margin:0 0 12px}.note{font-size:13px;color:var(--mut)}
+.prog{display:flex;align-items:center;gap:12px;margin:8px 0 14px;font-size:14px;color:var(--mut)}.prog .bar{flex:1;max-width:320px;height:8px;border-radius:4px;background:var(--line);overflow:hidden}.prog .bar i{display:block;height:100%;background:var(--teal)}
+.case{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:10px;overflow:hidden}
+.case>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px}
+.case>summary::-webkit-details-marker{display:none}
+.case .n{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--pur);color:#fff;font-weight:800}
+.case.done .n{background:var(--teal)}
+.case summary b{display:block;font-size:16.5px;line-height:1.3}.case summary small{color:var(--mut);font-size:13px}
+.pill{font-size:12px;font-weight:700;border-radius:999px;padding:3px 9px;white-space:nowrap;background:var(--soft);color:var(--mut)}.pill.ok{background:var(--ok);color:var(--teal)}
+.body{padding:0 16px 16px;border-top:1px solid var(--line)}
+.twist{background:var(--soft);border-left:4px solid var(--pur);border-radius:10px;padding:10px 12px;margin-top:12px}
+ul{margin:4px 0;padding-left:20px}li{margin:3px 0}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}@media(max-width:700px){.cols{grid-template-columns:1fr}}
+.col{background:var(--soft);border-radius:10px;padding:10px 12px;font-size:15px}.col b{display:block;font-size:13px;color:var(--mut);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.flags li{color:var(--ink)}.flags li::marker{color:var(--red)}
+.phr li{font-style:italic}
+.safety{background:color-mix(in srgb,var(--red) 8%,var(--card));border:1px solid color-mix(in srgb,var(--red) 35%,var(--line));border-radius:10px;padding:10px 12px;font-size:15.5px}
+.model{border:1px solid var(--line);border-radius:12px;padding:10px;max-height:420px;overflow:auto;background:var(--card);display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.ln{border-radius:10px;padding:7px 10px;font-size:15.5px;max-width:88%}.ln.dr{background:color-mix(in srgb,var(--pur) 12%,var(--card));align-self:flex-start}.ln.pt{background:var(--soft);align-self:flex-end}
+.ln small{display:block;font-size:11.5px;font-weight:700;color:var(--mut)}.ln.on{outline:3px solid var(--pur)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.btn{display:inline-flex;align-items:center;gap:6px;font:inherit;font-weight:700;border:0;border-radius:12px;padding:10px 16px;min-height:44px;background:var(--pur);color:#fff;text-decoration:none;cursor:pointer}
+.btn.g{background:var(--card);color:var(--ink);border:1px solid var(--line)}.btn.ok{background:var(--teal)}
+.src{font-size:12.5px;color:var(--mut);margin-top:10px}
+</style>
+<script src="/sync.js"></script>
+</head>
+<body>
+<div class="wrap">
+<nav class="note" style="font-size:14px"><a href="../" style="text-decoration:none">← Home</a> › <a href="./" style="text-decoration:none">SCA clinic</a></nav>
+<div id="app"></div>
+</div>
+<script src="cases.js"></script>
+<script>
+{
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const g=+(new URLSearchParams(location.search).get("g")||1),G=SCA_GROUPS[g],cases=scaCasesIn(g);
+const PK="sca-progress",load=()=>{try{const p=JSON.parse(localStorage.getItem(PK))||{};p.read=p.read||{};return p}catch(e){return {read:{}}}},save=p=>{try{localStorage.setItem(PK,JSON.stringify(p))}catch(e){}};
+document.title=`Clinic: ${G.name} · Road to GP`;
+const li=a=>`<ul>${a.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`;
+function draw(open){const P=load(),done=cases.filter(c=>P.read[c.id]).length,idx=SCA_CYCLE.order.indexOf(g)+1;
+ $("app").innerHTML=`<h1>Clinic ${idx}: ${esc(G.name)}</h1><p class="sub">${esc(G.blurb)}</p>
+ <div class="prog"><div class="bar"><i style="width:${cases.length?done/cases.length*100:0}%"></i></div><span>${done} of ${cases.length} cases worked through</span></div>
+ <p class="note" style="margin-top:0">For each case: read the teaching, listen to or read the model consultation, then tick it off. Next week you'll practise one of these live, so try to remember the hidden agenda and the safety-net.</p>
+ ${cases.length?"":`<div class="case" style="padding:16px">This clinic's cases are being written. Planned: ${esc(G.planned.join(", "))}.</div>`}
+ ${cases.map((c,i)=>{const t=c.teach,d=!!P.read[c.id];return `<details class="case ${d?"done":""}" id="${c.id}" ${open===c.id?"open":""}><summary><span class="n">${d?"✓":i+1}</span><span><b>${esc(c.title)}</b><small>${c.mode==="phone"?"Telephone":"Video"} · ${esc(c.who)}</small></span><span class="pill ${d?"ok":""}">${d?"Done":"To do"}</span></summary>
+ <div class="body">
+  <p style="margin:12px 0 0">${esc(t.why)}</p>
+  <div class="twist"><b>The twist:</b> ${esc(t.twist)}</div>
+  <h3>Their ideas, concerns and expectations</h3>${li(t.ice)}
+  <h3>Data gathering: what to ask</h3>${li(t.gather)}
+  <h3>Red flags</h3><ul class="flags">${t.flags.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+  <h3>Management</h3>${li(t.manage)}
+  <h3>Words that work</h3><ul class="phr">${t.phrases.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+  <h3>Safety-net</h3><div class="safety">${esc(t.safety)}</div>
+  <h3>Where candidates lose marks</h3><div class="cols"><div class="col"><b>Data gathering</b>${li(t.pitfalls.dg)}</div><div class="col"><b>Clinical management</b>${li(t.pitfalls.cm)}</div><div class="col"><b>Relating to others</b>${li(t.pitfalls.rto)}</div></div>
+  <h3>Model consultation <span class="note" style="font-weight:400">(a pass-standard opening and close, condensed)</span></h3>
+  <div class="row" style="margin-top:4px"><button class="btn g" data-play="${c.id}">▶ Listen</button><button class="btn g" data-stop>■ Stop</button></div>
+  <div class="model" id="m-${c.id}">${c.model.map(([w,x],k)=>`<div class="ln ${w}" id="l-${c.id}-${k}"><small>${w==="dr"?"Doctor":esc(c.pt)}</small>${esc(x)}</div>`).join("")}</div>
+  <div class="src">Based on: ${esc(t.src)}. Check current guidance before relying on doses or thresholds.</div>
+  <div class="row"><button class="btn ${d?"g":"ok"}" data-done="${c.id}">${d?"Mark as not done":"✓ I've worked through this case"}</button><a class="btn g" href="live.html?case=${c.id}">Practise it live now</a></div>
+ </div></details>`}).join("")}
+ <div class="row"><a class="btn g" href="./">← Back to the SCA clinic</a></div>`;
+ document.querySelectorAll("[data-done]").forEach(b=>b.onclick=()=>{const P=load(),id=b.dataset.done;if(P.read[id])delete P.read[id];else P.read[id]=Date.now();save(P);
+  const nx=cases.find(c=>!load().read[c.id]);draw(P.read[id]?(nx?nx.id:null):id);const el=$(P.read[id]&&nx?nx.id:id);if(el)el.scrollIntoView({behavior:"smooth",block:"start"})});
+ document.querySelectorAll("[data-play]").forEach(b=>b.onclick=()=>play(b.dataset.play));
+ document.querySelectorAll("[data-stop]").forEach(b=>b.onclick=()=>{stopped=true;speechSynthesis&&speechSynthesis.cancel()});
+ document.querySelectorAll("details.case").forEach(d=>d.ontoggle=()=>{if(d.open)history.replaceState(null,"","#"+d.id)})}
+/* read the model aloud: doctor and patient in different voices */
+let stopped=false;
+function voices(){const V=("speechSynthesis" in window)?speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang)):[];const r=v=>(/natural|enhanced|premium|neural|siri/i.test(v.name)?10:0)+(/en-GB/i.test(v.lang)?3:0);return V.sort((a,b)=>r(b)-r(a))}
+async function play(id){if(!("speechSynthesis" in window)){alert("Voice isn't available in this browser: read the model below.");return}
+ const c=SCA_CASES[id],V=voices(),male=v=>/male|daniel|arthur|george|oliver|ryan|thomas|guy|brian|eric|james/i.test(v.name)&&!/female/i.test(v.name),fem=v=>/female|samantha|serena|libby|sonia|hazel|susan|kate|emma|amy|olivia|mia|zira|aria|jenny|sara|fiona|moira|karen/i.test(v.name);
+ const vp=(c.voice==="f"?V.find(fem):V.find(male))||V[0],vd=V.find(v=>v!==vp)||vp;stopped=false;speechSynthesis.cancel();
+ for(let k=0;k<c.model.length;k++){if(stopped)break;const [w,x]=c.model[k],el=$(`l-${id}-${k}`);document.querySelectorAll(".ln.on").forEach(e=>e.classList.remove("on"));if(el){el.classList.add("on");el.scrollIntoView({block:"nearest",behavior:"smooth"})}
+  await new Promise(res=>{const u=new SpeechSynthesisUtterance(x);u.voice=w==="dr"?vd:vp;u.lang=(u.voice&&u.voice.lang)||"en-GB";if(vd===vp&&w==="pt")u.pitch=1.25;let f=false;const done=()=>{if(!f){f=true;res()}};u.onend=done;u.onerror=done;setTimeout(done,30000);speechSynthesis.speak(u)})}
+ document.querySelectorAll(".ln.on").forEach(e=>e.classList.remove("on"))}
+if("speechSynthesis" in window)speechSynthesis.onvoiceschanged=()=>{};
+draw(location.hash.slice(1)||null);
+if(location.hash){const el=$(location.hash.slice(1));if(el)setTimeout(()=>el.scrollIntoView({block:"start"}),100)}
+}
+</script>
+<script src="/time.js" defer></script>
+</body>
+</html>

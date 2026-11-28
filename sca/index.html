@@ -18,20 +18,64 @@
 <p class="lead" id="lead"></p>
 </div></header>
 <main><div class="in">
+<style>
+.sc-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.sc-now{border:2px solid var(--c)}
+.sc-k{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--mut)}
+.sc-h{font:800 22px "Bricolage Grotesque",sans-serif;margin:4px 0 6px}
+.sc-btn{display:inline-flex;align-items:center;gap:6px;font:inherit;font-weight:700;border:0;border-radius:12px;padding:10px 16px;min-height:44px;background:var(--c);color:#fff;text-decoration:none;cursor:pointer}
+.sc-btn.g{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.sc-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}@media(max-width:700px){.sc-grid{grid-template-columns:minmax(0,1fr)}}
+.sc-g{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;text-decoration:none;color:inherit}
+.sc-g:hover{border-color:var(--c)}.sc-g .n{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--c);color:#fff;font-weight:800}
+.sc-g.soon{opacity:.75}.sc-g.soon .n{background:var(--mut)}
+.sc-g b{display:block;font-size:15.5px;line-height:1.3}.sc-g small{color:var(--mut);font-size:13px}
+.sc-pill{font-size:12px;font-weight:700;border-radius:999px;padding:3px 9px;white-space:nowrap;background:var(--soft,#f4f7f8);color:var(--mut)}
+.sc-pill.ok{background:#e3f4f0;color:#0b8577}
+.sc-wk{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin-top:10px}@media(max-width:620px){.sc-wk{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.sc-w{border:1px solid var(--line);border-radius:10px;padding:6px;font-size:12px;text-align:center;background:var(--card)}.sc-w b{display:block;font-size:13px}.sc-w.now{border-color:var(--c);box-shadow:inset 0 0 0 1px var(--c)}
+.sc-w.cl{background:color-mix(in srgb,var(--c) 10%,var(--card))}
+</style>
+<div id="now"></div>
+<h2 style="margin:18px 0 8px">The 12 clinics</h2>
+<p class="note" style="margin-top:0">One clinic per clinical experience group. In a clinic week you're taught every high-yield case in the group; the next week you practise one of them live.</p>
+<div class="sc-grid" id="clinics"></div>
+<h2 style="margin:18px 0 8px">Other practice</h2>
 <ul class="list" id="list"></ul>
-<p class="note">For exam revision only, based on NICE and other UK guidance at the time of writing. Not clinical advice.</p>
+<p class="note">For exam revision only, based on NICE and other UK guidance at the time of writing. Not clinical advice. Live practice uses your own connector; marks are an AI examiner's training estimate, not RCGP marks.</p>
 </div></main>
 <script src="../lessons.js"></script>
+<script src="cases.js"></script>
 <script>
 {
 const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
-const c=CATS.find(x=>x.id===document.body.dataset.cat);
-document.body.style.setProperty("--c",c.c);
-const live=c.lessons.filter(l=>l[2]).length;
-document.getElementById("lead").textContent=`From ${c.src} · ${c.lessons.length} topic${c.lessons.length>1?"s":""}, ${live} live`;
-document.getElementById("list").innerHTML=c.lessons.map((l,i)=>{
- const inner=`<span class="n">${String(i+1).padStart(2,"0")}</span><span class="t"><b>${esc(l[0])}</b><small>${esc(l[1])}</small></span><span class="st ${l[2]?"live":"soon"}">${l[2]?"Live · interactive":"Coming soon"}</span>`;
- return `<li>${l[2]?`<a class="row" href="${esc(l[2])}">${inner}</a>`:`<div class="row">${inner}</div>`}</li>`}).join("");
+const $=id=>document.getElementById(id);
+const c=CATS.find(x=>x.id===document.body.dataset.cat);document.body.style.setProperty("--c",c.c);
+$("h").textContent="SCA clinic";
+const P=(()=>{try{return JSON.parse(localStorage.getItem("sca-progress"))||{}}catch(e){return {}}})();P.read=P.read||{};
+const fmt=d=>d.toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+const w=scaWeek(),G=SCA_GROUPS[w.group],cases=scaCasesIn(w.group);
+$("lead").textContent="Taught clinics and live practice on alternate weeks, through all 12 clinical experience groups.";
+/* practice case for this week: stable for the week; every 3rd practice week, a case from an earlier group */
+function practiceCase(wk){const pool0=scaCasesIn(wk.group),earlier=wk.practiced.flatMap(scaCasesIn),pn=Math.floor(wk.i/2);
+ const useEarlier=earlier.length&&pn%3===2,pool=useEarlier?earlier:pool0;if(!pool.length)return null;const k=(wk.i*7919+31)%pool.length;return {c:pool[k],earlier:useEarlier}}
+let nowHTML="";
+if(w.phase==="clinic"){const read=cases.filter(x=>P.read[x.id]).length;
+ nowHTML=`<div class="sc-card sc-now"><span class="sc-k">${w.pre?"Starts Monday "+fmt(w.start):"This week · "+fmt(w.start)+" – "+fmt(w.end)} · Clinic week</span><div class="sc-h">Clinic ${SCA_CYCLE.order.indexOf(w.group)+1}: ${esc(G.name)}</div>
+ <p style="margin:0 0 10px">${esc(G.blurb)}</p>${cases.length?`<p class="note" style="margin:0 0 10px">${cases.length} cases · ${read} worked through so far. Next week you'll practise one of them live.</p>
+ <div class="sc-row"><a class="sc-btn" href="clinic.html?g=${w.group}">${read?"Continue the clinic":"Open the clinic"}</a></div>`:`<p class="note">This clinic's cases are being written.</p>`}</div>`}
+else{const pc=practiceCase(w);
+ nowHTML=`<div class="sc-card sc-now"><span class="sc-k">This week · ${fmt(w.start)} – ${fmt(w.end)} · Practice week</span><div class="sc-h">Live practice${pc?`: ${esc(pc.c.title)}`:""}</div>
+ ${pc?`<p style="margin:0 0 10px">${pc.earlier?`A case from an earlier clinic (${esc(SCA_GROUPS[pc.c.g].name)}), to keep it fresh.`:`A case from last week's clinic: ${esc(G.name)}.`} 12 minutes, ${pc.c.mode==="phone"?"telephone":"video"}, with examiner feedback. Try it before rereading the clinic notes.</p>
+ <div class="sc-row"><a class="sc-btn" href="live.html?case=${pc.c.id}">Start the live case</a><a class="sc-btn g" href="clinic.html?g=${pc.c.g}#${pc.c.id}">Review the clinic notes after</a></div>`:`<p class="note">No cases yet for this group.</p>`}</div>`}
+/* 6-week strip */
+let strip="";for(let k=-1;k<5;k++){const d=new Date(w.start.getTime()+k*7*864e5),x=scaWeek(d);if(k<0&&w.i===0)continue;strip+=`<div class="sc-w ${k===0?"now":""} ${x.phase==="clinic"?"cl":""}"><b>${fmt(x.start)}</b>${x.phase==="clinic"?"Clinic":"Practice"} ${SCA_CYCLE.order.indexOf(x.group)+1}<br><span style="color:var(--mut)">${esc(SCA_GROUPS[x.group].name.split(",")[0])}</span></div>`}
+$("now").innerHTML=nowHTML+`<div class="sc-card"><span class="sc-k">Coming up</span><div class="sc-wk">${strip}</div></div>`;
+$("clinics").innerHTML=SCA_CYCLE.order.map((g,idx)=>{const cs=scaCasesIn(g),G=SCA_GROUPS[g],first=new Date(new Date(SCA_CYCLE.start+"T00:00:00").getTime()+idx*14*864e5),read=cs.filter(x=>P.read[x.id]).length;
+ const inner=`<span class="n">${idx+1}</span><span><b>${esc(G.name)}</b><small>${cs.length?`${cs.length} cases`:`${G.planned.length} cases planned`} · clinic week of ${fmt(first)}</small></span>${cs.length?`<span class="sc-pill ${read===cs.length?"ok":""}">${read}/${cs.length}</span>`:`<span class="sc-pill">Coming</span>`}`;
+ return cs.length?`<a class="sc-g" href="clinic.html?g=${g}">${inner}</a>`:`<div class="sc-g soon" title="${esc(G.planned.join(" · "))}">${inner}</div>`}).join("");
+$("list").innerHTML=c.lessons.map((l,i)=>`<li><a class="row" href="${esc(l[2])}"><span class="n">${String(i+1).padStart(2,"0")}</span><span class="t"><b>${esc(l[0])}</b><small>${esc(l[1])}</small></span><span class="st live">Live</span></a></li>`).join("");
 }
 </script>
 <script src="/time.js" defer></script>

@@ -86,6 +86,7 @@ tr.click{cursor:pointer}tr.click:hover td{background:var(--soft)}
 <div id="app"></div>
 </div>
 <script src="data.js"></script>
+<script src="../sca/cases.js"></script>
 <script>
 {
 const $=id=>document.getElementById(id);
@@ -183,6 +184,8 @@ function weekView(n){const i=info(n),w=W(n),q=qs(n),cw=curWeek();
   <h3>The four mastery measures</h3>
   ${meas(n).map((o,k)=>`<div class="meas"><span>${MEAS[k]}</span><span class="tag ${o.v==="Yes"?"done":o.v==="Partial"?"prog":""}">${o.v||"Not yet"}</span><div class="note">${esc(o.why)}</div></div>`).join("")}
   <p class="note">These fill in automatically. Tick the lists to show coverage. Do cases or turn on recall first for understanding. Answer questions for application. Daily review brings questions back after a week for retention.</p>
+  ${(()=>{if(typeof scaWeek!=="function")return "";const ws=new Date(new Date(S.start+"T00:00:00").getTime()+(n-1)*7*DAY+3*DAY),x=scaWeek(ws),G=SCA_GROUPS[x.group],cl=x.phase==="clinic",no=SCA_CYCLE.order.indexOf(x.group)+1;
+   return `<h3>SCA (alternate weeks)</h3><div class="meas"><span>${cl?`Clinic ${no}: ${esc(G.name)}`:`Live practice: a case from clinic ${no}, ${esc(G.name)}`}</span><div class="note">${cl?"Work through the taught cases and model consultations.":"One 12-minute live case with examiner feedback."} <a href="../sca/">Open the SCA clinic</a></div></div>`})()}
   <h3>Weekly streams (1 hour each)</h3>
   ${[["stats","Statistics",st],["admin","Admin",ad]].map(([k,l,x])=>{if(!x)return `<div class="meas"><span>${l}: all done</span></div>`;const r=stStat(k,x[0]),m=STREAM_MAP[x[0]];
    return `<div class="meas"><span>${l}: ${esc(x[0])}</span>${statusTag(r.v)}<div class="note">${r.why?esc(r.why)+" · ":""}${m&&m.pages.length?`<a href="..${m.pages[0]}">open the lesson</a> · `:""}${m&&m.themes.length?`<a href="../akt/">questions in AKT practice</a> · `:""}<a href="#" data-tm="${k}:${esc(x[0])}">time it with the study timer</a></div></div>`}).join("")}
