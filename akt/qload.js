@@ -7,6 +7,6 @@ window.RTG_loadQuestions=async function(root){root=root||"../";
   const name=(h1||t.name).replace(/&amp;/g,"&").replace(/\s+/g," ").trim();topics[name]={cat:t.cat,link:`${root}${t.cat}/${t.file}`,stars:t.stars};
   if(m)JSON.parse(m[1]).forEach((q,i)=>byId[`/${t.cat}/${t.file}#${i}`]={s:q[0],o:q[1],a:q[2],e:q[3],topic:name,cat:t.cat,link:topics[name].link})}catch(e){}}));
  if(typeof CASES!=="undefined")Object.entries(CASES).forEach(([k,c])=>{if(!topics[c.topic])topics[c.topic]={cat:c.cat,link:c.lesson?root+c.lesson.replace(/^\.\.\//,""):null};
-  c.steps.forEach((q,i)=>byId[`case-${k}#${i}`]={s:q.solo||q.s,o:q.o,a:q.a,e:q.e,topic:c.topic,cat:c.cat,link:`${root}akt/case.html#${k}`,isCase:true})});
- try{const mb=JSON.parse(localStorage.getItem("cgn-mybank")||"null");if(mb&&mb.q)Object.values(mb.q).forEach(q=>{const t=topics[q.topic];if(!t)topics[q.topic]={cat:"mybank",link:null};byId[q.id]={s:q.s,o:q.o,a:q.a,e:q.e,topic:q.topic,cat:t?t.cat:"mybank",link:t?t.link:null,mine:true}})}catch(e){}
+  c.steps.forEach((q,i)=>byId[`case-${k}#${i}`]={s:q.solo||q.s,o:q.o,a:q.a,e:q.e,why:q.why,topic:c.topic,cat:c.cat,link:`${root}akt/case.html#${k}`,isCase:true})});
+ try{const mb=JSON.parse(localStorage.getItem("cgn-mybank")||"null");if(mb&&mb.q)Object.values(mb.q).forEach(q=>{const t=topics[q.topic];if(!t)topics[q.topic]={cat:"mybank",link:null};byId[q.id]={s:q.s,o:q.o,a:q.a,e:q.e,area:q.area,topic:q.topic,cat:t?t.cat:"mybank",link:t?t.link:null,mine:true}})}catch(e){}
  return {byId,topics}};

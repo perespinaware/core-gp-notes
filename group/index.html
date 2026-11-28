@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Study room · Road to GP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#eef2f4,#0f1519);--card:light-dark(#fff,#172128);--ink:light-dark(#16212a,#e8eef0);--mut:light-dark(#576470,#9aabb4);--line:light-dark(#dde3e7,#2a3a44);--soft:light-dark(#f4f7f8,#1c2a33);--acc:light-dark(#0b5f86,#5cc1ec);--red:light-dark(#b3263a,#ff7385);--teal:light-dark(#0b8577,#3cc7b3);--amber:light-dark(#b86e00,#f1aa45);--ok:light-dark(#e3f4f0,#123630);--bad:light-dark(#fbe6e9,#3d1820);
+ --dr:#6b3fa0;--tare:#2f66d0;--ebimo:#b86e00;--you:#0b8577}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif;overflow-x:clip}
+.wrap{max-width:860px;margin:0 auto;padding:18px 16px 80px}
+a{color:var(--acc)}
+h1{font:800 clamp(26px,3.6vw,36px)/1.08 "Bricolage Grotesque",sans-serif;margin:6px 0 4px}
+h2{font:800 20px "Bricolage Grotesque",sans-serif;margin:0 0 8px}
+h3{font:800 17px "Bricolage Grotesque",sans-serif;margin:0 0 6px}
+.sub{color:var(--mut);margin:0 0 14px}.note{font-size:13px;color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{font:inherit;font-weight:700;border:0;background:var(--acc);color:#fff;border-radius:12px;padding:10px 16px;min-height:44px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}.btn:disabled{opacity:.45;cursor:default}
+.btn.sm{min-height:36px;padding:6px 12px;font-size:14px}
+.roster{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}@media(max-width:620px){.roster{grid-template-columns:1fr}}
+.who{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;font:800 15px "Bricolage Grotesque",sans-serif;flex:none}
+.who b{display:block;line-height:1.2}.who span{font-size:12.5px;color:var(--mut);line-height:1.3;display:block}
+.today{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}@media(max-width:620px){.today{grid-template-columns:1fr}}
+.tile{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--soft);display:flex;flex-direction:column;gap:8px}
+.tile .k{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--mut)}
+.tile.done{background:var(--ok);border-color:var(--teal)}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-top:6px}
+.day{border:1px solid var(--line);border-radius:10px;padding:6px 4px;text-align:center;font-size:12px;background:var(--card)}
+.day b{display:block;font-size:13px}.day.now{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}.day .t{color:var(--teal);font-weight:700}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer}
+.chip:hover{border-color:var(--acc)}
+table.pace{width:100%;border-collapse:collapse;font-size:15px}table.pace th,table.pace td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:right}table.pace th:first-child,table.pace td:first-child{text-align:left}
+table.pace th{font-size:13px;color:var(--mut)}
+.chat{display:flex;flex-direction:column;gap:10px}
+.msg{display:grid;grid-template-columns:34px minmax(0,1fr);gap:8px;align-items:start;animation:in .25s ease}
+@keyframes in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.msg{animation:none}}
+.msg .av{width:34px;height:34px;font-size:12px}
+.bub{background:var(--card);border:1px solid var(--line);border-radius:4px 14px 14px 14px;padding:9px 12px;font-size:16px}
+.bub .nm{font-size:12px;font-weight:700;color:var(--mut);display:block;margin-bottom:2px}
+.msg.me .bub{background:color-mix(in srgb,var(--you) 10%,var(--card))}
+.msg.dr .bub{border-color:color-mix(in srgb,var(--dr) 45%,var(--line))}
+.bub p{margin:0 0 6px}.bub p:last-child{margin:0}.bub ul{margin:4px 0;padding-left:20px}
+.q{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.q .k{font-size:12px;font-weight:700;letter-spacing:.5px;color:var(--mut);text-transform:uppercase}
+.q .stem{font-size:17px;margin:6px 0 10px}
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{font:inherit;font-size:16px;text-align:left;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:9px 12px;cursor:pointer;display:flex;gap:10px;align-items:flex-start}
+.opt .l{font-weight:700;color:var(--mut);width:18px;flex:none}.opt:hover:not(:disabled){border-color:var(--acc)}.opt:disabled{cursor:default}
+.opt.right{border-color:var(--teal);background:var(--ok)}.opt.wrong{border-color:var(--red);background:var(--bad)}
+.opt .who-picked{margin-left:auto;display:flex;gap:3px;flex:none}.opt .who-picked i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:#fff;font:700 10px sans-serif;font-style:normal}
+.reply{display:flex;gap:8px;margin-top:4px}.reply textarea{flex:1;font:inherit;font-size:16px;border:1px solid var(--line);border-radius:12px;padding:9px 11px;background:var(--card);color:var(--ink);min-height:46px;resize:vertical}
+.typing{font-size:14px;color:var(--mut);font-style:italic}
+.mark{width:100%;border-collapse:collapse;font-size:14.5px;margin:6px 0}.mark td{padding:6px 5px;border-bottom:1px solid var(--line);vertical-align:top}.mark td:last-child{text-align:right;white-space:nowrap;font-weight:700}
+.v-full{color:var(--teal)}.v-half{color:var(--amber)}.v-missing,.v-wrong{color:var(--red)}
+.summary{background:var(--soft);border-left:4px solid var(--dr);border-radius:10px;padding:10px 12px;font-size:15px}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.prog{display:flex;gap:4px}.prog i{width:26px;height:6px;border-radius:3px;background:var(--line)}.prog i.d{background:var(--teal)}.prog i.w{background:var(--red)}.prog i.c{background:var(--acc)}
+.warn{border-left:5px solid var(--amber)}
+.set label{display:block;font-size:14px;margin:8px 0 3px}.set input{width:100%;font:inherit;font-size:15px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.clock{font:800 20px "Bricolage Grotesque",sans-serif}
+</style>
+<script src="/sync.js"></script>
+</head>
+<body>
+<div class="wrap">
+<nav class="note" aria-label="Breadcrumb" style="font-size:14px"><a href="../" style="text-decoration:none">← Home</a> › <a href="../akt/" style="text-decoration:none">AKT practice</a></nav>
+<div id="app"><p>Opening the study room…</p></div>
+</div>
+<script src="../lessons.js"></script>
+<script src="../akt/cases.js"></script>
+<script src="../steps/data.js"></script>
+<script src="../steps/explain.js"></script>
+<script src="/studied.js"></script>
+<script src="../akt/qload.js"></script>
+<script>
+{
+/* ============================================================
+   Road to GP · Study room
+   Tutor: Dr Pere-ere (AI, through your SCA Live connector).
+   Pals: Tare and Ebimo (scripted: their answers and lines are worked out on the page, no AI).
+   Uses only topics you've studied. Answers count towards Retention and Mistakes.
+   ============================================================ */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const L="ABCDE",DAY=864e5,GAPS=[0,1,3,7,14,30,60],STU=window.RTG_STUDIED;
+const DAYS=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const ACT={plan:["Weekly plan","Dr Pere-ere sets this week's targets from your data",1],clinic:["Mistake clinic","Work through 2 of your active mistakes, Socratic style",2],teach:["Teach-back","Explain a topic in your own words; Dr Pere-ere marks it",3],ask:["Pals ask you","Tare and Ebimo ask you to explain; Dr Pere-ere checks",4],huddle:["Case huddle","One AKT case, decided together",5],mock:["Mini mock","10 timed questions, 80/10/10; compare with the group",6],debrief:["Weekly debrief","Dr Pere-ere reviews your week",0]};
+const ROTA={1:"plan",2:"clinic",3:"teach",4:"ask",5:"huddle",6:"mock",0:"debrief"};
+const PEOPLE={dr:{n:"Dr Pere-ere",i:"PE",c:"var(--dr)",tag:"Tutor · GP trainer"},tare:{n:"Tare",i:"T",c:"var(--tare)",tag:"Virtual pal · strong at statistics, rushes clinical questions"},ebimo:{n:"Ebimo",i:"E",c:"var(--ebimo)",tag:"Virtual pal · careful, hospital-trained, shaky on admin"},me:{n:"You",i:"You",c:"var(--you)"}};
+const ACC={tare:{clin:.62,ebp:.9,org:.7},ebimo:{clin:.68,ebp:.6,org:.45}};
+
+/* ---------- storage (inside cgn-v1, so private sync carries it) ---------- */
+const load=()=>{try{const d=JSON.parse(localStorage.getItem("cgn-v1"));return d&&d.q?d:{q:{},log:[],cases:{}}}catch(e){return {q:{},log:[],cases:{}}}};
+const save=d=>{try{localStorage.setItem("cgn-v1",JSON.stringify(d))}catch(e){}};
+const dkey=(t=new Date())=>t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");
+const wkey=(t=new Date())=>{const x=new Date(t);x.setHours(0,0,0,0);x.setDate(x.getDate()-((x.getDay()+6)%7));return dkey(x)};
+function G(d){d.group=d.group||{};const g=d.group;g.days=g.days||{};g.plans=g.plans||{};g.debriefs=g.debriefs||{};g.teach=g.teach||[];g.calls=g.calls||{};return g}
+function markDay(field,val){const d=load(),g=G(d),k=dkey();g.days[k]={...(g.days[k]||{}),[field]:val===undefined?Date.now():val};save(d)}
+function record(q,ok){const d=load(),c=d.q[q.id]||{box:0,due:0,n:0,ok:0};c.n++;if(ok){c.ok++;c.box=Math.min(6,c.box+1);c.due=Date.now()+GAPS[c.box]*DAY}else{c.box=0;c.due=Date.now()+10*60000}d.q[q.id]=c;d.log.push({t:Date.now(),theme:q.topic,ok,id:q.id});save(d)}
+
+/* ---------- questions ---------- */
+let QB=null,POOL=[];
+const domainOf=q=>{if(q.cat==="statistics")return "ebp";if(q.cat==="admin")return "org";if(q.mine||q.cat==="mybank"){const a=String(q.area||"");if(/evidence|statist|research|apprais|epidem/i.test(a))return "ebp";if(/organis|organiz|manage|admin|ethic|law|legal|contract|governance|leadership|safeguard/i.test(a))return "org"}return "clin"};
+const inScope=q=>q.cat==="mybank"||STU.is(q.topic);
+function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return ((h>>>0)%100000)/100000}
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function topicStats(){const d=load(),m={};(d.log||[]).forEach(x=>{(m[x.theme]=m[x.theme]||[]).push(x.ok)});const p={};for(const t in m){const l=m[t].slice(-10);p[t]=Math.round(l.filter(Boolean).length/l.length*100)}return p}
+function pickQuestions(n,filter){const d=load(),now=Date.now(),ts=topicStats(),w=q=>ts[q.topic]??50;
+ const pool=POOL.filter(q=>!q.isCase&&(!filter||filter(q)));
+ const due=shuffle(pool.filter(q=>d.q[q.id]&&d.q[q.id].due<=now)).sort((a,b)=>w(a)-w(b));
+ const fresh=shuffle(pool.filter(q=>!d.q[q.id])).sort((a,b)=>w(a)-w(b));
+ const later=shuffle(pool.filter(q=>d.q[q.id]&&d.q[q.id].due>now));
+ return [...new Set([...due,...fresh,...later])].slice(0,n)}
+function activeMistakes(){const d=load(),last={},wrongN={};(d.log||[]).forEach(x=>{if(!x.id)return;last[x.id]=x.ok;if(!x.ok)wrongN[x.id]=(wrongN[x.id]||0)+1});
+ return POOL.filter(q=>last[q.id]===false).sort((a,b)=>(wrongN[b.id]||0)-(wrongN[a.id]||0))}
+
+/* ---------- scripted pals ---------- */
+function palPick(p,q){const n=q.o.length,r=hash(p+"|"+q.id);if(r<ACC[p][domainOf(q)])return q.a;const wrong=[...Array(n).keys()].filter(i=>i!==q.a);
+ /* prefer the option the explanation says is the classic trap, if there is one */
+ return wrong[Math.floor(hash(q.id+"#"+p)*wrong.length)]}
+const pickLine=(arr,seed)=>arr[Math.floor(hash(seed)*arr.length)];
+function palSays(p,q,pick){const o=`<b>${L[pick]}</b>`,right=pick===q.a,s=p+q.id;
+ if(p==="tare")return right?pickLine([`${o}. Fairly quick one for me.`,`${o}. I'm confident on this.`,`${o}, went with my first instinct.`,`${o}. Didn't overthink it.`],s):pickLine([`${o}. I read it fast and it looked right.`,`${o}. I'll admit I rushed this one.`,`${o}, first instinct. Possibly too quick.`,`${o}. Seemed the obvious one.`],s);
+ return right?pickLine([`${o}. I took my time and went through each option.`,`${o}. I think that's the guideline answer.`,`${o}, after a bit of a wobble.`,`${o}. I checked it against what I remember from the lesson.`],s):pickLine([`${o}. That's what we always did on the wards.`,`${o}. It felt like the safe option.`,`${o}. I wasn't sure, so I went cautious.`,`${o}. I think I've seen it done that way in hospital.`],s)}
+function palReact(p,q,pick,why){const right=pick===q.a,s=p+"r"+q.id;
+ if(right)return p==="tare"?pickLine(["Nice, we agree.","Good, same as me.","Easy marks."],s):pickLine(["Phew, I got it.","Glad I checked each option.","That's reassuring."],s);
+ const w=why&&why[pick]?" "+why[pick]:"";
+ return p==="tare"?pickLine([`Ah, I rushed it.${w} Noted.`,`Slow down, Tare.${w}`,`Got me there.${w}`],s):pickLine([`Oh, I see.${w} That's different from hospital practice.`,`Thanks, I'll remember that.${w}`,`So my safe option was wrong.${w}`],s)}
+
+/* ---------- tutor (AI) ---------- */
+const CONF={get ep(){try{return localStorage.getItem("sca-ep")||"https://api.pinaware.com/sca-proxy.php"}catch(e){return "https://api.pinaware.com/sca-proxy.php"}},get pass(){try{return localStorage.getItem("sca-pass")||""}catch(e){return ""}}};
+const PERSONA=`You are Dr Pere-ere, an experienced, warm but demanding UK GP trainer running a small AKT study group for Peres, a GP specialty registrar. The group also has two virtual study pals, Tare (strong at statistics, rushes clinical questions) and Ebimo (careful, hospital-trained, shaky on admin). Rules: use UK general practice guidance (NICE, CKS, BNF, MHRA, GMC). Base clinical facts on the material provided; if something is outside it or you're unsure, say so plainly rather than guess. Be concise, in plain British English, no headings. Address Peres directly. Never invent guideline numbers or statistics.`;
+let busy=false;
+async function ask(prompt){const d=load(),g=G(d),k=dkey();g.calls[k]=(g.calls[k]||0)+1;for(const x in g.calls)if(x<dkey(new Date(Date.now()-14*DAY)))delete g.calls[x];save(d);
+ let r;try{r=await fetch(CONF.ep,{method:"POST",headers:{"Content-Type":"application/json","X-SCA-Pass":CONF.pass},body:JSON.stringify({mode:"examiner",prompt:PERSONA+"\n\n"+prompt})})}catch(e){throw {code:"network"}}
+ const j=await r.json().catch(()=>({}));if(!r.ok)throw {code:r.status===429?"rate_limited":r.status===401?"not_granted":"error",message:j.error||""};return String(j.text||"").trim()}
+const errText=e=>e&&e.code==="not_granted"?"Dr Pere-ere can't connect: the passcode isn't set or is wrong on this device. Open Settings at the bottom of the study room.":e&&e.code==="network"?"Dr Pere-ere can't be reached right now (no connection to your server).":e&&e.code==="rate_limited"?"Your connector's usage limit has been reached for now.":"Dr Pere-ere couldn't reply just now.";
+const parseJSON=t=>{try{return JSON.parse(t)}catch(e){const m=String(t).match(/\{[\s\S]*\}/);if(m)try{return JSON.parse(m[0])}catch(x){}}return null};
+const fmt=t=>esc(t).split(/\n{2,}/).map(p=>/^\s*[-•]/m.test(p)?`<ul>${p.split(/\n/).filter(x=>x.trim()).map(x=>`<li>${x.replace(/^\s*[-•]\s*/,"")}</li>`).join("")}</ul>`:`<p>${p.replace(/\n/g,"<br>").replace(/\*\*(.+?)\*\*/g,"<b>$1</b>")}</p>`).join("");
+const qText=q=>`${q.s}\n${q.o.map((o,i)=>`${L[i]}. ${o}`).join("\n")}\nCorrect answer: ${L[q.a]}. ${q.o[q.a]}\nExplanation from Peres's notes: ${q.e||""}${q.why?"\nWhy the other options are wrong: "+q.why.map((w,i)=>w?`${L[i]}: ${w}`:"").filter(Boolean).join(" "):""}`;
+
+/* ---------- chat helpers ---------- */
+function msg(box,who,html,cls=""){const p=PEOPLE[who];box.insertAdjacentHTML("beforeend",`<div class="msg ${who==="me"?"me":who==="dr"?"dr":""} ${cls}"><div class="av" style="background:${p.c}">${p.i}</div><div class="bub"><span class="nm">${p.n}</span>${html}</div></div>`);box.lastElementChild.scrollIntoView({block:"nearest",behavior:"smooth"})}
+function typing(box){box.insertAdjacentHTML("beforeend",`<div class="msg dr typingrow"><div class="av" style="background:var(--dr)">PE</div><div class="bub typing">Dr Pere-ere is typing…</div></div>`);return ()=>{const t=box.querySelector(".typingrow");if(t)t.remove()}}
+async function drSay(box,prompt,fallback){const stop=typing(box);try{const t=await ask(prompt);stop();msg(box,"dr",fmt(t));return t}catch(e){stop();msg(box,"dr",`<p class="note">${esc(errText(e))}</p>${fallback?`<p>${fallback}</p>`:""}`);return null}}
+function replyBox(box,{placeholder="Reply to Dr Pere-ere…",max=3,onSend,extra=""}){let n=0;const id="rb"+Math.random().toString(36).slice(2,7);
+ box.insertAdjacentHTML("afterend",`<div class="reply" id="${id}"><textarea placeholder="${esc(placeholder)}" aria-label="Your reply"></textarea><button class="btn">Send</button></div>${extra}`);
+ const el=$(id),ta=el.querySelector("textarea"),b=el.querySelector("button");
+ const go=async()=>{const v=ta.value.trim();if(!v||busy)return;busy=true;b.disabled=true;ta.value="";msg(box,"me",esc(v));n++;await onSend(v,n);busy=false;b.disabled=false;if(n>=max){el.remove()}else ta.focus()};
+ b.onclick=go;ta.onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();go()}};return el}
+
+/* ---------- home ---------- */
+function home(){busy=false;const d=load(),g=G(d),today=new Date(),dow=today.getDay(),k=dkey(),td=g.days[k]||{},act=ROTA[dow];
+ const nStud=STU.all().length,mon=wkey();
+ const weekDays=[...Array(7)].map((_,i)=>{const x=new Date(mon+"T12:00:00");x.setDate(x.getDate()+i);return x});
+ const studiedWeek=STU.all().filter(s=>s.t>=new Date(mon+"T00:00:00").getTime()).length;
+ const quizDays=weekDays.filter(x=>(g.days[dkey(x)]||{}).quiz).length;
+ const youRow=[studiedWeek,quizDays,nStud],tare=[studiedWeek+1,Math.min(7,quizDays+(quizDays<6?1:0)),nStud+2],ebimo=[Math.max(0,studiedWeek-(studiedWeek>2?1:0)),Math.max(0,quizDays-(quizDays>3?1:0)),Math.max(0,nStud-1)];
+ const plan=g.plans[mon];
+ $("app").innerHTML=`<h1>Study room</h1><p class="sub">Your AKT study group: a short group quiz every day, then a different activity each day of the week. Only topics you've studied are used, and every answer counts towards your Retention and Mistakes.</p>
+ <div class="roster">${["dr","tare","ebimo"].map(p=>`<div class="who"><div class="av" style="background:${PEOPLE[p].c}">${PEOPLE[p].i}</div><div><b>${PEOPLE[p].n}</b><span>${PEOPLE[p].tag}</span></div></div>`).join("")}</div>
+ ${!nStud?`<div class="card warn"><b>Study a topic first.</b> The group only works on topics you've studied. Finish an interactive lesson, or press <b>Mark studied</b> on a lesson list, then come back.</div>`:""}
+ <div class="card"><h2>${DAYS[dow]}</h2><div class="today">
+  <div class="tile ${td.quiz?"done":""}"><span class="k">Every day · about 10 min</span><h3>Group quiz${td.quiz?" ✓":""}</h3><span class="note">3 questions from your due reviews and weakest topics. Tare and Ebimo answer too; Dr Pere-ere discusses.</span><div><button class="btn ${td.quiz?"ghost":""}" id="go-quiz" ${nStud?"":"disabled"}>${td.quiz?"Do another 3":"Start the quiz"}</button></div></div>
+  <div class="tile ${td.act===act&&td.actDone?"done":""}"><span class="k">Today's activity</span><h3>${ACT[act][0]}${td.act===act&&td.actDone?" ✓":""}</h3><span class="note">${ACT[act][1]}</span><div><button class="btn ${td.act===act&&td.actDone?"ghost":""}" data-act="${act}" ${nStud?"":"disabled"}>${td.act===act&&td.actDone?"Do it again":"Start"}</button></div></div></div>
+  <p class="note" style="margin:12px 0 6px">Or choose another activity:</p><div class="chips">${Object.keys(ACT).filter(a=>a!==act).map(a=>`<button class="chip" data-act="${a}" ${nStud?"":"disabled"}>${ACT[a][0]}</button>`).join("")}</div></div>
+ <div class="card"><h2>This week</h2><div class="week">${weekDays.map(x=>{const r=g.days[dkey(x)]||{},isT=dkey(x)===k;return `<div class="day ${isT?"now":""}"><b>${DAYS[x.getDay()].slice(0,3)}</b>${({plan:"Plan",clinic:"Mistakes",teach:"Teach-back",ask:"Pals ask",huddle:"Case",mock:"Mock",debrief:"Debrief"})[ROTA[x.getDay()]]}<div class="t">${r.quiz?"Q ✓":"&nbsp;"} ${r.actDone?"A ✓":""}</div></div>`}).join("")}</div>
+ ${plan?`<h3 style="margin-top:14px">Dr Pere-ere's plan for this week</h3><div class="summary">${fmt(plan.text)}</div>`:`<p class="note" style="margin-top:10px">No plan yet this week. ${dow===1?"Today's activity is the weekly plan.":"Choose <b>Weekly plan</b> above to make one."}</p>`}</div>
+ <div class="card"><h2>Group pace</h2><table class="pace"><thead><tr><th></th><th>Topics studied this week</th><th>Quiz days this week</th><th>Topics studied in total</th></tr></thead><tbody>
+  <tr><td><b>You</b></td>${youRow.map(v=>`<td><b>${v}</b></td>`).join("")}</tr><tr><td>Tare</td>${tare.map(v=>`<td>${v}</td>`).join("")}</tr><tr><td>Ebimo</td>${ebimo.map(v=>`<td>${v}</td>`).join("")}</tr></tbody></table>
+  <p class="note" style="margin-bottom:0">Tare and Ebimo are virtual: their pace follows yours, just a little ahead or behind, to keep you company rather than race you.</p></div>
+ <details class="card set"><summary style="cursor:pointer"><b>Settings</b> <span class="note">Dr Pere-ere uses your SCA Live connector · ${g.calls[k]||0} tutor message${(g.calls[k]||0)===1?"":"s"} today</span></summary>
+  <label for="sp">Passcode (the same one as SCA Live and sync)</label><input id="sp" type="password" value="${esc(CONF.pass)}" autocomplete="off">
+  <label for="se">Connector address</label><input id="se" value="${esc(CONF.ep)}">
+  <div class="row" style="margin-top:10px"><button class="btn sm" id="stest">Save and test</button><span class="note" id="sres"></span></div>
+  <p class="note">Your API key stays on your server; this page only sends the passcode. Each tutor message costs about 1p.</p></details>`;
+ $("go-quiz").onclick=()=>quiz();
+ document.querySelectorAll("[data-act]").forEach(b=>b.onclick=()=>run(b.dataset.act));
+ $("stest").onclick=async()=>{try{localStorage.setItem("sca-pass",$("sp").value.trim());localStorage.setItem("sca-ep",$("se").value.trim())}catch(e){}$("sres").textContent="Testing…";
+  try{const t=await ask("Reply with just the word OK.");$("sres").textContent=/ok/i.test(t)?"Connected. Dr Pere-ere is ready.":"Connected, but got an unexpected reply."}catch(e){$("sres").textContent=errText(e)}}}
+
+function shell(title,sub){window.scrollTo({top:0});$("app").innerHTML=`<div class="bar"><div><h1 style="margin:0">${esc(title)}</h1>${sub?`<p class="note" style="margin:2px 0 0">${sub}</p>`:""}</div><button class="btn ghost sm" id="leave">← Study room</button></div><div id="stage"></div>`;$("leave").onclick=home;return $("stage")}
+function run(a){({plan,clinic,teach,ask:pals,huddle,mock,debrief})[a]()}
+
+/* ---------- question discussion (quiz, huddle) ---------- */
+function qCard(q,i,n,label,showPals=true){return `<div class="q" id="q${i}"><span class="k">${esc(label)} · ${esc(q.topic)}</span><div class="stem">${q.s}</div><div class="opts">${q.o.map((o,k)=>`<button class="opt" data-k="${k}"><span class="l">${L[k]}</span><span>${esc(o)}</span><span class="who-picked"></span></button>`).join("")}</div></div><div class="chat" id="c${i}" style="margin-top:10px"></div><div id="n${i}"></div>`}
+async function discuss(stage,qs,{label,onDone,intro}){let i=0,score=0,res=[];
+ const progress=()=>`<div class="prog">${qs.map((_,k)=>`<i class="${res[k]===true?"d":res[k]===false?"w":k===i?"c":""}"></i>`).join("")}</div>`;
+ const next=()=>{if(i>=qs.length){onDone(score,qs.length,res);return}const q=qs[i];
+  stage.innerHTML=`${intro&&i===0?intro:""}<div class="bar"><span class="note">Question ${i+1} of ${qs.length}</span>${progress()}</div>`+qCard(q,i,qs.length,label);
+  const box=$("c"+i),optBtns=stage.querySelectorAll(`#q${i} .opt`);
+  optBtns.forEach(b=>b.onclick=async()=>{const k=+b.dataset.k,ok=k===q.a;optBtns.forEach(x=>x.disabled=true);record(q,ok);res[i]=ok;if(ok)score++;
+   const tp=palPick("tare",q),ep=palPick("ebimo",q);
+   optBtns.forEach(x=>{const kk=+x.dataset.k;if(kk===q.a)x.classList.add("right");else if(kk===k)x.classList.add("wrong");const w=x.querySelector(".who-picked");w.innerHTML=(kk===k?`<i style="background:var(--you)">Y</i>`:"")+(kk===tp?`<i style="background:var(--tare)">T</i>`:"")+(kk===ep?`<i style="background:var(--ebimo)">E</i>`:"")});
+   msg(box,"me",`<b>${L[k]}</b>${ok?" ✓":" ✗"}`);
+   await wait(450);msg(box,"tare",palSays("tare",q,tp));await wait(450);msg(box,"ebimo",palSays("ebimo",q,ep));
+   const ctx=`A single-best-answer AKT question the group has just answered.\n${qText(q)}\nPeres chose ${L[k]} (${ok?"correct":"wrong"}). Tare chose ${L[tp]} (${tp===q.a?"correct":"wrong"}). Ebimo chose ${L[ep]} (${ep===q.a?"correct":"wrong"}). The correct answer is now highlighted on screen.`;
+   const first=await drSay(box,`${ctx}\nTask: in at most 90 words, ${ok?"affirm Peres briefly, then correct whichever pal was wrong by name in one or two sentences (the key discriminator), and finish with ONE short stretch question for Peres.":"don't just restate the answer: explain the single key discriminator Peres missed, mention any pal who made the same mistake, and finish with ONE short Socratic question that checks he now understands."} If everyone was right, give one exam tip instead of correcting.`,esc(q.e||""));
+   await wait(300);msg(box,"tare",palReact("tare",q,tp,q.why));msg(box,"ebimo",palReact("ebimo",q,ep,q.why));
+   let hist=first?`Dr Pere-ere: ${first}`:"";
+   if(first)replyBox(box,{max:2,onSend:async(v,n)=>{hist+=`\nPeres: ${v}`;const t=await drSay(box,`${ctx}\nConversation so far:\n${hist}\nTask: reply to Peres's last message in at most 70 words. Confirm or correct it precisely.${n>=2?" Close the discussion now with a one-line takeaway; ask nothing further.":" If he has it, close with a one-line takeaway and ask nothing further; if not, ask one more short guiding question."}`);if(t)hist+=`\nDr Pere-ere: ${t}`}});
+   $("n"+i).innerHTML=`<div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" id="nx">${i===qs.length-1?"Finish":"Next question →"}</button></div>`;
+   $("nx").onclick=()=>{i++;next()}})};
+ next()}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+async function quiz(){const qs=pickQuestions(3);const stage=shell("Group quiz","3 questions · answer first, then see the group's picks");
+ if(!qs.length){stage.innerHTML=`<div class="card warn">No questions available yet from your studied topics.</div>`;return}
+ discuss(stage,qs,{label:"Group quiz",onDone:async(s,n,res)=>{markDay("quiz");
+  stage.innerHTML=`<div class="card"><h2>Quiz done: ${s} of ${n}</h2><div class="chat" id="wrap"></div><div class="row" style="margin-top:12px"><button class="btn" id="toact">Today's activity →</button><button class="btn ghost" id="hm2">Study room</button></div></div>`;
+  const tare=qs.filter(q=>palPick("tare",q)===q.a).length,eb=qs.filter(q=>palPick("ebimo",q)===q.a).length;
+  msg($("wrap"),"tare",`I got ${tare} of ${n}.`);msg($("wrap"),"ebimo",`${eb} of ${n} for me.`);
+  msg($("wrap"),"dr",s===n?"<p>Full marks today. Those questions move further out in your review schedule.</p>":`<p>${n-s} to revisit: ${n-s===1?"it's":"they're"} in your Mistakes tracker and will come back in your reviews.</p>`);
+  $("toact").onclick=()=>run(ROTA[new Date().getDay()]);$("hm2").onclick=home}})}
+
+/* ---------- Monday: weekly plan ---------- */
+function snapshot(){const d=load(),now=Date.now(),st=STU.all(),S={};st.forEach(s=>S[s.name]=s);
+ const byTopic={};(d.log||[]).forEach(x=>{if(!S[x.theme])return;(byTopic[x.theme]=byTopic[x.theme]||[]).push(x)});
+ const lines=st.map(s=>{const a=byTopic[s.name]||[],l=a.slice(-10),p=l.length?Math.round(l.filter(x=>x.ok).length/l.length*100):null;return `${s.name}: studied ${Math.floor((now-s.t)/DAY)} days ago; ${a.length} answers; last-10 accuracy ${p===null?"none yet":p+"%"}`});
+ const wk=(d.log||[]).filter(x=>x.t>now-7*DAY&&S[x.theme]);const dom={clin:[0,0],ebp:[0,0],org:[0,0]};
+ wk.forEach(x=>{const q=QB.byId[x.id];const k=q?domainOf(q):"clin";dom[k][1]++;if(x.ok)dom[k][0]++});
+ const mist=activeMistakes();const mt={};mist.forEach(q=>mt[q.topic]=(mt[q.topic]||0)+1);
+ const notStudied=[];(typeof CATS!=="undefined"?CATS:[]).forEach(c=>{if(c.id==="sca")return;c.lessons.forEach(l=>{if(l[2]&&!STU.is(l[0])&&(l[3]||0)>=5)notStudied.push(`${l[0]} (${c.name})`)})});
+ const g=G(d),teach=g.teach.slice(-5).map(t=>`${t.topic}: ${t.score}/${t.out}`);
+ const due=Object.keys(d.q||{}).filter(id=>{const q=QB.byId[id];return q&&inScope(q)&&d.q[id].due<=now}).length;
+ return `Studied topics (${st.length}):\n${lines.join("\n")||"none"}\n\nLast 7 days by AKT domain (correct/answered): clinical ${dom.clin[0]}/${dom.clin[1]}, evidence-based practice ${dom.ebp[0]}/${dom.ebp[1]}, organisation ${dom.org[0]}/${dom.org[1]}.\nQuestions due for review now: ${due}.\nActive mistakes by topic: ${Object.entries(mt).map(([t,n])=>`${t} ${n}`).join("; ")||"none"}.\nHighest-yield (5-star) topics not yet studied: ${notStudied.slice(0,12).join("; ")||"none"}.\nRecent teach-back scores: ${teach.join("; ")||"none"}.\nQuiz days in the last 7 days: ${Object.keys(g.days).filter(k=>k>dkey(new Date(now-7*DAY))&&g.days[k].quiz).length}.\nThe AKT is 80% clinical, 10% evidence-based practice (statistics), 10% organisation and management (admin).`}
+async function plan(){const stage=shell("Weekly plan","Dr Pere-ere looks at your data and sets this week's targets");stage.innerHTML=`<div class="chat" id="box"></div>`;const box=$("box");
+ msg(box,"tare","Monday already. What are we aiming for this week?");msg(box,"ebimo","Please include some admin. I keep dropping marks there.");
+ const t=await drSay(box,`Here is Peres's revision data:\n${snapshot()}\n\nTask: write this week's study plan for Peres in at most 160 words: a one-line verdict on where he stands, then 4 to 5 bullet points (each starting "- ") with concrete targets (which unstudied high-yield topics to study, which weak topics to revisit, how many daily quizzes, and keeping the 80/10/10 balance in mind). End with one encouraging but honest line.`);
+ if(t){const d=load(),g=G(d);g.plans[wkey()]={t:Date.now(),text:t};save(d);markDay("act","plan");markDay("actDone");}
+ box.insertAdjacentHTML("afterend",`<div class="row" style="margin-top:12px"><button class="btn" id="hm2">Back to the study room</button></div>`);$("hm2").onclick=home}
+
+/* ---------- Sunday: weekly debrief ---------- */
+async function debrief(){const stage=shell("Weekly debrief","Dr Pere-ere reviews your week");stage.innerHTML=`<div class="chat" id="box"></div>`;const box=$("box");
+ const d=load(),g=G(d),pl=g.plans[wkey()];
+ const t=await drSay(box,`Here is Peres's revision data:\n${snapshot()}\n${pl?`\nThis week's plan was:\n${pl.text}`:"\nThere was no plan set this week."}\n\nTask: give Peres his weekly debrief in at most 170 words: what went well, what didn't (be specific and honest, using the numbers), how he did against the plan, and the 3 things to fix next week as bullet points starting "- ".`);
+ if(t){const d2=load(),g2=G(d2);g2.debriefs[wkey()]={t:Date.now(),text:t};save(d2);markDay("act","debrief");markDay("actDone")}
+ msg(box,"tare","Good week, everyone. Same time tomorrow?");msg(box,"ebimo","I'm going to do some admin reading tonight.");
+ box.insertAdjacentHTML("afterend",`<div class="row" style="margin-top:12px"><button class="btn" id="hm2">Back to the study room</button></div>`);$("hm2").onclick=home}
+
+/* ---------- Tuesday: mistake clinic ---------- */
+async function clinic(){const stage=shell("Mistake clinic","Dr Pere-ere guides you to the answer with questions, then you answer again");
+ const ms=activeMistakes().slice(0,2);
+ if(!ms.length){stage.innerHTML=`<div class="card"><p>No active mistakes in your studied topics: nothing to fix. 🎉</p><p class="note">Try a teach-back instead.</p><div class="row"><button class="btn" id="alt">Teach-back</button><button class="btn ghost" id="hm2">Study room</button></div></div>`;$("alt").onclick=teach;$("hm2").onclick=home;return}
+ let i=0;const step=()=>{if(i>=ms.length){markDay("act","clinic");markDay("actDone");stage.innerHTML=`<div class="card"><h2>Clinic done</h2><p>Both questions are back in your review schedule. Fixed mistakes move to "fixed" in your Mistakes tracker.</p><div class="row"><a class="btn ghost" href="../mistakes/">Mistakes tracker</a><button class="btn" id="hm2">Study room</button></div></div>`;$("hm2").onclick=home;return}
+  const q=ms[i];stage.innerHTML=`<div class="bar"><span class="note">Mistake ${i+1} of ${ms.length}</span></div><div class="q"><span class="k">You got this wrong before · ${esc(q.topic)}</span><div class="stem">${q.s}</div><div class="opts" id="ops" style="display:none">${q.o.map((o,k)=>`<button class="opt" data-k="${k}"><span class="l">${L[k]}</span><span>${esc(o)}</span></button>`).join("")}</div></div><div class="chat" id="box" style="margin-top:10px"></div><div id="nn"></div>`;
+  const box=$("box");let hist="";const ctx=`Mistake clinic. Peres previously got this question wrong.\n${qText(q)}\nThe options are hidden from Peres for now.`;
+  msg(box,"ebimo",pickLine(["I think I got this one wrong too. Let's work it out.","This one caught me out as well.","Oh, I remember struggling with this."],q.id));
+  (async()=>{const t=await drSay(box,`${ctx}\nTask: open a Socratic discussion. Do NOT reveal the answer. In at most 60 words, ask Peres ONE question that gets him thinking about the key principle behind this question.`,"Think through the key principle, then answer.");if(t)hist=`Dr Pere-ere: ${t}`;
+   const rb=replyBox(box,{max:3,placeholder:"Think aloud: your reply…",onSend:async(v,n)=>{hist+=`\nPeres: ${v}`;const r=await drSay(box,`${ctx}\nConversation so far:\n${hist}\nTask: respond in at most 60 words. Do NOT reveal the answer letter. Build on what Peres said; correct any misconception; ${n>=2?"then tell him he's ready to answer.":"ask one more guiding question, or tell him he's ready to answer if he clearly has the principle."}`);if(r)hist+=`\nDr Pere-ere: ${r}`}});
+   $("nn").innerHTML=`<div class="row" style="justify-content:flex-end;margin-top:10px"><button class="btn" id="ready">I'm ready to answer</button></div>`;
+   $("ready").onclick=()=>{if(rb&&rb.isConnected)rb.remove();$("ready").remove();$("ops").style.display="flex";$("ops").scrollIntoView({behavior:"smooth",block:"center"});
+    stage.querySelectorAll("#ops .opt").forEach(b=>b.onclick=async()=>{const k=+b.dataset.k,ok=k===q.a;stage.querySelectorAll("#ops .opt").forEach(x=>{x.disabled=true;if(+x.dataset.k===q.a)x.classList.add("right");else if(+x.dataset.k===k)x.classList.add("wrong")});record(q,ok);
+     msg(box,"me",`<b>${L[k]}</b>${ok?" ✓":" ✗"}`);await drSay(box,`${ctx}\nConversation so far:\n${hist}\nPeres has now answered ${L[k]}, which is ${ok?"correct":"wrong"}.\nTask: in at most 60 words, ${ok?"confirm, and give the one-line takeaway to remember.":"explain the answer clearly and give the one-line takeaway."}`,esc(q.e||""));
+     msg(box,"ebimo",ok?"That makes sense now. Thank you!":"Tricky one. I'll add it to my list too.");
+     $("nn").innerHTML=`<div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" id="nx">${i===ms.length-1?"Finish":"Next mistake →"}</button></div>`;$("nx").onclick=()=>{i++;step()}})}})()};
+ step()}
+
+/* ---------- Wednesday: teach-back ---------- */
+function keyPointsFor(topic){const s=(typeof STEPS!=="undefined"?STEPS:[]).find(x=>STU.norm(x.topic).toLowerCase()===STU.norm(topic).toLowerCase()||(QB.topics[topic]&&x.lesson&&QB.topics[topic].link&&QB.topics[topic].link.endsWith(x.lesson.replace(/^\.\.\//,""))));
+ if(s){const ex=(typeof EXPLAIN!=="undefined"&&EXPLAIN[s.id])||[];return s.steps.map((p,i)=>`- ${p}${ex[i]?` (detail: ${ex[i]})`:""}`).join("\n")}
+ const qs=Object.values(QB.byId).filter(q=>q.topic===topic&&!q.isCase).slice(0,10);return qs.map(q=>`- ${String(q.e||"").split(/(?<=\.)\s/)[0]}`).join("\n")}
+function teachTopics(){const ts=topicStats();return STU.all().map(s=>s.name).filter(n=>keyPointsFor(n).length>20).sort((a,b)=>(ts[a]??101)-(ts[b]??101))}
+async function teach(){const stage=shell("Teach-back","Explain a topic in your own words; Dr Pere-ere marks it against your notes");
+ const tops=teachTopics();if(!tops.length){stage.innerHTML=`<div class="card warn">No studied topics with notes to mark against yet.</div>`;return}
+ const ts=topicStats();let topic=tops[0];
+ const draw=()=>{stage.innerHTML=`<div class="card"><label class="note" for="tsel">Topic (weakest first)</label><select id="tsel" style="font:inherit;width:100%;padding:8px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);margin-top:4px">${tops.map(t=>`<option ${t===topic?"selected":""}>${esc(t)}</option>`).join("")}</select></div><div class="chat" id="box"></div>`;
+  $("tsel").onchange=e=>{topic=e.target.value;draw()};const box=$("box");
+  msg(box,"dr",`<p>Today's teach-back is <b>${esc(topic)}</b>${ts[topic]!==undefined?` (your recent accuracy here is ${ts[topic]}%)`:""}. Imagine you're explaining it to Ebimo, who's starting a GP rotation next week. Cover what to recognise or know, what to do first, the key numbers and thresholds, and the traps. Bullet points are fine. You can also use your phone's dictation.</p>`);
+  msg(box,"ebimo","Please go slowly, Peres. I really need this one.");msg(box,"tare","I'll be listening for the numbers. That's where the marks are.");
+  const kp=keyPointsFor(topic);let hist="",marked=null;
+  replyBox(box,{max:3,placeholder:"Your explanation…",onSend:async(v,n)=>{
+   if(n===1){const stop=typing(box);try{const raw=await ask(`Teach-back marking. Topic: ${topic}.\nKey points from Peres's own notes (mark ONLY against these; use your judgement to group them into 6 to 10 markable points):\n${kp}\n\nPeres's explanation:\n"""${v}"""\n\nReturn ONLY JSON, no other text: {"rows":[{"point":"short key point","verdict":"full|half|missing|wrong","note":"what he said or missed, max 15 words"}],"feedback":"2-3 sentences: strengths, then the most important gap, warm but direct","question":"ONE follow-up question on his most important gap or error","summary":"a model summary of the topic in at most 60 words, using the key numbers"}`);stop();
+     const j=parseJSON(raw);if(!j||!Array.isArray(j.rows)){msg(box,"dr",fmt(raw));return}
+     const sc=j.rows.reduce((a,r)=>a+(r.verdict==="full"?1:r.verdict==="half"?.5:0),0),out=j.rows.length;marked={sc,out,summary:j.summary};
+     msg(box,"dr",`<p><b>Marking: ${sc} out of ${out}</b></p><table class="mark">${j.rows.map(r=>`<tr><td><b>${esc(r.point)}</b><br><span class="note">${esc(r.note||"")}</span></td><td class="v-${esc(r.verdict)}">${r.verdict==="full"?"✓ 1":r.verdict==="half"?"½":r.verdict==="wrong"?"✗ wrong":"✗ missed"}</td></tr>`).join("")}</table><p>${esc(j.feedback||"")}</p>${j.question?`<p><b>${esc(j.question)}</b></p>`:""}`);
+     hist=`Dr Pere-ere marked it ${sc}/${out}. Feedback: ${j.feedback} Follow-up question: ${j.question}`;
+     const d=load(),g=G(d);g.teach.push({t:Date.now(),topic,score:sc,out});g.teach=g.teach.slice(-60);save(d);markDay("act","teach");markDay("actDone");
+     await wait(300);msg(box,"tare",sc/out>=.8?"That was clear. I'd have missed some of those numbers.":"Good effort. The numbers are the hard part for me too.");
+     msg(box,"ebimo",sc/out>=.6?"Thank you, Peres, that really helps!":"Thanks. I think we both need to reread this one.");
+     {const ta=document.querySelector(".reply textarea");if(ta)ta.placeholder="Answer Dr Pere-ere's question…"}
+     if(j.summary)box.insertAdjacentHTML("afterend",`<div class="summary" style="margin-top:10px"><b>Dr Pere-ere's model summary</b><br>${esc(j.summary)}</div>`);
+    }catch(e){stop();msg(box,"dr",`<p class="note">${esc(errText(e))}</p><p><b>Key points to check yourself against:</b></p>${fmt(kp)}`)}}
+   else{hist+=`\nPeres: ${v}`;const t=await drSay(box,`Teach-back on ${topic}. Key points from Peres's notes:\n${kp}\nConversation so far:\n${hist}\nTask: reply to Peres's last message in at most 70 words. Confirm or correct precisely.${n>=3?" Close with a one-line takeaway; ask nothing further.":" If he now has it, close with a one-line takeaway; otherwise ask one more short question."}`);if(t)hist+=`\nDr Pere-ere: ${t}`}}})};
+ draw()}
+
+/* ---------- Thursday: pals ask you ---------- */
+async function pals(){const stage=shell("Pals ask you","Tare and Ebimo ask you to explain; no options this time, so you have to recall it");
+ const qs=pickQuestions(12).filter(q=>palPick("tare",q)!==q.a||palPick("ebimo",q)!==q.a).slice(0,2);
+ const list=qs.length?qs:pickQuestions(2);if(!list.length){stage.innerHTML=`<div class="card warn">No questions available yet from your studied topics.</div>`;return}
+ let i=0;const step=()=>{if(i>=list.length){markDay("act","ask");markDay("actDone");stage.innerHTML=`<div class="card"><h2>Done</h2><p>Explaining without options is the hardest kind of recall. Well done for doing it.</p><button class="btn" id="hm2">Study room</button></div>`;$("hm2").onclick=home;return}
+  const q=list[i],who=palPick("ebimo",q)!==q.a?"ebimo":"tare";stage.innerHTML=`<div class="bar"><span class="note">Question ${i+1} of ${list.length} · ${esc(q.topic)}</span></div><div class="chat" id="box"></div><div id="nn"></div>`;const box=$("box");
+  msg(box,who,`${who==="ebimo"?"Peres, can you help me with this one? I keep getting it wrong.":"Quick one, Peres. I got this wrong and I want to understand why."}<br><br><i>${q.s}</i><br><br>What would you do, and why?`);
+  let hist="";replyBox(box,{max:2,placeholder:`Explain to ${PEOPLE[who].n}…`,onSend:async(v,n)=>{
+   if(n===1){const stop=typing(box);try{const raw=await ask(`"Pals ask you": ${PEOPLE[who].n} asked Peres this question without showing options.\n${qText(q)}\n\nPeres's free-text answer:\n"""${v}"""\n\nReturn ONLY JSON: {"verdict":"correct|partial|incorrect","reply":"Dr Pere-ere's response to Peres in at most 80 words: say whether he's right, give the precise answer and the key reason, and correct anything wrong"}`);stop();
+     const j=parseJSON(raw)||{verdict:"partial",reply:raw};record(q,j.verdict==="correct");msg(box,"dr",fmt(j.reply||""));
+     msg(box,who,j.verdict==="correct"?"That's so clear. Thank you!":j.verdict==="partial"?"Thanks, that's mostly it. I get it now.":"Ah, so we both had it wrong. Good to know!");hist=`Dr Pere-ere: ${j.reply}`;
+     $("nn").innerHTML=`<div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" id="nx">${i===list.length-1?"Finish":"Next →"}</button></div>`;$("nx").onclick=()=>{i++;step()}}
+    catch(e){stop();msg(box,"dr",`<p class="note">${esc(errText(e))}</p><p><b>Answer:</b> ${esc(q.o[q.a])}. ${esc(q.e||"")}</p>`);$("nn").innerHTML=`<div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" id="nx">Next →</button></div>`;$("nx").onclick=()=>{i++;step()}}}
+   else{hist+=`\nPeres: ${v}`;await drSay(box,`${qText(q)}\nConversation so far:\n${hist}\nTask: reply in at most 60 words; close with a one-line takeaway.`)}}})};
+ step()}
+
+/* ---------- Friday: case huddle ---------- */
+function huddle(){const stage=shell("Case huddle","One AKT case, decided together");const d=load();
+ const cs=Object.entries(typeof CASES!=="undefined"?CASES:{}).filter(([k,c])=>STU.is(c.topic)).sort((a,b)=>((d.cases||{})[a[0]]?(d.cases[a[0]].score||0)+1:0)-((d.cases||{})[b[0]]?(d.cases[b[0]].score||0)+1:0));
+ if(!cs.length){stage.innerHTML=`<div class="card warn">No cases unlocked yet: study a topic that has a case.</div>`;return}
+ const [ck,c]=cs[0],qs=c.steps.map((s,i)=>({id:`case-${ck}#${i}`,s:s.s,o:s.o,a:s.a,e:s.e,why:s.why,topic:c.topic,cat:c.cat,isCase:true}));
+ const intro=`<div class="card"><h2 style="margin-bottom:4px">${esc(c.title)}</h2><p class="note" style="margin:0 0 8px">${esc(c.topic)} · ${c.steps.length} decisions</p><p style="margin:0 0 6px"><b>${esc(c.who)}</b></p><p style="margin:0;font-style:italic">${esc(c.open)}</p>${c.gather&&c.gather.items?`<details style="margin-top:8px"><summary class="note" style="cursor:pointer">What we know</summary><ul style="margin:6px 0 0;padding-left:20px;font-size:15px">${c.gather.items.map(it=>`<li><b>${esc(it[0])}</b> ${esc(it[1])}</li>`).join("")}</ul></details>`:""}</div>`;
+ discuss(stage,qs,{label:"Case huddle",intro,onDone:(s,n)=>{const d2=load();d2.cases=d2.cases||{};d2.cases[ck]={score:Math.round(s/n*100),date:Date.now()};save(d2);markDay("act","huddle");markDay("actDone");
+  stage.innerHTML=`<div class="card"><h2>Case done: ${s} of ${n}</h2>${c.take?`<p><b>Take-home points</b></p><ul>${c.take.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`:""}<div class="row"><button class="btn" id="hm2">Study room</button>${c.lesson?`<a class="btn ghost" href="${esc(c.lesson)}">Open the lesson</a>`:""}</div></div>`;$("hm2").onclick=home}})}
+
+/* ---------- Saturday: mini mock ---------- */
+function mock(){const stage=shell("Mini mock","10 questions · 10 minutes · 80/10/10 · no feedback until the end");
+ const by={clin:[],ebp:[],org:[]};shuffle(POOL.filter(q=>!q.isCase)).forEach(q=>by[domainOf(q)].push(q));
+ let qs=[...by.clin.slice(0,8),...by.ebp.slice(0,1),...by.org.slice(0,1)];const short=10-qs.length;if(short>0)qs=qs.concat([...by.clin.slice(8),...by.ebp.slice(1),...by.org.slice(1)].slice(0,short));qs=shuffle(qs);
+ if(!qs.length){stage.innerHTML=`<div class="card warn">No questions available yet from your studied topics.</div>`;return}
+ const ans=[];let i=0;const end=Date.now()+qs.length*60000;let tm=null;
+ const finish=async()=>{clearInterval(tm);qs.forEach((q,k)=>record(q,ans[k]===q.a));const you=qs.filter((q,k)=>ans[k]===q.a).length,tare=qs.filter(q=>palPick("tare",q)===q.a).length,eb=qs.filter(q=>palPick("ebimo",q)===q.a).length;
+  const dom={clin:[0,0],ebp:[0,0],org:[0,0]};qs.forEach((q,k)=>{const x=dom[domainOf(q)];x[1]++;if(ans[k]===q.a)x[0]++});markDay("act","mock");markDay("actDone");
+  stage.innerHTML=`<div class="card"><h2>Mini mock results</h2><table class="pace"><thead><tr><th></th><th>Score</th></tr></thead><tbody><tr><td><b>You</b></td><td><b>${you}/${qs.length}</b></td></tr><tr><td>Tare</td><td>${tare}/${qs.length}</td></tr><tr><td>Ebimo</td><td>${eb}/${qs.length}</td></tr></tbody></table>
+   <p class="note">Your score by domain: clinical ${dom.clin[0]}/${dom.clin[1]} · evidence-based practice ${dom.ebp[0]}/${dom.ebp[1]} · organisation ${dom.org[0]}/${dom.org[1]}</p><div class="chat" id="box"></div>
+   <details class="card" style="margin-top:12px"><summary style="cursor:pointer"><b>Review all 10</b></summary>${qs.map((q,k)=>`<div style="padding:8px 0;border-bottom:1px solid var(--line)"><div style="font-size:15px">${q.s}</div><div class="note">You: ${ans[k]===undefined?"no answer":L[ans[k]]} · Tare: ${L[palPick("tare",q)]} · Ebimo: ${L[palPick("ebimo",q)]} · <b style="color:var(--teal)">Answer ${L[q.a]}. ${esc(q.o[q.a])}</b></div><div class="note">${esc(q.e||"")}</div></div>`).join("")}</details>
+   <div class="row" style="margin-top:12px"><button class="btn" id="hm2">Study room</button></div></div>`;$("hm2").onclick=home;
+  msg($("box"),"tare",tare>you?"Edged it this week! Statistics carried me.":"Well played, you beat me.");msg($("box"),"ebimo",eb>=you?"I did better than I expected!":"I need to work on the admin questions.");
+  await drSay($("box"),`Peres has just done a 10-question timed mini mock.\nHis answers:\n${qs.map((q,k)=>`${k+1}. [${domainOf(q)}] ${q.topic}: ${ans[k]===q.a?"correct":"wrong"}`).join("\n")}\nScore ${you}/10. Tare ${tare}/10, Ebimo ${eb}/10.\nTask: in at most 80 words, a quick debrief: one strength, the main weakness by topic or domain, and one action for next week.`)};
+ const show=()=>{const q=qs[i];stage.innerHTML=`<div class="bar"><span class="note">Question ${i+1} of ${qs.length} · ${esc(q.topic)}</span><span class="clock" id="clk"></span></div><div class="q"><div class="stem">${q.s}</div><div class="opts">${q.o.map((o,k)=>`<button class="opt ${ans[i]===k?"right":""}" data-k="${k}"><span class="l">${L[k]}</span><span>${esc(o)}</span></button>`).join("")}</div></div>
+  <div class="row" style="justify-content:space-between;margin-top:12px"><button class="btn ghost" id="pv" ${i?"":"disabled"}>← Previous</button><button class="btn" id="nx">${i===qs.length-1?"Finish":"Next →"}</button></div>`;
+  stage.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{ans[i]=+b.dataset.k;stage.querySelectorAll(".opt").forEach(x=>x.classList.toggle("right",x===b))});
+  $("pv").onclick=()=>{i--;show()};$("nx").onclick=()=>{if(i===qs.length-1){if(ans.filter(a=>a!==undefined).length<qs.length&&!confirm("Some questions are unanswered. Finish anyway?"))return;finish()}else{i++;show()}};tick()};
+ const tick=()=>{const left=Math.max(0,Math.round((end-Date.now())/1000)),el=$("clk");if(el){el.textContent=`${Math.floor(left/60)}:${String(left%60).padStart(2,"0")}`;el.style.color=left<60?"var(--red)":""}if(left<=0)finish()};
+ tm=setInterval(tick,1000);show()}
+
+/* ---------- start ---------- */
+RTG_loadQuestions("../").then(qb=>{QB=qb;
+ /* mybank area for domain split */
+ try{const mb=JSON.parse(localStorage.getItem("cgn-mybank")||"null");if(mb&&mb.q)Object.values(mb.q).forEach(q=>{if(QB.byId[q.id])QB.byId[q.id].area=q.area})}catch(e){}
+ POOL=Object.entries(QB.byId).map(([id,q])=>({id,...q})).filter(q=>inScope(q)&&Array.isArray(q.o)&&q.o.length>1);
+ home()}).catch(()=>{$("app").innerHTML="<p>Couldn't open the study room. Please refresh.</p>"});
+}
+</script>
+</body>
+</html>

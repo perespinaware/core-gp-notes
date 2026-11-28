@@ -34,7 +34,11 @@ const MERGE={
   const cases={...(a.cases||{})};for(const k in (b.cases||{}))cases[k]=!cases[k]?b.cases[k]:((b.cases[k].date||b.cases[k].t||0)>(cases[k].date||cases[k].t||0)?b.cases[k]:cases[k]);
   const studied={...(a.studied||{})};for(const k in (b.studied||{}))studied[k]=!studied[k]||(b.studied[k].m||0)>(studied[k].m||0)?b.studied[k]:studied[k];
   const si=Math.min(a.studiedInit||Infinity,b.studiedInit||Infinity);
-  return {...a,...b,q,cases,studied,...(si<Infinity?{studiedInit:si}:{}),log:by(a.log,b.log,x=>x.t+"|"+x.id).sort((x,y)=>x.t-y.t),mocks:by(a.mocks,b.mocks,x=>String(x.t)).sort((x,y)=>x.t-y.t)}},
+  const ga=a.group||{},gb=b.group||{},grp={...ga,...gb};if(a.group||b.group){const days={...(ga.days||{})};for(const k in (gb.days||{}))days[k]={...(days[k]||{}),...gb.days[k]};
+   const lat=(x,y)=>{const o={...(x||{})};for(const k in (y||{}))o[k]=!o[k]||(y[k].t||0)>=(o[k].t||0)?y[k]:o[k];return o};
+   const calls={...(ga.calls||{})};for(const k in (gb.calls||{}))calls[k]=Math.max(calls[k]||0,gb.calls[k]);
+   Object.assign(grp,{days,plans:lat(ga.plans,gb.plans),debriefs:lat(ga.debriefs,gb.debriefs),teach:by(ga.teach,gb.teach,x=>String(x.t)).sort((x,y)=>x.t-y.t),calls})}
+  return {...a,...b,q,cases,studied,...(a.group||b.group?{group:grp}:{}),...(si<Infinity?{studiedInit:si}:{}),log:by(a.log,b.log,x=>x.t+"|"+x.id).sort((x,y)=>x.t-y.t),mocks:by(a.mocks,b.mocks,x=>String(x.t)).sort((x,y)=>x.t-y.t)}},
  "cgn-time":(a,b)=>{const d={...(a.d||{})};for(const day in (b.d||{})){d[day]={...(d[day]||{})};for(const p in b.d[day])d[day][p]=Math.max(d[day][p]||0,b.d[day][p])}return {...a,...b,d}},
  "cgn-steps":(a,b)=>{const t={...(a.t||{})};for(const k in (b.t||{}))t[k]=pickN(t[k],b.t[k]);const days={...(a.days||{})};for(const k in (b.days||{}))days[k]=Math.max(days[k]||0,b.days[k]);return {...a,...b,t,days}},
  "cgn-mybank":(a,b)=>{const del={...(a.del||{})};for(const k in (b.del||{}))del[k]=Math.max(del[k]||0,b.del[k]);
