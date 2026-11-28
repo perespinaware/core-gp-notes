@@ -7,7 +7,7 @@ const dk=(t)=>{const d=t?new Date(t):new Date();return d.getFullYear()+"-"+Strin
 const ROTA={1:["plan","Weekly plan"],2:["clinic","Mistake clinic"],3:["teach","Teach-back"],4:["ask","Pals ask you"],5:["huddle","Case huddle"],6:["mock","Mini mock"],0:["debrief","Weekly debrief"]};
 /* SCA: keep in step with SCA_CYCLE in sca/cases.js */
 const SCA={start:"2026-11-30",order:[1,3,5,2,6,4,7,8,9,10,11,12],names:{1:"Patients under 19",2:"Gender, reproductive and sexual health",3:"Long-term conditions",4:"Older adults and end of life",5:"Mental health",6:"Urgent care",7:"Health disadvantage",8:"Ethnicity and diversity",9:"Undifferentiated disease",10:"Prescribing",11:"Investigations and results",12:"Professional dilemmas"}};
-const STUDY_GOAL=45; /* minutes of study time a day */
+const STUDY_GOAL=180; /* minutes of study time a day (3 hours) */
 function tasks(){const now=new Date(),k=dk(),v=get("cgn-v1")||{},out=[];
  const studied=v.studied?Object.values(v.studied).filter(s=>s.on).length:0;
  /* 1. daily review, 3 sessions */
@@ -24,7 +24,8 @@ function tasks(){const now=new Date(),k=dk(),v=get("cgn-v1")||{},out=[];
  const td=((get("cgn-time")||{}).d||{})[k]||{};let s=0;for(const p in td)s+=td[p];const pr=get("cgn-programme"),T=pr&&pr.timer;if(T&&dk(T.t0)===k)s+=Math.min(10800,(Date.now()-T.t0)/1000);
  const m=Math.floor(s/60);
  let wk="";try{if(typeof WEEKS!=="undefined"&&typeof PROG!=="undefined"){const ps=new Date(((pr&&pr.start)||PROG.start)+"T00:00:00"),cw=Math.floor((now-ps)/7/DAY)+1;if(cw>=1&&cw<=WEEKS.length)wk=WEEKS[cw-1].f}}catch(e){}
- out.push({id:"study",label:`Study ${STUDY_GOAL} minutes`,detail:(wk?`This week: ${wk} · `:"This week's programme topic · ")+`${m} of ${STUDY_GOAL} min so far`,href:"/programme/",done:m>=STUDY_GOAL,prog:[Math.min(m,STUDY_GOAL),STUDY_GOAL]});
+ const hm=x=>x>=60?Math.floor(x/60)+"h"+(x%60?" "+String(x%60).padStart(2,"0")+"m":""):x+" min";
+ out.push({id:"study",label:`Study ${hm(STUDY_GOAL).replace("h"," hours").replace(/^1 hours/,"1 hour")}`,detail:(wk?`This week: ${wk} · `:"This week's programme topic · ")+`${hm(m)} of ${hm(STUDY_GOAL)} so far`,href:"/programme/",done:m>=STUDY_GOAL,prog:[Math.min(m,STUDY_GOAL),STUDY_GOAL]});
  /* 5. SCA: clinic week = one taught case a day; practice week = one live case this week */
  const s0=new Date(SCA.start+"T00:00:00"),i=Math.floor((now-s0)/7/DAY);
  if(i>=0){const gi=Math.floor(i/2)%SCA.order.length,g=SCA.order[gi],clinic=i%2===0,ws=s0.getTime()+i*7*DAY,sp=get("sca-progress")||{};
