@@ -77,7 +77,7 @@ mark{background:color-mix(in srgb,#f2c94c 45%,transparent);color:inherit;border-
 const $=id=>document.getElementById(id),DAY=864e5,K="cgn-steps";
 const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 const ex=(s,k)=>((typeof EXPLAIN!=="undefined"&&EXPLAIN[s.id])||[])[k]||"";
-const CATN={cardiology:"Cardiology",dermatology:"Dermatology",statistics:"Statistics",admin:"Admin",prescribing:"Prescribing"};
+const CATN={cardiology:"Cardiology",dermatology:"Dermatology",statistics:"Statistics",admin:"Admin",prescribing:"Prescribing",calculations:"Calculations"};
 const load=()=>{try{return JSON.parse(localStorage.getItem(K)||"null")||{t:{},days:{}}}catch(e){return {t:{},days:{}}}};
 const save=d=>{try{localStorage.setItem(K,JSON.stringify(d))}catch(e){}};
 const dkey=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");

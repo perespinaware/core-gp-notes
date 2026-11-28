@@ -27,11 +27,11 @@ const AKT_AREAS=[
  {area:"Evidence, statistics and data interpretation",domain:"Evidence",flag:"Chart interpretation and study design flagged in 2 of AKTs 55–58; risk communication tested",topics:[
   ["st-sens","Sensitivity and specificity",1,{notes:1,lesson:1,bank:["Sensitivity and specificity"],case:"sens"}],
   ["st-ppv","Positive and negative predictive value",1,{notes:1,lesson:1,bank:["Positive and negative predictive value"],case:"ppv"}],
-  ["st-risk","Risk: ARR, RRR, NNT, NNH and decision aids",1,{bank:["Calculations (new numbers every time)"]}],
+  ["st-risk","Risk: ARR, RRR, NNT, NNH and decision aids",1,{notes:1,lesson:1,bank:["Risk and treatment effect","Calculations (new numbers every time)"],case:"calcrisk"}],
   ["st-design","Study designs, bias and levels of evidence",1,{}],
   ["st-tests","P values, confidence intervals and statistical tests",1,{}],
   ["st-charts","Reading charts and practice data",1,{}],
-  ["st-screen","Screening programmes and screening criteria",2,{}]]},
+  ["st-screen","Screening programmes and screening criteria",2,{notes:1,lesson:1,bank:["The 2×2 table"],case:"calc22"}]]},
  {area:"Children and young people",domain:"Clinical",flag:"Flagged in 9 sittings; in 3 of AKTs 57–60 (acute illness, safeguarding, joints, cancer, urology)",topics:[
   ["ch-fever","Acute illness and fever in children (traffic light)",1,{}],
   ["ch-safe","Safeguarding and non-accidental injury",1,{}],
@@ -133,7 +133,7 @@ const AKT_AREAS=[
   ["gi-coeliac","Coeliac disease",2,{}],
   ["gi-peri","Colorectal and perianal conditions",2,{}]]},
  {area:"Kidney, urology and men's health",domain:"Clinical",flag:"Flagged in 2 sittings (cancer, prostate drugs)",topics:[
-  ["ku-ckd","CKD, AKI and nephrotoxic drugs",1,{}],
+  ["ku-ckd","CKD, AKI and nephrotoxic drugs",1,{notes:1,lesson:1,bank:["Kidney numbers","Renal, hepatic impairment and older people"],case:"calckidney"}],
   ["ku-uti","UTI at all ages",1,{}],
   ["ku-prost","LUTS, PSA and prostate cancer",1,{}],
   ["ku-haem","Haematuria and urological cancers",2,{}]]},

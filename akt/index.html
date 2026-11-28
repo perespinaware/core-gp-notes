@@ -119,6 +119,7 @@ kbd{font:600 12px ui-monospace,monospace;border:1px solid var(--line);border-bot
 <script src="bank-static.js"></script>
 <script src="bank-derm.js"></script>
 <script src="cases.js"></script>
+<script src="calc.js"></script>
 <script src="/studied.js"></script>
 <script>
 {
@@ -133,8 +134,14 @@ const saveSet=()=>{try{localStorage.setItem(SKEY,JSON.stringify(SET))}catch(e){}
 {const u=new URLSearchParams(location.search).get("src");if(["all","5","3","site","mine"].includes(u))SET.src=u}
 let ALLSCOPE=false;const STU=window.RTG_STUDIED;
 const statsStudied=()=>(typeof CATS!=="undefined"?CATS:[]).some(c=>c.id==="statistics"&&c.lessons.some(l=>STU.is(l[0])));
+/* calculation drills: each generator unlocks when its Core Calculations topic is studied (the original four also open once a statistics lesson is studied) */
+const GEN_T=Object.assign({},window.CALC_LEGACY_T||{});
+const genOpen=k=>!STU||ALLSCOPE||STU.is(GEN_T[k])||(k in (window.CALC_LEGACY_T||{})&&statsStudied());
+const openGen=topic=>TOPICS.length?(TOPICS.find(t=>t.gen)||{qs:[]}).qs.filter(q=>genOpen(q.gen)&&(!topic||GEN_T[q.gen]===topic)):[];
+const calcOn=()=>openGen().length>0;
+const rndGen=topic=>{const g=openGen(topic);return g.length?g[r(g.length)]:null};
 /* only topics you have studied are used, unless ALLSCOPE (mock exam option). Your own My bank topics always count. */
-const studiedTopic=(name,cat)=>!STU||ALLSCOPE||cat==="mybank"||(cat==="calc"?statsStudied():STU.is(name));
+const studiedTopic=(name,cat)=>!STU||ALLSCOPE||cat==="mybank"||(cat==="calc"?calcOn():STU.is(name));
 const SRC_LABEL={all:"All questions",5:"★5 only",3:"★3 only",site:"Site questions only",mine:"My bank only"};
 const srcOK=q=>q.gen?SET.src==="all"||SET.src==="site":SET.src==="all"?true:SET.src==="5"?q.stars===5:SET.src==="3"?q.stars===3:SET.src==="site"?!q.stars:!!q.stars;
 const inSrc=q=>srcOK(q)&&studiedTopic(q.topic,q.cat);
@@ -159,6 +166,7 @@ const GEN={
  postural(){const ls=120+r(40),ld=70+r(15),pos=Math.random()<0.55,ss=pos?ls-(20+r(15)):ls-r(14),sd=pos?ld-r(8):ld-r(7),oh=(ls-ss)>=20||(ld-sd)>=10;
   const o=["Orthostatic hypotension","No orthostatic hypotension","Postural tachycardia syndrome","White-coat hypertension","Can't tell without a heart rate"];
   return {s:`Lying BP ${ls}/${ld}. Standing BP at 3 minutes ${ss}/${sd}. Heart rate rises by 8. What do these readings show?`,o,a:oh?0:1,e:`Fall of ${ls-ss}/${ld-sd}. Orthostatic hypotension is a systolic fall of 20 or more, or a diastolic fall of 10 or more, within 3 minutes of standing.`}}};
+Object.entries(window.CALC_GEN||{}).forEach(([k,g])=>{GEN[k]=g.f;GEN_T[k]=g.t});
 function r(n){return Math.floor(Math.random()*n)}
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=r(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
 async function buildBank(){const live=[];(typeof CATS!=="undefined"?CATS:[]).forEach(c=>{if(c.id==="sca")return;c.lessons.forEach(l=>{if(l[2]&&!/^https?:/.test(l[2]))live.push({cat:c.id,name:l[0],file:l[2]})})});
@@ -174,7 +182,7 @@ async function buildBank(){const live=[];(typeof CATS!=="undefined"?CATS:[]).for
  if(typeof CASES!=="undefined")Object.entries(CASES).forEach(([k,c])=>{let t=TOPICS.find(x=>x.name===c.topic);if(!t){t={key:"case/"+k,name:c.topic,cat:c.cat,link:c.lesson||null,qs:[]};TOPICS.push(t)}t.caseId=k;
   c.steps.forEach((q,i)=>t.qs.push({id:`case-${k}#${i}`,s:q.solo||q.s,o:q.o,a:q.a,e:q.e}))});
  TOPICS.push({key:"calc",name:"Calculations (new numbers every time)",cat:"calc",link:null,gen:true,qs:Object.keys(GEN).map(k=>({id:"gen-"+k,gen:k}))});
- const order=["cardiology","dermatology","statistics","admin","prescribing","mybank","calc"];TOPICS.sort((a,b)=>order.indexOf(a.cat)-order.indexOf(b.cat));
+ const order=["cardiology","dermatology","statistics","admin","prescribing","calculations","mybank","calc"];TOPICS.sort((a,b)=>order.indexOf(a.cat)-order.indexOf(b.cat));
  BANK=TOPICS.flatMap(t=>t.qs.map(q=>Object.assign(q,{topic:t.name,cat:t.cat,link:t.link})))}
 const real=q=>q.gen?Object.assign({},q,GEN[q.gen]()):q;
 
@@ -189,7 +197,7 @@ const TV_KEY="rtg-akt-view";let TV={area:"all",status:"all",sort:"yield",q:""},t
 function topicSection(ts){
  const AREA={cardiology:"Cardiology",dermatology:"Dermatology",statistics:"Statistics",admin:"Admin",prescribing:"Prescribing",mybank:"My bank",calc:"Calculations"};
  const yieldOf=t=>{try{if(t.cat==="calc")return 5;const cat=(CATS||[]).find(x=>x.id===t.cat);const f=(t.link||"").split("/").pop();const l=cat&&cat.lessons.find(x=>x[2]===f||x[0]===t.name);return l&&l[3]||0}catch(e){return 0}};
- const items=TOPICS.map((t,i)=>({t,i,s:ts[t.name],y:yieldOf(t)})).filter(({t})=>t.gen?(SET.src==="all"||SET.src==="site")&&statsStudied():t.qs.some(inSrc));
+ const items=TOPICS.map((t,i)=>({t,i,s:ts[t.name],y:yieldOf(t)})).filter(({t})=>t.gen?(SET.src==="all"||SET.src==="site")&&calcOn():t.qs.some(inSrc));
  const areas=[...new Set(items.map(x=>x.t.cat))];
  if(TV.area!=="all"&&!areas.includes(TV.area))TV.area="all";
  const save=()=>{try{localStorage.setItem(TV_KEY,JSON.stringify({area:TV.area,status:TV.status,sort:TV.sort}))}catch(e){}};
@@ -213,7 +221,7 @@ function topicSection(ts){
    `<div class="tp-list">${vis.map(({t,i,s,y})=>{const p=s.p,c=p===null?"var(--line)":p>=80?"var(--teal)":p>=60?"var(--amber)":"var(--red)";
     const f=t.qs.filter(q=>q.stars===5).length,th=t.qs.filter(q=>q.stars===3).length;
     return `<div class="tp-item${selTopics.has(i)?" on":""}"><i style="background:${COLORS[t.cat]||"#888"}"></i><input type="checkbox" data-sel="${i}" aria-label="Select ${esc(t.name)}" ${selTopics.has(i)?"checked":""}>
-    <div><b title="${esc(t.name)}">${esc(t.name)}</b><div class="tp-meta"><span>${t.gen?"endless":t.qs.length+" questions"} · ${s.n} done</span>${s.due?`<span class="tp-due">${s.due} due</span>`:""}${y&&t.cat!=="calc"?`<span class="tp-st" aria-label="AKT relevance ${y} of 5">${"★".repeat(y)}<i>${"☆".repeat(5-y)}</i></span>`:""}${f?`<span class="stb">★5 ${f}</span>`:""}${th?`<span class="stb s3">★3 ${th}</span>`:""}${t.link?`<a href="${esc(t.link)}">lesson</a>`:""}${t.caseId?`<a href="case.html#${t.caseId}">case</a>`:""}</div>
+    <div><b title="${esc(t.name)}">${esc(t.name)}</b><div class="tp-meta"><span>${t.gen?"endless":t.qs.length+" questions"} · ${s.n} done</span>${s.due?`<span class="tp-due">${s.due} due</span>`:""}${y&&t.cat!=="calc"?`<span class="tp-st" aria-label="AKT relevance ${y} of 5">${"★".repeat(y)}<i>${"☆".repeat(5-y)}</i></span>`:""}${f?`<span class="stb">★5 ${f}</span>`:""}${th?`<span class="stb s3">★3 ${th}</span>`:""}${t.link?`<a href="${esc(t.link)}">lesson</a>`:""}${t.caseId?`<a href="case.html#${t.caseId}">case</a>`:""}${t.cat==="calculations"&&openGen(t.name).length?`<a href="?drill=${encodeURIComponent(t.name)}" data-drill="${esc(t.name)}">drill</a>`:""}</div>
     <div class="tp-m"><div class="mbar"><div style="width:${p||0}%;background:${c}"></div></div><b style="color:${c}">${p===null?"–":p+"%"}</b></div></div>
     <button class="go" data-go="${i}">Practise</button></div>`}).join("")}</div>
    <div class="tp-more"><span class="note">Showing ${vis.length} of ${L.length}</span>${L.length>tShown?`<button class="btn ghost" id="tmore">Show ${Math.min(12,L.length-tShown)} more</button>`:""}</div>`;
@@ -229,7 +237,8 @@ function topicSection(ts){
  selBar();draw()}
 /* ---- AKT domains: 80% clinical medicine, 10% evidence-based practice, 10% organisation and management ---- */
 const DOMS=[["clin","Clinical medicine",.8],["ebp","Evidence-based practice",.1],["org","Organisation and management",.1]];
-const domainOf=q=>{if(q.cat==="statistics"||q.cat==="calc")return "ebp";if(q.cat==="admin")return "org";
+const CALC_EBP=["The 2×2 table","Likelihood ratios and post-test probability","Risk and treatment effect","Distributions and data"];
+const domainOf=q=>{if(q.cat==="statistics"||(q.cat==="calculations"&&CALC_EBP.includes(q.topic)))return "ebp";if(q.cat==="calc")return CALC_EBP.includes(GEN_T[q.gen])?"ebp":"clin";if(q.cat==="admin")return "org";
  if(q.cat==="mybank"||q.stars){const a=String(q.area||"");if(/evidence|statist|research|apprais|epidem/i.test(a))return "ebp";if(/organis|organiz|manage|admin|ethic|law|legal|contract|governance|leadership|safeguard/i.test(a))return "org"}return "clin"};
 function mockPick(n,pool){const by={clin:[],ebp:[],org:[]};shuffle(pool.slice()).forEach(q=>by[domainOf(q)].push(q));
  const want={clin:Math.round(n*.8),ebp:Math.round(n*.1)};want.org=n-want.clin-want.ebp;
@@ -244,7 +253,7 @@ function dailyPlan(){const d=load();let p=d.daily;
  if(!p||p.date!==todayKey()){p={date:todayKey(),ids:pickDaily(20).map(q=>q.id),done:[false,false,false]};d.daily=p;save(d)}return p}
 const byIdQ=id=>BANK.find(q=>q.id===id)||(/^gen-/.test(id)?TOPICS.find(t=>t.gen).qs.find(q=>q.id===id):null);
 function dailyNext(){const p=dailyPlan();const k=p.done.indexOf(false);return k<0?null:k}
-function startDaily(k){const p=dailyPlan();const [a,b]=DSPLIT[k];let qs=p.ids.slice(a,b).map(byIdQ).filter(q=>q&&(q.gen?statsStudied():inSrc(q)));
+function startDaily(k){const p=dailyPlan();const [a,b]=DSPLIT[k];let qs=p.ids.slice(a,b).map(byIdQ).filter(q=>q&&(q.gen?genOpen(q.gen):inSrc(q)));
  if(!qs.length){qs=pickDaily(b-a)}start(`Daily review · session ${k+1} of 3`,qs,{daily:k})}
 function markDaily(k){const d=load();if(d.daily&&d.daily.date===todayKey()){d.daily.done[k]=true;save(d)}}
 
@@ -252,7 +261,7 @@ function home(){stopTimers();document.onkeydown=null;const d=load(),ts=topicStat
  const due=BANK.filter(q=>inSrc(q)&&d.q[q.id]&&d.q[q.id].due<=now).length,today=d.log.filter(x=>new Date(x.t).toDateString()===new Date().toDateString()).length;
  const last=d.log.slice(-100),acc=last.length?Math.round(last.filter(x=>x.ok).length/last.length*100):null,mis=mistakes(d).length;
  const real_n=BANK.filter(q=>!q.gen&&inSrc(q)).length,nStud=TOPICS.filter(t=>!t.gen&&t.cat!=="mybank"&&STU.is(t.name)).length;
- $("app").innerHTML=`<h1>AKT practice</h1><p class="sub">Free, fast repetition at exam pace: one minute a question. ${real_n} questions from the ${nStud} topic${nStud===1?"":"s"} you've studied${statsStudied()?", plus calculations with new numbers every time":""}. Finish a lesson, or mark it studied, to add its questions.</p>
+ $("app").innerHTML=`<h1>AKT practice</h1><p class="sub">Free, fast repetition at exam pace: one minute a question. ${real_n} questions from the ${nStud} topic${nStud===1?"":"s"} you've studied${calcOn()?", plus calculations with new numbers every time":""}. Finish a lesson, or mark it studied, to add its questions.</p>
  ${!real_n?`<div class="card" style="border-left:5px solid var(--amber)"><b>Nothing to practise yet.</b> Practice uses only topics you've studied. Finish an interactive lesson (or press <b>Mark as studied</b> on it) and its questions appear here. See <b>Not studied yet</b> below.</div>`:""}
  <div class="row" style="margin:0 0 14px"><a class="btn ghost" href="../group/">Study room →</a><a class="btn ghost" href="../retention/">Retention →</a><a class="btn ghost" href="../mistakes/">Mistakes tracker →</a></div>
  <div class="kpis"><div class="kpi"><b>${due}</b><span>due for review</span></div><div class="kpi"><b>${today}</b><span>answered today${streak(d)>1?` · ${streak(d)}-day streak`:""}</span></div><div class="kpi"><b>${acc===null?"–":acc+"%"}</b><span>accuracy, last 100</span></div><div class="kpi"><b>${BANK.filter(q=>inSrc(q)&&d.q[q.id]&&d.q[q.id].box>=4).length}</b><span>mastered</span></div></div>
@@ -262,7 +271,7 @@ function home(){stopTimers();document.onkeydown=null;const d=load(),ts=topicStat
   <button class="mode" id="m-quick"><b>Quick-fire</b><span>Tick topics below (or none for a mix), then go. Instant feedback.</span></button>
   <button class="mode a" id="m-mock"><b>Mock exam</b><span>Timed, 80% clinical, 10% evidence-based practice, 10% organisation, like the real AKT. 1 minute per question.</span></button>
   <a class="mode" style="border-top-color:#7b46c7;text-decoration:none" href="case.html"><b>Cases</b><span>Short patient stories: gather clues, decide, see what happens. ${typeof CASES!=="undefined"?Object.keys(CASES).length:0} so far.</span></a>
-  ${statsStudied()?"":"<!--"}<button class="mode t" id="m-calc"><b>Calculation drill</b><span>Endless stats, ABPI and postural BP with new numbers.</span></button>${statsStudied()?"":"-->"}
+  ${calcOn()?"":"<!--"}<button class="mode t" id="m-calc"><b>Calculation drill</b><span>Endless questions with new numbers, from the calculation topics you\'ve studied (${new Set(openGen().map(q=>GEN_T[q.gen])).size}).</span></button>${calcOn()?"":"-->"}
  </div>
  <div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Settings</h2>${mis?`<button class="btn ghost" id="m-miss">Retry my mistakes (${mis})</button>`:""}</div>
  <div style="margin-top:8px"><div class="note" style="margin:0 0 6px">Questions to use</div><div class="row" role="group" aria-label="Questions to use">${["all","5","3","site","mine"].map(k=>{const n=BANK.filter(q=>!q.gen&&studiedTopic(q.topic,q.cat)&&(k==="all"||(k==="5"?q.stars===5:k==="3"?q.stars===3:k==="site"?!q.stars:!!q.stars))).length;return (k==="all"||k==="site"||n)?`<button class="srcb ${SET.src===k?"on":""}" data-src="${k}">${SRC_LABEL[k]} <small>${n}</small></button>`:""}).join("")}</div></div>
@@ -274,7 +283,7 @@ function home(){stopTimers();document.onkeydown=null;const d=load(),ts=topicStat
  <p class="note">Progress is saved in this browser. Your lesson quizzes count towards it too. <a href="#" id="reset">Reset progress</a></p>`;
  $("m-daily").onclick=()=>{const k=dailyNext();k===null?start("Daily review · bonus",pickDaily(7)):startDaily(k)};
  $("m-quick").onclick=()=>{const qs=(selTopics.size?[...selTopics].flatMap(i=>TOPICS[i].qs):BANK.filter(q=>!q.gen)).filter(inSrc);start("Quick-fire",pickQuick(qs,20))};
- $("m-mock").onclick=mockSetup;if($("m-calc"))$("m-calc").onclick=()=>start("Calculation drill",Array.from({length:20},(_,i)=>TOPICS.find(t=>t.gen).qs[i%4]).sort(()=>Math.random()-.5),{endless:true});
+ $("m-mock").onclick=mockSetup;if($("m-calc"))$("m-calc").onclick=()=>startDrill();
  if($("m-miss"))$("m-miss").onclick=()=>start("Mistakes",shuffle(mistakes(load())).slice(0,20));
  $("s-recall").onchange=e=>{SET.recall=e.target.checked;saveSet()};document.querySelectorAll("[data-src]").forEach(b=>b.onclick=()=>{SET.src=b.dataset.src;saveSet();home()});$("s-pace").onchange=e=>{SET.pace=e.target.checked;saveSet()};
  if(document.getElementById("tsec"))topicSection(ts);
@@ -283,8 +292,9 @@ function home(){stopTimers();document.onkeydown=null;const d=load(),ts=topicStat
 function pickDaily(n){const d=load(),now=Date.now(),ts=topicStats(d),w=q=>{const p=ts[q.topic]&&ts[q.topic].p;return p===null||p===undefined?50:p};
  const pool=BANK.filter(q=>!q.gen&&inSrc(q));const due=pool.filter(q=>d.q[q.id]&&d.q[q.id].due<=now).sort((a,b)=>w(a)-w(b));
  const fresh=shuffle(pool.filter(q=>!d.q[q.id])).sort((a,b)=>w(a)-w(b));const later=pool.filter(q=>d.q[q.id]&&d.q[q.id].due>now).sort((a,b)=>d.q[a.id].due-d.q[b.id].due);
- const out=[...due,...fresh.slice(0,Math.max(0,n-due.length-2)),...later];const calc=TOPICS.find(t=>t.gen).qs;if((SET.src==="all"||SET.src==="site")&&statsStudied()){out.splice(Math.min(out.length,7),0,calc[r(4)]);out.splice(Math.min(out.length,15),0,calc[r(4)])}
+ const out=[...due,...fresh.slice(0,Math.max(0,n-due.length-2)),...later];if((SET.src==="all"||SET.src==="site")&&calcOn()){out.splice(Math.min(out.length,7),0,rndGen());out.splice(Math.min(out.length,15),0,rndGen())}
  return [...new Set(out)].slice(0,n)}
+function startDrill(topic){const g=openGen(topic);if(!g.length)return;start(topic?"Drill: "+topic:"Calculation drill",Array.from({length:20},(_,i)=>g[i%g.length]).sort(()=>Math.random()-.5),{endless:true});S.drillTopic=topic||null}
 function pickQuick(qs,n){const d=load(),now=Date.now();return shuffle(qs.slice()).sort((a,b)=>{const da=d.q[a.id],db=d.q[b.id];const sa=!da?1:da.due<=now?0:2,sb=!db?1:db.due<=now?0:2;return sa-sb}).slice(0,n)}
 
 /* ---------------- session ---------------- */
@@ -320,7 +330,7 @@ function reveal(){S.revealed=true;show()}
 function pick(k){const q=S.qs[S.i];if(S.mock){S.ans[S.i]=k;show();return}if(S.ans[S.i]!==undefined)return;S.ans[S.i]=k;const ok=k===q.a;const c=record(q,ok,Date.now()-S.qt);
  const g=GAPS[c.box];S.nextNote=q.gen?"":ok?`You'll see this again ${g===1?"tomorrow":`in ${g} days`}.`:"You'll see this again later today.";S.revealed=false;show()}
 function next(){S.revealed=false;if(S.mock){if(S.i<S.qs.length-1){S.i++;show()}else finishMock();return}
- if(S.endless&&S.i===S.qs.length-1){const calc=TOPICS.find(t=>t.gen).qs;S.qs.push(...Array.from({length:10},()=>real(calc[r(4)])))}
+ if(S.endless&&S.i===S.qs.length-1){S.qs.push(...Array.from({length:10},()=>real(rndGen(S.drillTopic)||rndGen())))}
  if(S.i<S.qs.length-1){S.i++;show()}else results()}
 function results(){stopTimers();document.onkeydown=null;const n=S.ans.filter(a=>a!==undefined).length,right=S.ans.filter((a,i)=>a===S.qs[i].a).length,secs=Math.round((Date.now()-S.t0)/1000);
  if(!n){home();return}
@@ -352,7 +362,7 @@ function mockTick(){const left=Math.max(0,Math.round((S.end-Date.now())/1000)),e
 function finishMock(){stopTimers();S.qs.forEach((q,i)=>{if(S.ans[i]!==undefined)record(q,S.ans[i]===q.a,0)});try{const d=load();d.mocks=d.mocks||[];d.mocks.push({t:Date.now(),q:S.qs.length,c:S.qs.filter((q,i)=>S.ans[i]===q.a).length,mins:Math.round((Date.now()-S.t0)/60000)});save(d)}catch(e){}S.mock=false;S.wasMock=true;const unanswered=S.qs.length-S.ans.filter(a=>a!==undefined).length;
  S.ans=S.qs.map((q,i)=>S.ans[i]===undefined?-1:S.ans[i]);results();if(unanswered)$("app").insertAdjacentHTML("afterbegin",`<p class="note">${unanswered} unanswered question${unanswered>1?"s":""} counted as wrong.</p>`)}
 
-buildBank().then(()=>{home();const u=new URLSearchParams(location.search);const pt=u.get("practise");if(pt){const t=TOPICS.find(x=>x.name===pt);history.replaceState(null,"",location.pathname);if(t&&t.qs.length)start(t.name,pickQuick(t.qs.filter(inSrc),t.qs.length));}else if(u.get("retry")==="mistakes"){const t=u.get("topic");const m=shuffle(mistakes(load()).filter(q=>!t||q.topic===t)).slice(0,20);history.replaceState(null,"",location.pathname);if(m.length)start(t?"Mistakes: "+t:"Mistakes",m)}}).catch(()=>{$("app").innerHTML=`<p>Couldn't load the questions. Please refresh.</p>`});
+buildBank().then(()=>{home();const u=new URLSearchParams(location.search);const pt=u.get("practise"),dr=u.get("drill");if(dr!==null){history.replaceState(null,"",location.pathname);startDrill(dr&&dr!=="all"?dr:null)}else if(pt){const t=TOPICS.find(x=>x.name===pt);history.replaceState(null,"",location.pathname);if(t&&t.qs.length)start(t.name,pickQuick(t.qs.filter(inSrc),t.qs.length));}else if(u.get("retry")==="mistakes"){const t=u.get("topic");const m=shuffle(mistakes(load()).filter(q=>!t||q.topic===t)).slice(0,20);history.replaceState(null,"",location.pathname);if(m.length)start(t?"Mistakes: "+t:"Mistakes",m)}}).catch(()=>{$("app").innerHTML=`<p>Couldn't load the questions. Please refresh.</p>`});
 }
 </script>
 <script src="/time.js" defer></script>

@@ -252,5 +252,71 @@ const STEPS=[
   "Stop: aspirin for primary prevention; step down PPIs; review antipsychotics in dementia at 6 weeks",
   "Bisphosphonate: reassess at 5 years oral (3 years IV); holiday if low risk",
   "Taper: benzodiazepines ~1/8 every 2 weeks via diazepam; steroids if > 3 weeks; never stop beta-blockers abruptly",
-  "Adherence: ask non-judgementally; intentional vs unintentional; dosette boxes only for practical problems"]}
+  "Adherence: ask non-judgementally; intentional vs unintentional; dosette boxes only for practical problems"]},
+ {id:"calc22",kw:"2x2 table two by two sensitivity specificity positive predictive value negative predictive value prevalence false positive false negative SnNout SpPin screening",cat:"calculations",topic:"The 2×2 table",src:"CEBM Oxford · UK NSC",url:"https://www.cebm.ox.ac.uk/resources/ebm-tools",lesson:"../calculations/two-by-two-table.html",steps:[
+  "Draw the table: test result in rows, disease in columns; label a, b, c, d",
+  "Sensitivity = a ÷ (a + c); specificity = d ÷ (b + d): down the columns",
+  "PPV = a ÷ (a + b); NPV = d ÷ (c + d): across the rows",
+  "From percentages: build 1,000 people by prevalence, then apply Sn and Sp",
+  "Prevalence ↑: PPV ↑, NPV ↓; Sn and Sp unchanged; SnNout, SpPin"]},
+ {id:"calclr",kw:"likelihood ratio LR+ LR- positive negative odds probability post-test pre-test Fagan nomogram rule in rule out",cat:"calculations",topic:"Likelihood ratios and post-test probability",src:"CEBM Oxford",url:"https://www.cebm.ox.ac.uk/resources/ebm-tools/likelihood-ratios",lesson:"../calculations/likelihood-ratios.html",steps:[
+  "LR+ = Sn ÷ (1 − Sp); LR− = (1 − Sn) ÷ Sp",
+  "Odds = p ÷ (1 − p); probability = odds ÷ (1 + odds)",
+  "Post-test odds = pre-test odds × LR, then convert back",
+  "LR over 10 rules in; under 0.1 rules out; 1 is useless",
+  "LRs don't change with prevalence; never multiply a probability by the LR"]},
+ {id:"calcrisk",kw:"absolute risk reduction relative risk reduction relative risk number needed to treat NNT number needed to harm NNH odds ratio case-control cohort confidence interval",cat:"calculations",topic:"Risk and treatment effect",src:"CEBM Oxford · NICE NG197",url:"https://www.nice.org.uk/guidance/ng197",lesson:"../calculations/risk-treatment-effect.html",steps:[
+  "CER and EER: event rates in control and treated groups",
+  "ARR = CER − EER; RRR = ARR ÷ CER; RR = EER ÷ CER",
+  "NNT = 1 ÷ ARR (round up, state the time); NNH = 1 ÷ ARI",
+  "Case-control: odds ratio = ad ÷ bc; ≈ RR when the outcome is rare",
+  "Ratio CI including 1 = not significant; explain with absolute risks (NG197)"]},
+ {id:"calcdist",kw:"mean median mode skew positive negative normal distribution standard deviation standard error confidence interval z-score incidence prevalence percentage change",cat:"calculations",topic:"Distributions and data",src:"Kirkwood and Sterne · Greenhalgh",url:"https://www.cebm.ox.ac.uk/resources/ebm-tools",lesson:"../calculations/distributions-data.html",steps:[
+  "Mean, median (order first), mode; median and IQR for skewed data",
+  "Positive skew: mean > median > mode (mean follows the tail)",
+  "Normal: ±1, 2, 3 SD hold 68, 95, 99.7%; z = (x − mean) ÷ SD",
+  "SE = SD ÷ √n; 95% CI = mean ± 1.96 SE",
+  "Prevalence ≈ incidence × duration; % change = (new − old) ÷ old"]},
+ {id:"calcdose",kw:"dose calculation percentage strength ratio 1 in 1000 lidocaine adrenaline volume concentration mg/kg paediatric suspension quantity supply insulin units infusion rate drops benzylpenicillin midazolam glucagon",cat:"calculations",topic:"Drug doses and volumes",src:"BNF · Resus Council UK · NICE NG240",url:"https://bnf.nice.org.uk/medicines-guidance/prescription-writing/",lesson:"../calculations/drug-doses-volumes.html",steps:[
+  "1% = 10 mg/mL; 1 in 1,000 = 1 mg/mL; 1 in 10,000 = 100 micrograms/mL",
+  "Volume = dose ÷ concentration; mg/kg × weight, then check the maximum",
+  "Quantity = per day × days; insulin 100 units/mL; mL/hour = volume ÷ hours",
+  "Adrenaline 500/300/150 micrograms; benzylpenicillin 1.2 g/600/300 mg; midazolam 10/7.5/5/2.5 mg",
+  "Write micrograms and units in full; 0.5 not .5; recheck the decimal"]},
+ {id:"calcopioid",kw:"opioid conversion codeine tramadol morphine oral subcutaneous diamorphine oxycodone fentanyl buprenorphine patch breakthrough syringe driver steroid equivalence prednisolone hydrocortisone dexamethasone sick day rules steroid emergency card",cat:"calculations",topic:"Opioid and steroid conversions",src:"BNF · NICE CG140",url:"https://www.nice.org.uk/guidance/cg140",lesson:"../calculations/opioid-steroid-conversions.html",steps:[
+  "Convert everything to oral morphine per 24 hours first",
+  "Codeine/tramadol ÷ 10; oral → SC morphine ÷ 2; → SC diamorphine ÷ 3",
+  "Patches: buprenorphine 5 ≈ 12 mg; fentanyl 12 ≈ 30 mg oral morphine a day",
+  "Breakthrough 1/10 to 1/6 of the 24-hour dose; start 20–30 mg/day + laxative",
+  "Pred 5 = hydrocortisone 20 = dex 0.75; card at 5 mg for 4 weeks; double when ill"]},
+ {id:"calckidney",kw:"Cockcroft-Gault creatinine clearance eGFR CKD stage G3a G3b A1 A2 A3 ACR albuminuria AKI KDIGO stage ACE inhibitor creatinine rise 30% ideal body weight DOAC referral",cat:"calculations",topic:"Kidney numbers",src:"NICE NG203 · NG148",url:"https://www.nice.org.uk/guidance/ng203",lesson:"../calculations/kidney-numbers.html",steps:[
+  "CrCl = (140 − age) × kg × 1.23 (men) or 1.04 (women) ÷ creatinine",
+  "Use CrCl for DOACs, older people, extremes of weight; ideal body weight if obese",
+  "CKD: G3a 45–59, G3b 30–44, G4 15–29; A1 <3, A2 3–30, A3 >30",
+  "AKI: +26 in 48 h or 1.5 × in 7 days; stages 1.5, 2, 3 × baseline",
+  "ACEi: creatinine rise <30% continue, ≥30% stop or reduce; refer ACR 70+"]},
+ {id:"calccv",kw:"blood pressure stage 1 stage 2 severe hypertension home ABPM HBPM targets CHA2DS2-VASc ORBIT ABPI ankle brachial postural hypotension non-HDL cholesterol 40% statin ECG heart rate QTc Bazett",cat:"calculations",topic:"Cardiovascular numbers",src:"NICE NG136 · NG196 · NG238",url:"https://www.nice.org.uk/guidance/ng136",lesson:"../calculations/cardiovascular-numbers.html",steps:[
+  "BP: clinic 140/90, home 135/85 stage 1; 160/100 and 150/95 stage 2; 180/120 severe",
+  "Home BP: twice daily 4–7 days, discard day 1, average; target <150/90 if 80+",
+  "CHA₂DS₂-VASc (age 75+ and stroke = 2): 2+ anticoagulate; ORBIT flags bleeding",
+  "ABPI = highest ankle ÷ highest arm: 0.9, 0.8, 0.5; postural drop 20/10",
+  "Non-HDL fall >40% at 3 months; HR = 300 ÷ large squares; QTc = QT ÷ √RR"]},
+ {id:"calclife",kw:"alcohol units ABV 14 units AUDIT AUDIT-C pack-years smoking BMI body mass index obesity ethnicity 27.5 waist-to-height ratio physical activity 150 minutes",cat:"calculations",topic:"Lifestyle numbers",src:"UK CMOs · AUDIT · NICE NG246",url:"https://www.gov.uk/government/publications/alcohol-consumption-advice-on-low-risk-drinking",lesson:"../calculations/lifestyle-numbers.html",steps:[
+  "Units = ABV % × mL ÷ 1,000 (pint = 568 mL); limit 14 a week over 3+ days",
+  "AUDIT-C 5+ → full AUDIT: 8 increasing, 16 higher, 20 possible dependence",
+  "Pack-years = (cigarettes a day ÷ 20) × years",
+  "BMI = kg ÷ m²; obesity 30, or 27.5 in higher-risk ethnic groups",
+  "Waist ÷ height: 0.5 increased, 0.6 high; activity 150 moderate or 75 vigorous"]},
+ {id:"calcscores",kw:"Wells score DVT PE D-dimer CTPA PERC CRB65 CURB65 pneumonia FeverPAIN Centor sore throat PHQ-9 GAD-7 depression anxiety QRISK3 statin FRAX QFracture DXA T-score Z-score osteoporosis NOGG NG259",cat:"calculations",topic:"Clinical scores and risk tools",src:"NICE NG158 · NG84 · NG222 · NG238 · NG259",url:"https://www.nice.org.uk/guidance/ng259",lesson:"../calculations/clinical-scores-risk-tools.html",steps:[
+  "Wells DVT 2+ likely (alternative diagnosis −2); Wells PE over 4 likely",
+  "CRB65: 0 home, 1–2 consider hospital, 3–4 admit; FeverPAIN 4–5 / Centor 3–4: antibiotic",
+  "PHQ-9 5/10/15/20, NICE 'more severe' 16+; GAD-7 5/10/15",
+  "QRISK3 10%+: atorvastatin 20 mg; not for type 1 diabetes, CKD G3+, FH",
+  "FRAX/QFracture 10-year MOF 10%+: consider DXA; T-score −2.5 = osteoporosis"]},
+ {id:"calcdates",kw:"due date Naegele gestation LMP dating scan anomaly scan emergency contraception levonorgestrel ulipristal copper IUD 72 hours 120 hours quick start extra precautions missed pill immunisation schedule MMRV 18 months screening intervals cervical HPV 5 years DVLA driving TIA",cat:"calculations",topic:"Dates and intervals",src:"NICE NG201 · FSRH · UKHSA · DVLA",url:"https://www.gov.uk/government/publications/routine-childhood-immunisation-schedule",lesson:"../calculations/dates-intervals.html",steps:[
+  "Due date = LMP + 1 year − 3 months + 7 days; gestation = days since LMP ÷ 7",
+  "EC: levonorgestrel 72 h; ulipristal 120 h (wait 5 days to start hormones); Cu-IUD 120 h",
+  "Extra precautions: COC 7 days, POP 2 days, implant/injection/IUS 7; desogestrel late at 12 h",
+  "Babies: 8, 12, 16 weeks; 1 year (MMRV); 18 months (6-in-1, MMRV); cervical 5-yearly if HPV −",
+  "DVLA car: PCI and pacemaker 1 week; TIA 1 month; first seizure 6 months; epilepsy 12"]}
 ];

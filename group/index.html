@@ -109,7 +109,8 @@ function record(q,ok){const d=load(),c=d.q[q.id]||{box:0,due:0,n:0,ok:0};c.n++;i
 
 /* ---------- questions ---------- */
 let QB=null,POOL=[];
-const domainOf=q=>{if(q.cat==="statistics")return "ebp";if(q.cat==="admin")return "org";if(q.mine||q.cat==="mybank"){const a=String(q.area||"");if(/evidence|statist|research|apprais|epidem/i.test(a))return "ebp";if(/organis|organiz|manage|admin|ethic|law|legal|contract|governance|leadership|safeguard/i.test(a))return "org"}return "clin"};
+const CALC_EBP=["The 2×2 table","Likelihood ratios and post-test probability","Risk and treatment effect","Distributions and data"];
+const domainOf=q=>{if(q.cat==="statistics"||(q.cat==="calculations"&&CALC_EBP.includes(q.topic)))return "ebp";if(q.cat==="admin")return "org";if(q.mine||q.cat==="mybank"){const a=String(q.area||"");if(/evidence|statist|research|apprais|epidem/i.test(a))return "ebp";if(/organis|organiz|manage|admin|ethic|law|legal|contract|governance|leadership|safeguard/i.test(a))return "org"}return "clin"};
 const inScope=q=>q.cat==="mybank"||STU.is(q.topic);
 function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return ((h>>>0)%100000)/100000}
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};

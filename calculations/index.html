@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculations · Road to GP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<script src="/sync.js"></script>
+<style>
+.band.cat{padding:clamp(18px,2.6vw,30px) max(5vw,16px) clamp(16px,2vw,24px)}
+.band.cat h1{margin:6px 0 4px}.band.cat .pdfbtn{margin-top:10px;padding:8px 14px}
+@media(min-width:721px){.band.cat .art{width:clamp(100px,13vw,160px)}.band.cat .in>*:not(.art){max-width:calc(100% - clamp(120px,15vw,180px))}}
+main{padding-top:14px}
+.lp-prog{display:flex;gap:12px;align-items:center;margin:0 0 6px;font-size:14px;color:var(--mut)}.lp-prog .bar{flex:1;max-width:320px;height:8px;border-radius:4px;background:var(--line);overflow:hidden}.lp-prog .bar i{display:block;height:100%;background:#0b8577}
+.lp-tools{position:sticky;top:0;z-index:5;background:var(--bg,#eef2f4);padding:8px 0}
+.lp-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.lp-chip{flex:none;font:inherit;font-size:14px;white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer}
+.lp-chip span{color:var(--mut);font-size:12.5px;margin-left:4px}
+.lp-chip[aria-pressed=true]{background:var(--ink);color:var(--card);border-color:var(--ink)}.lp-chip[aria-pressed=true] span{color:inherit;opacity:.75}
+.lp-row input,.lp-row select{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:7px 10px;min-height:40px}
+.lp-row input{flex:1 1 180px}
+.lp-chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}.lp-chips::-webkit-scrollbar{display:none}
+.lp-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:4px}@media(max-width:760px){.lp-grid{grid-template-columns:minmax(0,1fr)}}
+.lp-it{position:relative;display:grid;grid-template-columns:5px minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px 10px 0;overflow:hidden}
+.lp-it:hover{border-color:var(--c)}.lp-it>i{align-self:stretch;margin:-10px 0;background:var(--c)}
+.lp-it.done>i{background:#0b8577}
+.lp-it a.ov{position:absolute;inset:0;z-index:1;border-radius:12px}.lp-it a.ov:focus-visible{outline:3px solid var(--c);outline-offset:2px}
+.lp-it .t{min-width:0}.lp-it b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:15.5px;line-height:1.3;overflow:hidden}
+.lp-it .s{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--mut);margin-top:2px;min-width:0}
+.lp-it .s em{font-style:normal;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lp-it .yl{color:#b7791f;letter-spacing:1px;white-space:nowrap;flex:none}.lp-it .yl i{font-style:normal;opacity:.45}
+.lp-it .n{font-size:12px;font-weight:700;color:var(--mut);flex:none}
+.lp-sb{position:relative;z-index:2;font:inherit;font-size:13px;font-weight:700;white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 11px;cursor:pointer;min-height:34px}
+.lp-sb:hover{border-color:#0b8577;color:#0b8577}.lp-sb.on{background:#0b8577;border-color:#0b8577;color:#fff}
+.lp-soon{font-size:12px;color:var(--mut);white-space:nowrap}
+.lp-more{display:flex;justify-content:center;align-items:center;gap:12px;margin:12px 0;flex-wrap:wrap;font-size:13px;color:var(--mut)}
+.lp-more button{font:inherit;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:9px 16px;cursor:pointer}
+.lp-empty{text-align:center;color:var(--mut);padding:24px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+</style>
+</head>
+<body data-cat="calculations">
+<header class="band cat" id="band"><div class="in">
+<img class="art" src="../img/areas/calculations.svg" alt="" width="240" height="200">
+<a class="back" href="../">← Home</a>
+<h1 id="h">Calculations</h1>
+<p class="lead" id="lead"></p>
+</div></header>
+<main><div class="in">
+<div class="lp-prog"><div class="bar"><i id="pbar"></i></div><span id="ptxt"></span></div>
+<div class="lp-tools"><div class="lp-row"><div class="lp-chips" role="group" aria-label="Show" id="chips"></div></div>
+<div class="lp-row" style="margin-top:8px"><input id="q" type="search" placeholder="Search topics" aria-label="Search topics"><select id="so" aria-label="Order"><option value="yield">Highest AKT yield</option><option value="todo">Not studied first</option><option value="guide">Guide order</option><option value="az">A to Z</option></select></div></div>
+<div id="list"></div>
+<p class="note">★★★★★ = most often tested. Tap a topic to open its lesson; tap <b>Mark studied</b> to add it to practice, cases, Retention and Mistakes. For exam revision only, based on NICE and other UK guidance at the time of writing. Not clinical advice.</p>
+</div></main>
+<script src="../lessons.js"></script>
+<script src="/studied.js"></script>
+<script>
+{
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const $=id=>document.getElementById(id),STU=window.RTG_STUDIED;
+const c=CATS.find(x=>x.id===document.body.dataset.cat);
+document.body.style.setProperty("--c",c.c);
+const live=c.lessons.filter(l=>l[2]).length;
+$("lead").textContent=`From ${c.src} · ${c.lessons.length} topic${c.lessons.length>1?"s":""}, ${live} live`;
+if(typeof PDFS!=="undefined"&&PDFS[c.id]){const p=PDFS[c.id];$("lead").insertAdjacentHTML("afterend",`<a class="pdfbtn" href="../guides/${p[0]}" target="_blank" rel="noopener">Open the PDF guide <small>${p[1]} pages</small></a>`)}
+const ALL=c.lessons.map((l,i)=>({name:l[0],src:l[1],file:l[2],y:l[3]||0,i}));
+const PAGE=12;let shown=PAGE,V={f:"all",sort:"yield",q:""};
+try{V.sort=localStorage.getItem("rtg-order")||"yield";if(V.sort==="guide"||V.sort==="yield"||V.sort==="todo"||V.sort==="az");else V.sort="yield";V.f=localStorage.getItem("rtg-lp-filter")||"all"}catch(e){}
+const isS=n=>STU&&STU.is(n);
+function chips(){const n=ALL.length,s=ALL.filter(x=>isS(x.name)).length,top=ALL.filter(x=>x.y===5).length;
+ $("pbar").style.width=(n?s/n*100:0)+"%";$("ptxt").textContent=`${s} of ${n} studied`;
+ $("chips").innerHTML=[["all","All",n],["todo","Not studied",n-s],["done","Studied",s],...(top?[["top","★★★★★",top]]:[])].map(([v,l,k])=>`<button class="lp-chip" data-f="${v}" aria-pressed="${V.f===v}">${l}<span>${k}</span></button>`).join("");
+ document.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{V.f=b.dataset.f;try{localStorage.setItem("rtg-lp-filter",V.f)}catch(e){}shown=PAGE;chips();draw()})}
+function draw(){const q=V.q.trim().toLowerCase();
+ let X=ALL.filter(x=>(!q||(x.name+" "+x.src).toLowerCase().includes(q))&&(V.f==="all"||(V.f==="todo"&&!isS(x.name))||(V.f==="done"&&isS(x.name))||(V.f==="top"&&x.y===5)));
+ const g=(a,b)=>a.i-b.i,y=(a,b)=>b.y-a.y||g(a,b);
+ X.sort(V.sort==="guide"?g:V.sort==="az"?(a,b)=>a.name.localeCompare(b.name):V.sort==="todo"?(a,b)=>(isS(a.name)-isS(b.name))||y(a,b):y);
+ const vis=X.slice(0,shown);
+ $("list").innerHTML=!X.length?`<div class="lp-empty">${V.f==="todo"&&!q?"Every topic here is studied. Well done.":"No topics match."}</div>`:
+ `<div class="lp-grid">${vis.map(x=>{const s=isS(x.name),inf=s&&STU.info(x.name);return `<div class="lp-it${s?" done":""}"><i></i>
+  ${x.file?`<a class="ov" href="${esc(x.file)}" aria-label="Open the lesson: ${esc(x.name)}"></a>`:""}
+  <div class="t"><b title="${esc(x.name)}">${esc(x.name)}</b><div class="s"><span class="n">${String(x.i+1).padStart(2,"0")}</span>${x.y?`<span class="yl" aria-label="AKT relevance ${x.y} of 5">${"★".repeat(x.y)}<i>${"☆".repeat(5-x.y)}</i></span>`:""}<em>${esc(x.src)}</em></div></div>
+  ${x.file?`<button class="lp-sb${s?" on":""}" data-s="${esc(x.name)}" aria-pressed="${s}" title="${s?`Studied ${new Date(inf.t).toLocaleDateString("en-GB",{day:"numeric",month:"short"})}. Tap to undo.`:"Add to practice, cases, Retention and Mistakes"}">${s?"✓ Studied":"Mark studied"}</button>`:`<span class="lp-soon">Coming soon</span>`}</div>`}).join("")}</div>
+  <div class="lp-more"><span>Showing ${vis.length} of ${X.length}</span>${X.length>shown?`<button id="mo">Show ${Math.min(PAGE,X.length-shown)} more</button>`:""}</div>`;
+ if($("mo"))$("mo").onclick=()=>{shown+=PAGE;draw()};
+ document.querySelectorAll("[data-s]").forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();const n=b.dataset.s;
+  if(isS(n)){if(!confirm(`Remove “${n}” from your studied topics? Its questions and case leave practice until you study it again.`))return;STU.unmark(n)}else STU.mark(n,"manual");chips();draw()})}
+$("so").value=V.sort;
+$("so").onchange=e=>{V.sort=e.target.value;try{localStorage.setItem("rtg-order",V.sort)}catch(e){}shown=PAGE;draw()};
+$("q").oninput=e=>{V.q=e.target.value;shown=PAGE;draw()};
+window.addEventListener("rtg-studied",()=>{chips();draw()});
+chips();draw();
+}
+</script>
+<script src="/time.js" defer></script>
+</body>
+</html>

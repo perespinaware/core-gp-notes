@@ -78,7 +78,7 @@ h2{font:800 20px "Bricolage Grotesque",sans-serif;margin:0 0 8px}
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const STU=window.RTG_STUDIED,DAY=864e5,now=Date.now();
-const AREA={cardiology:"Cardiology",dermatology:"Dermatology",statistics:"Statistics",admin:"Admin",prescribing:"Prescribing",mybank:"My bank"};
+const AREA={cardiology:"Cardiology",dermatology:"Dermatology",statistics:"Statistics",admin:"Admin",prescribing:"Prescribing",calculations:"Calculations",mybank:"My bank"};
 const COL={mybank:"#c28a00"};(typeof CATS!=="undefined"?CATS:[]).forEach(c=>COL[c.id]=c.c);
 const day=t=>new Date(t).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"});
 const pc=(a,b)=>b?Math.round(a/b*100):null;
